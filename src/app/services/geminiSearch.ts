@@ -1,27 +1,6 @@
-import { GoogleGenAI } from "@google/genai";
-import { allProducts } from "../../data/index";
+import { PRODUCT_CATALOG, CATALOG_SUMMARY, generateGeminiContent, parseJsonResponse, CatalogProduct } from "./gemini";
 
-const _CIPHER = "evomag-poc-secret";
-const _ENC_KEY = "243f150c321e695d1b3c43465234165321130018220717653e1f1b7a111c3508173a0413350112";
-
-function _decryptKey(hex: string, cipher: string): string {
-  let result = "";
-  for (let i = 0; i < hex.length; i += 2) {
-    const byte = parseInt(hex.slice(i, i + 2), 16);
-    result += String.fromCharCode(byte ^ cipher.charCodeAt((i / 2) % cipher.length));
-  }
-  return result;
-}
-
-export interface AISuggestedProduct {
-  id: string;
-  name: string;
-  price: number;
-  originalPrice?: number;
-  imageUrl: string;
-  rating: number;
-  reviewCount: number;
-  badge?: string;
+export interface AISuggestedProduct extends CatalogProduct {
   aiReason: string;
 }
 
@@ -30,29 +9,10 @@ export interface AISearchResult {
   insight: string;
 }
 
-// Product catalog built from all products in the data store
-const PRODUCT_CATALOG = allProducts.map((p: any) => ({
-  id: String(p.id),
-  name: p.name,
-  price: p.price,
-  originalPrice: p.oldPrice,
-  rating: p.rating ?? 0,
-  reviewCount: p.reviews ?? 0,
-  imageUrl: p.image ?? (Array.isArray(p.images) ? p.images[0] : ""),
-  badge: p.discount,
-}));
-
 export async function getAIProductSuggestions(
   query: string,
 ): Promise<AISearchResult> {
-  const ai = new GoogleGenAI({
-    apiKey: _decryptKey(_ENC_KEY, _CIPHER),
-  });
-
-  const catalogSummary = PRODUCT_CATALOG.map(
-    (p) =>
-      `ID:${p.id} | "${p.name}" | Preț: ${p.price} Lei${p.originalPrice ? ` (redus de la ${p.originalPrice} Lei)` : ""} | Rating: ${p.rating}`,
-  ).join("\n");
+  const catalogSummary = CATALOG_SUMMARY;
 
   const prompt = `Ești un asistent de shopping AI pentru un magazin online românesc. 
 Utilizatorul a căutat: "${query}"
@@ -73,19 +33,11 @@ Răspunde DOAR cu un JSON valid în acest format exact (fără markdown, fără 
   ]
 }`;
 
-  const response = await ai.models.generateContent({
-    model: "gemma-4-31b-it",
-    contents: prompt,
-  });
-
-  const text = response.text ?? "";
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error("Invalid AI response format");
-
-  const parsed: {
+  const text = await generateGeminiContent(prompt);
+  const parsed = parseJsonResponse<{
     insight: string;
     products: Array<{ id: string; aiReason: string }>;
-  } = JSON.parse(jsonMatch[0]);
+  }>(text);
 
   const enriched: AISuggestedProduct[] = parsed.products
     .map((p) => {

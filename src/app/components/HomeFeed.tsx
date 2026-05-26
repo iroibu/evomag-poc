@@ -24,7 +24,6 @@ const {
   heroBanners,
   noutati,
   servicii,
-  bundles,
   products,
 } = productsData;
 
@@ -397,15 +396,27 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
       </section>
 
       {/* 3. Oferte pentru tine */}
-      <section className="bg-white py-5 shadow-sm">
-        <SectionHeader
-          title="Oferte pentru tine"
-          subtitle={hasPersonalization ? "Personalizat după preferințele tale" : "Picks for you"}
-          onSeeAll={() => onSeeAllClick?.("Oferte pentru tine", personalizedOferte)}
-        />
+      <section className="bg-red-50 py-5 mt-2 shadow-sm border-t border-b border-red-100">
+        <div className="px-4 mb-4 flex items-end justify-between">
+          <div>
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <div className="bg-[#E31E24] w-7 h-7 rounded-full flex items-center justify-center shadow-sm">
+                <Sparkles className="h-4 w-4 text-white fill-white" />
+              </div>
+              <h2 className="text-xl font-black text-foreground tracking-tight">Oferte pentru tine</h2>
+            </div>
+            <p className="text-[11px] text-gray-500 font-medium">
+              {hasPersonalization ? "Personalizat după preferințele tale" : "Picks for you"}
+            </p>
+          </div>
+          <button onClick={() => onSeeAllClick?.("Oferte pentru tine", personalizedOferte)} className="flex items-center gap-0.5 text-xs font-bold text-[#E31E24] bg-white px-2.5 py-1.5 rounded-full shadow-sm border border-red-100 hover:bg-red-50 transition-colors">
+            Toate
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
         <ProductScroll>
           {personalizedOferte.map((product) => (
-            <div key={product.id} className="w-[150px] shrink-0 snap-start cursor-pointer" onClick={() => onProductClick?.(product)}>
+            <div key={product.id} className="w-[160px] shrink-0 snap-start cursor-pointer" onClick={() => onProductClick?.(product)}>
               <ProductCard {...product} onAddToCart={() => onAddToCart?.(product)} />
             </div>
           ))}
@@ -454,62 +465,6 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
             </div>
           ))}
         </ProductScroll>
-      </section>
-
-      {/* Bundles Section */}
-      <section className="bg-gradient-to-br from-red-50 via-white to-orange-50 py-6 my-2 shadow-sm border-y border-red-100 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-red-200/40 rounded-full blur-3xl z-0 pointer-events-none transform translate-x-1/3 -translate-y-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-orange-200/40 rounded-full blur-3xl z-0 pointer-events-none transform -translate-x-1/3 translate-y-1/3"></div>
-        
-        <div className="relative z-10">
-          <SectionHeader title="Produse și bundles" subtitle="Cumpără împreună și economisești" onSeeAll={() => onSeeAllClick?.("Produse și bundles", bundles as any)} />
-          
-          <ProductScroll>
-            {bundles.map((bundle) => (
-              <div key={bundle.id} className="relative flex flex-col w-[280px] shrink-0 snap-start bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-red-100 p-4 cursor-pointer group hover:border-red-300 hover:shadow-md transition-all duration-300" onClick={() => onProductClick?.({ id: bundle.id, name: bundle.title, price: bundle.price, originalPrice: bundle.originalPrice, badge: bundle.badge, imageUrl: bundle.image1 })}>
-                
-                <div className="flex justify-start mb-3">
-                  <div className="bg-gradient-to-r from-[#E31E24] to-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-sm whitespace-nowrap">
-                    {bundle.badge}
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-[90px] h-[90px] bg-white rounded-xl p-2 relative shadow-sm border border-gray-50 group-hover:scale-105 transition-transform duration-300">
-                    <img src={bundle.image1} className="w-full h-full object-contain mix-blend-multiply" alt="" onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=200&q=80' }} />
-                  </div>
-                  
-                  <div className="w-8 h-8 rounded-full bg-red-50 text-[#E31E24] flex items-center justify-center shrink-0 shadow-inner z-10 border border-red-100">
-                    <span className="font-black text-lg leading-none mt-[-2px]">+</span>
-                  </div>
-                  
-                  <div className="w-[90px] h-[90px] bg-white rounded-xl p-2 relative shadow-sm border border-gray-50 group-hover:scale-105 transition-transform duration-300 delay-75">
-                    <img src={bundle.image2} className="w-full h-full object-contain mix-blend-multiply" alt="" onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=200&q=80' }} />
-                  </div>
-                </div>
-
-                <div className="flex flex-col">
-                  <h3 className="text-sm font-black text-gray-900 mb-1.5 leading-tight group-hover:text-[#E31E24] transition-colors">{bundle.title}</h3>
-                  <p className="text-[11px] text-gray-500 font-medium mb-4 line-clamp-1">{bundle.description}</p>
-                  
-                  <div className="flex items-end justify-between mt-auto bg-red-50/50 p-3 rounded-xl border border-red-50">
-                    <div className="flex flex-col">
-                      <span className="text-[10px] text-gray-400 line-through leading-none mb-1 font-semibold">{bundle.originalPrice.toLocaleString('ro-RO')} Lei</span>
-                      <span className="text-lg font-black text-[#E31E24] leading-none">{bundle.price.toLocaleString('ro-RO')} Lei</span>
-                    </div>
-                    <button 
-                      onClick={(e) => { e.stopPropagation(); toast.success('Bundle adăugat în coș!'); }}
-                      className="flex items-center gap-1.5 px-3 py-2 bg-[#E31E24] text-white rounded-lg font-bold text-xs hover:bg-red-700 transition-all shadow-sm group-hover:shadow group-hover:scale-105 active:scale-95"
-                    >
-                      <ShoppingCart className="w-3.5 h-3.5" />
-                      Adaugă
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </ProductScroll>
-        </div>
       </section>
 
       {/* 6. Văzute recent */}

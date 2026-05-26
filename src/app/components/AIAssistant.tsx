@@ -1,28 +1,22 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Sparkles, Package, ShoppingCart } from "lucide-react";
+import { Send, Sparkles, ShoppingCart } from "lucide-react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Avatar } from "./ui/avatar";
-import { Badge } from "./ui/badge";
-import { motion, AnimatePresence } from "motion/react";
-import productsData from "../../data/products";
+import { motion } from "motion/react";
+import { getAssistantReply, AssistantProduct } from "../services/geminiAssistant";
 
 interface Message {
   id: string;
   type: "user" | "assistant";
   content: string;
-  products?: Array<{
-    id: string;
-    name: string;
-    price: number;
-    imageUrl: string;
-  }>;
+  products?: AssistantProduct[];
 }
 
 const quickPrompts = [
   "Recomandă-mi un laptop pentru programare",
-  "Care este cel mai bun telefon în 2024?",
+  "Care este cel mai bun telefon în 2026?",
   "Căști pentru sală de sport sub 300 Lei",
   "Monitoare pentru gaming",
 ];
@@ -32,7 +26,7 @@ export function AIAssistant() {
     {
       id: "1",
       type: "assistant",
-      content: "Buna! Sunt asistentul tau EvoSmart. Cum te pot ajuta astazi?",
+      content: "Buna! Sunt asistentul tau EvoMi. Cum te pot ajuta astazi?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -47,31 +41,44 @@ export function AIAssistant() {
     scrollToBottom();
   }, [messages]);
 
-  const handleSend = () => {
-    if (!input.trim()) return;
+  const handleSendMessage = async (message: string) => {
+    if (!message.trim()) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
       type: "user",
-      content: input,
+      content: message,
     };
 
     setMessages((prev) => [...prev, userMessage]);
-    setInput("");
     setIsTyping(true);
 
-    // Simulate AI response
-    setTimeout(() => {
+    try {
+      const result = await getAssistantReply(message);
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: "assistant",
-        content:
-          "Perfect! Pe baza preferințelor tale, îți recomand următoarele produse care îți vor oferi cel mai bun raport calitate-preț:",
-        products: productsData.aiRecommendations,
+        content: result.message,
+        products: result.refused ? undefined : result.products,
       };
       setMessages((prev) => [...prev, assistantMessage]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          type: "assistant",
+          content: "Îmi pare rău, a apărut o eroare. Te rog să încerci din nou.",
+        },
+      ]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
+  };
+
+  const handleSend = () => {
+    handleSendMessage(input);
+    setInput("");
   };
 
   return (
@@ -83,7 +90,7 @@ export function AIAssistant() {
             <Sparkles className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h2>Asistent EvoSmart</h2>
+            <h2>Asistent EvoMi</h2>
             <p className="text-sm text-muted-foreground">Mereu disponibil pentru tine</p>
           </div>
         </div>
@@ -116,7 +123,7 @@ export function AIAssistant() {
                 <p className="text-sm leading-relaxed">{message.content}</p>
               </div>
 
-              {message.products && (
+              {message.products && message.products.length > 0 && (
                 <div className="mt-3 space-y-2">
                   {message.products.map((product) => (
                     <Card
@@ -130,6 +137,7 @@ export function AIAssistant() {
                       />
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm line-clamp-2">{product.name}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{product.aiReason}</p>
                         <p className="text-sm font-bold mt-1">
                           {product.price.toLocaleString('ro-RO')} Lei
                         </p>
@@ -176,7 +184,7 @@ export function AIAssistant() {
             {quickPrompts.map((prompt, index) => (
               <button
                 key={index}
-                onClick={() => setInput(prompt)}
+                onClick={() => handleSendMessage(prompt)}
                 className="shrink-0 px-4 py-2 bg-muted rounded-full text-sm whitespace-nowrap"
               >
                 {prompt}

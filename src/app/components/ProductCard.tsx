@@ -1,8 +1,5 @@
 import { Info, ShoppingCart, Star } from "lucide-react";
-import { motion } from "motion/react";
 import React, { useState } from "react";
-import { Badge } from "./ui/badge";
-import { Card } from "./ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 interface ProductCardProps {
@@ -12,9 +9,11 @@ interface ProductCardProps {
   originalPrice?: number;
   rating?: number;
   reviewCount?: number;
+
   imageUrl: string;
   badge?: string | React.ReactNode;
   aiReason?: string;
+  stockPercent?: number;
   onAddToCart?: () => void;
   onWishlist?: () => void;
 }
@@ -23,95 +22,104 @@ export function ProductCard({
   name,
   price,
   originalPrice,
-  rating = 4.5,
-  reviewCount = 120,
+  rating,
+  reviewCount,
   imageUrl,
   badge,
   aiReason,
+  stockPercent,
   onAddToCart,
-  onWishlist,
 }: ProductCardProps) {
+  console.log("ProductCard render:", name);
+  console.log("price:", price);
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
   return (
-    <motion.div
-      whileTap={{ scale: 0.98 }}
-      className="touch-manipulation h-full"
-    >
-      <Card className="overflow-hidden border border-gray-100 shadow-sm h-full flex flex-col bg-white">
-        <div className="relative aspect-square bg-white">
-          <img
-            src={imageUrl}
-            alt={name}
-            className="h-full w-full object-contain p-4"
+    <div className="relative bg-white rounded-2xl border border-red-100 hover:border-[#E31E24] shadow-sm hover:shadow-md cursor-pointer group transition-all duration-300 h-full flex flex-col">
+
+      {stockPercent !== undefined && (
+        <div className="absolute bottom-0 left-0 h-1.5 bg-red-100 w-full rounded-b-2xl overflow-hidden z-20">
+          <div
+            className="h-full bg-gradient-to-r from-[#E31E24] to-orange-500"
+            style={{ width: `${stockPercent}%` }}
           />
-          {badge && (
-            <Badge className="absolute top-2 left-2 bg-primary text-primary-foreground border-0 text-[10px] px-1.5 py-0 font-bold tracking-wide shadow-sm">
-              {badge}
-            </Badge>
-          )}
-          {aiReason && (
-            <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setTooltipOpen((v) => !v);
-                  }}
-                  className="absolute top-2 right-2 h-6 w-6 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-colors"
-                  aria-label="Motivul recomandării AI"
-                >
-                  <Info className="h-3.5 w-3.5 text-primary" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent
-                side="bottom"
-                className="max-w-[180px] text-center"
-              >
-                {aiReason}
-              </TooltipContent>
-            </Tooltip>
-          )}
         </div>
-        <div className="p-3 pt-1 flex-1 flex flex-col justify-between">
-          <div>
-            <h3 className="line-clamp-2 text-xs font-medium text-foreground/90 leading-tight mb-1.5">
-              {name}
-            </h3>
-            <div className="flex items-center gap-1 mb-2">
-              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-              <span className="text-[10px] font-medium">{rating}</span>
-              <span className="text-[10px] text-muted-foreground">
-                ({reviewCount})
-              </span>
-            </div>
-          </div>
+      )}
 
-          <div className="flex items-end justify-between mt-auto pt-2 gap-1">
-            <div className="flex flex-col gap-0.5 min-w-0">
-              {originalPrice && (
-                <span className="text-[10px] text-muted-foreground line-through whitespace-nowrap">
-                  {originalPrice.toLocaleString("ro-RO")} Lei
-                </span>
-              )}
-              <span className="text-sm font-bold text-primary truncate">
-                {price.toLocaleString("ro-RO")} Lei
-              </span>
-            </div>
+      {badge && (
+        <div className="absolute top-2 left-2 bg-[#E31E24] text-white text-[11px] font-black px-2 py-1 rounded-md shadow-sm z-20 transform -rotate-2 group-hover:rotate-0 transition-transform">
+          {badge}
+        </div>
+      )}
 
+      {aiReason && (
+        <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
+          <TooltipTrigger asChild>
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                onAddToCart?.();
+                setTooltipOpen((v) => !v);
               }}
-              className="h-7 w-7 rounded-full bg-primary flex items-center justify-center text-white hover:bg-primary/90 transition-colors flex-shrink-0 shadow-sm mb-0.5"
-              aria-label="Add to cart"
+              className="absolute top-2 right-2 h-6 w-6 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-colors z-20"
+              aria-label="Motivul recomandării AI"
             >
-              <ShoppingCart className="h-3.5 w-3.5" />
+              <Info className="h-3.5 w-3.5 text-[#E31E24]" />
             </button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" className="max-w-[180px] text-center">
+            {aiReason}
+          </TooltipContent>
+        </Tooltip>
+      )}
+
+      <div className="h-[140px] p-4 flex items-center justify-center bg-white rounded-t-2xl relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-red-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <img
+          src={imageUrl}
+          alt={name}
+          className="max-h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-110 relative z-10"
+          draggable={false}
+        />
+      </div>
+
+      <div className="p-3 pb-5 flex flex-col bg-white rounded-b-2xl flex-1">
+        <h3 className="text-xs font-semibold line-clamp-2 mb-1.5 text-gray-800 leading-snug h-8 group-hover:text-[#E31E24] transition-colors">
+          {name}
+        </h3>
+        {(rating !== undefined || reviewCount !== undefined) && (
+          <div className="flex items-center gap-1 mb-2">
+            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+            {rating !== undefined && (
+              <span className="text-[10px] font-medium text-gray-700">{rating}</span>
+            )}
+            {reviewCount !== undefined && (
+              <span className="text-[10px] text-gray-400">({reviewCount})</span>
+            )}
           </div>
+        )}
+        <div className="flex items-end justify-between mt-auto">
+          <div className="flex flex-col">
+            {originalPrice && (
+              <span className="text-[10px] text-gray-400 line-through leading-none mb-1 font-medium">
+                {originalPrice.toLocaleString("ro-RO")} Lei
+              </span>
+            )}
+            <span className="text-[16px] font-black text-[#E31E24] leading-none">
+              {price.toLocaleString("ro-RO")} Lei
+            </span>
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onAddToCart?.();
+            }}
+            className="w-8 h-8 rounded-full bg-red-50 text-[#E31E24] flex items-center justify-center hover:bg-[#E31E24] hover:text-white transition-colors group-hover:bg-[#E31E24] group-hover:text-white"
+            aria-label="Adaugă în coș"
+          >
+            <ShoppingCart className="w-4 h-4" />
+          </button>
         </div>
-      </Card>
-    </motion.div>
+      </div>
+    </div>
   );
 }

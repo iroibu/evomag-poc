@@ -1,6 +1,57 @@
-import React from "react";
-import { ChevronLeft, Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import React, { useRef, useState, useMemo } from "react";
+import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { Button } from "./ui/button";
+import { ProductCard } from "./ProductCard";
+import { getWishlist } from "../services/wishlist";
+import productsJson from "../../data/products.json";
+import type { Product } from "../../data/types";
+
+function SectionHeader({ title }: { title: string }) {
+  return (
+    <div className="flex items-center justify-between px-4 mb-3">
+      <h2 className="text-base font-bold text-foreground">{title}</h2>
+    </div>
+  );
+}
+
+function ProductScroll({ children }: { children: React.ReactNode }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const [dragged, setDragged] = useState(false);
+
+  return (
+    <div
+      ref={scrollRef}
+      onMouseDown={(e) => {
+        if (!scrollRef.current) return;
+        setIsDragging(true);
+        setDragged(false);
+        setStartX(e.pageX - scrollRef.current.offsetLeft);
+        setScrollLeft(scrollRef.current.scrollLeft);
+      }}
+      onMouseLeave={() => setIsDragging(false)}
+      onMouseUp={() => setIsDragging(false)}
+      onMouseMove={(e) => {
+        if (!isDragging || !scrollRef.current) return;
+        e.preventDefault();
+        const x = e.pageX - scrollRef.current.offsetLeft;
+        const walk = (x - startX) * 2;
+        if (Math.abs(walk) > 5) setDragged(true);
+        scrollRef.current.scrollLeft = scrollLeft - walk;
+      }}
+      onClickCapture={(e) => {
+        if (dragged) { e.stopPropagation(); e.preventDefault(); }
+      }}
+      className={`flex overflow-x-auto scrollbar-hide px-4 pb-4 gap-3 select-none touch-pan-x ${
+        isDragging ? "snap-none cursor-grabbing" : "snap-x snap-mandatory cursor-grab"
+      }`}
+    >
+      {children}
+    </div>
+  );
+}
 
 export interface CartItemType {
   id: string;
@@ -19,6 +70,13 @@ interface CartScreenProps {
 
 export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onCheckout }: CartScreenProps) {
   const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+  const wishlistProducts = useMemo<Product[]>(() => getWishlist(), []);
+
+  const frequentlyBought = useMemo<Product[]>(() => {
+    const shuffled = [...productsJson].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 8) as Product[];
+  }, []);
 
   if (cartItems.length === 0) {
     return (
@@ -83,18 +141,65 @@ export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onChecko
             </div>
           </div>
         ))}
+
+        {/* Subtotal & Cost livrare */}
+        <div className="bg-white rounded-xl p-4 shadow-sm space-y-3">
+          <div className="flex justify-between items-center text-sm">
+            <span className="text-muted-foreground">Subtotal</span>
+            <span className="font-semibold">{total.toLocaleString('ro-RO')} Lei</span>
+          </div>
+          <div className="flex justify-between items-center text-sm">
+            <span className="text-muted-foreground">Cost livrare</span>
+            <span className="font-semibold text-green-600">Gratuit</span>
+          </div>
+        </div>
+
+        {/* Cumpărate frecvent împreună */}
+        <section className="bg-white rounded-xl py-4 shadow-sm -mx-4 px-0">
+          <SectionHeader title="Cumpărate frecvent împreună" />
+          <ProductScroll>
+            {frequentlyBought.map((product) => (
+              <div key={product.id} className="w-[150px] shrink-0 snap-start">
+                <ProductCard
+                  id={product.id}
+                  name={product.name}
+                  price={product.price}
+                  originalPrice={product.originalPrice ?? product.oldPrice}
+                  imageUrl={product.imageUrl ?? ""}
+                  badge={product.badge}
+                  rating={product.rating}
+                  reviewCount={product.reviewCount ?? product.reviews}
+                />
+              </div>
+            ))}
+          </ProductScroll>
+        </section>
+
+        {/* Produsele tale favorite */}
+        {wishlistProducts.length > 0 && (
+          <section className="bg-white rounded-xl py-4 shadow-sm -mx-4 px-0">
+            <SectionHeader title="Produsele tale favorite" />
+            <ProductScroll>
+              {wishlistProducts.map((product) => (
+                <div key={product.id} className="w-[150px] shrink-0 snap-start">
+                  <ProductCard
+                    id={product.id}
+                    name={product.name}
+                    price={product.price}
+                    originalPrice={product.originalPrice ?? product.oldPrice}
+                    imageUrl={product.imageUrl ?? product.image ?? ""}
+                    badge={product.badge}
+                    rating={product.rating}
+                    reviewCount={product.reviewCount ?? product.reviews}
+                  />
+                </div>
+              ))}
+            </ProductScroll>
+          </section>
+        )}
       </div>
 
       <div className="bg-white border-t p-4 pb-safe space-y-4">
-        <div className="flex justify-between items-center text-sm">
-          <span className="text-muted-foreground">Subtotal</span>
-          <span className="font-semibold">{total.toLocaleString('ro-RO')} Lei</span>
-        </div>
-        <div className="flex justify-between items-center text-sm">
-          <span className="text-muted-foreground">Cost livrare</span>
-          <span className="font-semibold text-green-600">Gratuit</span>
-        </div>
-        <div className="h-px bg-border w-full" />
         <div className="flex justify-between items-center">
           <span className="font-bold text-base">Total</span>
           <span className="font-black text-xl text-primary">{total.toLocaleString('ro-RO')} Lei</span>
