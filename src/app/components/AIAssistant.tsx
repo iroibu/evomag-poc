@@ -6,6 +6,7 @@ import { Card } from "./ui/card";
 import { Avatar } from "./ui/avatar";
 import { Badge } from "./ui/badge";
 import { motion, AnimatePresence } from "motion/react";
+import productsData from "../../data/products";
 
 interface Message {
   id: string;
@@ -31,7 +32,7 @@ export function AIAssistant() {
     {
       id: "1",
       type: "assistant",
-      content: "Bună! Sunt asistentul tău AI de shopping. Cum te pot ajuta astăzi?",
+      content: "Buna! Sunt asistentul tau EvoSmart. Cum te pot ajuta astazi?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -66,20 +67,7 @@ export function AIAssistant() {
         type: "assistant",
         content:
           "Perfect! Pe baza preferințelor tale, îți recomand următoarele produse care îți vor oferi cel mai bun raport calitate-preț:",
-        products: [
-          {
-            id: "1",
-            name: "Apple MacBook Air M3 13.6\" 16GB RAM",
-            price: 7299,
-            imageUrl: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=200&q=80",
-          },
-          {
-            id: "2",
-            name: "Dell XPS 15 Intel i7 32GB RAM",
-            price: 6999,
-            imageUrl: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=200&q=80",
-          },
-        ],
+        products: productsData.aiRecommendations,
       };
       setMessages((prev) => [...prev, assistantMessage]);
       setIsTyping(false);
@@ -95,7 +83,7 @@ export function AIAssistant() {
             <Sparkles className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h2>Asistent AI Shopping</h2>
+            <h2>Asistent EvoSmart</h2>
             <p className="text-sm text-muted-foreground">Mereu disponibil pentru tine</p>
           </div>
         </div>

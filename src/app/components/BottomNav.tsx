@@ -8,10 +8,10 @@ interface BottomNavProps {
 }
 
 const tabs = [
-  { id: "home", icon: Home, label: "Home" },
+  { id: "home", icon: Home, label: "Acasă" },
   { id: "assistant", icon: MessageCircle, label: "AI" },
-  { id: "cart", icon: ShoppingCart, label: "Cart" },
-  { id: "profile", icon: User, label: "Profile" },
+  { id: "cart", icon: ShoppingCart, label: "Coș" },
+  { id: "profile", icon: User, label: "Profil" },
 ];
 
 export function BottomNav({ activeTab, onTabChange, cartItemCount = 0 }: BottomNavProps) {

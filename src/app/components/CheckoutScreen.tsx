@@ -10,6 +10,7 @@ interface CheckoutScreenProps {
 
 export function CheckoutScreen({ onBack, onSuccess, total }: CheckoutScreenProps) {
   const [useProfileAddress, setUseProfileAddress] = useState(true);
+  const [deliveryMethod, setDeliveryMethod] = useState<"depozit" | "curier" | "aceeasi_zi" | "locker">("curier");
   const [paymentMethod, setPaymentMethod] = useState<"card" | "apple" | "google">("apple");
   
   return (
@@ -59,20 +60,64 @@ export function CheckoutScreen({ onBack, onSuccess, total }: CheckoutScreenProps
             
             {!useProfileAddress && (
               <div className="p-4 pt-0 space-y-3 border-t bg-gray-50/50 mt-4">
-                <input type="text" placeholder="Țară" className="w-full text-sm p-3 rounded-lg border bg-white focus:outline-primary" />
-                <div className="grid grid-cols-2 gap-3">
-                  <input type="text" placeholder="Județ" className="w-full text-sm p-3 rounded-lg border bg-white focus:outline-primary" />
-                  <input type="text" placeholder="Oraș / Localitate" className="w-full text-sm p-3 rounded-lg border bg-white focus:outline-primary" />
-                </div>
-                <input type="text" placeholder="Stradă" className="w-full text-sm p-3 rounded-lg border bg-white focus:outline-primary" />
-                <div className="grid grid-cols-3 gap-3">
-                  <input type="text" placeholder="Bloc" className="w-full text-sm p-3 rounded-lg border bg-white focus:outline-primary" />
-                  <input type="text" placeholder="Scară" className="w-full text-sm p-3 rounded-lg border bg-white focus:outline-primary" />
-                  <input type="text" placeholder="Etaj" className="w-full text-sm p-3 rounded-lg border bg-white focus:outline-primary" />
-                </div>
+                <input type="text" placeholder="Județ" className="w-full text-sm p-3 rounded-lg border bg-white focus:outline-primary" />
+                <input type="text" placeholder="Localitate/sector" className="w-full text-sm p-3 rounded-lg border bg-white focus:outline-primary" />
+                <input type="text" placeholder="Adresă" className="w-full text-sm p-3 rounded-lg border bg-white focus:outline-primary" />
                 <input type="text" placeholder="Cod poștal" className="w-full text-sm p-3 rounded-lg border bg-white focus:outline-primary" />
               </div>
             )}
+          </div>
+        </section>
+
+        {/* Delivery Section */}
+        <section className="space-y-3">
+          <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wider ml-1">Metodă de livrare</h2>
+          
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <label className="flex items-center gap-3 p-4 border-b border-gray-50 cursor-pointer">
+              <div>
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${deliveryMethod === 'curier' ? 'border-primary' : 'border-muted-foreground'}`}>
+                  {deliveryMethod === 'curier' && <div className="w-2.5 h-2.5 bg-primary rounded-full" />}
+                </div>
+              </div>
+              <div className="flex-1 font-medium text-sm" onClick={() => setDeliveryMethod('curier')}>
+                Livrare prin curier
+              </div>
+            </label>
+            
+            <label className="flex items-center gap-3 p-4 border-b border-gray-50 cursor-pointer">
+              <div>
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${deliveryMethod === 'depozit' ? 'border-primary' : 'border-muted-foreground'}`}>
+                  {deliveryMethod === 'depozit' && <div className="w-2.5 h-2.5 bg-primary rounded-full" />}
+                </div>
+              </div>
+              <div className="flex-1 font-medium text-sm" onClick={() => setDeliveryMethod('depozit')}>
+                Ridicare personală depozit
+              </div>
+            </label>
+            
+            <label className="flex items-center gap-3 p-4 border-b border-gray-50 cursor-pointer">
+              <div>
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${deliveryMethod === 'aceeasi_zi' ? 'border-primary' : 'border-muted-foreground'}`}>
+                  {deliveryMethod === 'aceeasi_zi' && <div className="w-2.5 h-2.5 bg-primary rounded-full" />}
+                </div>
+              </div>
+              <div className="flex-1 flex justify-between font-medium text-sm" onClick={() => setDeliveryMethod('aceeasi_zi')}>
+                <span>Livrare în aceeași zi</span>
+                <span className="font-semibold text-primary">35 lei</span>
+              </div>
+            </label>
+
+            <label className="flex items-center gap-3 p-4 cursor-pointer">
+              <div>
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${deliveryMethod === 'locker' ? 'border-primary' : 'border-muted-foreground'}`}>
+                  {deliveryMethod === 'locker' && <div className="w-2.5 h-2.5 bg-primary rounded-full" />}
+                </div>
+              </div>
+              <div className="flex-1 font-medium text-sm" onClick={() => setDeliveryMethod('locker')}>
+                Ridicare personală din locker
+              </div>
+            </label>
           </div>
         </section>
 

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "n1",
+    "title": "Noile MacBook Air cu cip M3",
+    "description": "Subțire. Ușor. M3.",
+    "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&q=80"
+  },
+  {
+    "id": "n2",
+    "title": "Sunet de ultimă generație",
+    "description": "Căști wireless premium cu ANC",
+    "image": "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600&q=80"
+  }
+]

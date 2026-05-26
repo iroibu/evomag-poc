@@ -1,0 +1,36 @@
+{
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/.vite/**": true
+  },
+  "search.exclude": {
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/.vite/**": true
+  },
+  "editor.formatOnSave": false,
+  "js/ts.format.enabled": false,
+  "css.format.enable": false,
+  "scss.format.enable": false,
+  "html.format.enable": false,
+  "json.format.enable": false,
+  "less.format.enable": false,
+  "eslint.format.enable": false,
+  "editor.formatOnPaste": false,
+  "editor.formatOnType": false,
+  "notebook.formatOnCellExecution": false,
+  "notebook.formatOnSave.enabled": false,
+  "editor.codeActionsOnSave": {
+    "source.removeUnusedImports": "never",
+    "source.addMissingImports": "never",
+    "source.organizeImports": "never",
+    "source.fixAll.eslint": "never",
+    "source.addMissingImports.ts": "never",
+    "source.fixAll.prettier": "never",
+    "source.fixAll.ts": "never",
+    "source.removeUnused.ts": "never",
+    "source.sort.json": "never",
+    "source.sortImports": "never"
+  }
+}

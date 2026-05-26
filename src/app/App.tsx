@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { loadPreferences } from "./services/userPreferences";
+import { addRecentlyViewed } from "./services/recentlyViewed";
 import { BottomNav } from "./components/BottomNav";
 import { HomeFeed } from "./components/HomeFeed";
 import { SearchScreen } from "./components/SearchScreen";
@@ -10,6 +12,7 @@ import { Wishlist } from "./components/Wishlist";
 import { Profile } from "./components/Profile";
 import { NotificationsScreen } from "./components/NotificationsScreen";
 import { CategoryScreen } from "./components/CategoryScreen";
+import { WelcomeScreen } from "./components/WelcomeScreen";
 import { Search, Bell } from "lucide-react";
 import { ProductDetail } from "./components/ProductDetail";
 import { Badge } from "./components/ui/badge";
@@ -17,7 +20,13 @@ import { Button } from "./components/ui/button";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("home");
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [hasSeenWelcome, setHasSeenWelcome] = useState(() => loadPreferences() !== null);
+  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+
+  const handleProductClick = (product: any) => {
+    addRecentlyViewed(product);
+    setSelectedProduct(product);
+  };
   const [cartItems, setCartItems] = useState<CartItemType[]>([]);
   const [showCheckout, setShowCheckout] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -57,12 +66,12 @@ export default function App() {
     switch (activeTab) {
       case "home":
         return <HomeFeed 
-                 onProductClick={setSelectedProductId} 
+                 onProductClick={handleProductClick} 
                  onAddToCart={handleAddToCart} 
                  onSeeAllClick={(title, products) => setCategoryView({ title, products })}
                />;
       case "search":
-        return <SearchScreen onProductClick={setSelectedProductId} onCancel={() => setActiveTab("home")} />;
+        return <SearchScreen onProductClick={handleProductClick} onCancel={() => setActiveTab("home")} />;
       case "assistant":
         return <AIAssistant />;
       case "cart":
@@ -73,15 +82,19 @@ export default function App() {
                  onCheckout={() => setShowCheckout(true)} 
                />;
       case "profile":
-        return <Profile onProductClick={setSelectedProductId} />;
+        return <Profile onProductClick={handleProductClick} />;
       default:
         return <HomeFeed 
-                 onProductClick={setSelectedProductId} 
+                 onProductClick={handleProductClick} 
                  onAddToCart={handleAddToCart} 
                  onSeeAllClick={(title, products) => setCategoryView({ title, products })}
                />;
     }
   };
+
+  if (!hasSeenWelcome) {
+    return <WelcomeScreen onEnter={() => setHasSeenWelcome(true)} />;
+  }
 
   if (showNotifications) {
     return (
@@ -98,7 +111,7 @@ export default function App() {
           title={categoryView.title}
           products={categoryView.products}
           onBack={() => setCategoryView(null)}
-          onProductClick={setSelectedProductId}
+          onProductClick={handleProductClick}
           onAddToCart={handleAddToCart}
         />
       </div>
@@ -122,8 +135,8 @@ export default function App() {
     );
   }
 
-  if (selectedProductId) {
-    return <ProductDetail onBack={() => setSelectedProductId(null)} onAddToCart={handleAddToCart} />;
+  if (selectedProduct) {
+    return <ProductDetail product={selectedProduct} onBack={() => setSelectedProduct(null)} onAddToCart={handleAddToCart} />;
   }
 
   return (

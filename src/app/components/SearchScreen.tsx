@@ -22,9 +22,9 @@ export function SearchScreen({
   onProductClick,
   onCancel,
 }: {
-  onProductClick?: (id: string) => void;
+  onProductClick?: (product: any) => void;
   onCancel?: () => void;
-}) {
+}){
   const [searchBarValue, setSearchBarValue] = useState("");
   const [currentQuery, setCurrentQuery] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
@@ -197,7 +197,7 @@ export function SearchScreen({
                 {aiResults.map((product) => (
                   <div
                     key={product.id}
-                    onClick={() => onProductClick?.(product.id)}
+                    onClick={() => onProductClick?.(product)}
                     className="cursor-pointer"
                   >
                     <ProductCard {...product} />

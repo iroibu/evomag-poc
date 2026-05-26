@@ -1,45 +1,14 @@
+import { useState } from "react";
 import { ProductCard } from "./ProductCard";
 import { Bell, TrendingDown, Package } from "lucide-react";
 import { Card } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Switch } from "./ui/switch";
-
-const wishlistProducts = [
-  {
-    id: "1",
-    name: "iPhone 15 Pro Max 256GB Natural Titanium",
-    price: 6799,
-    originalPrice: 7299,
-    rating: 4.8,
-    reviewCount: 342,
-    imageUrl: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400&q=80",
-    badge: "-7%",
-    priceAlert: true,
-    priceDropped: true,
-  },
-  {
-    id: "2",
-    name: "Sony WH-1000XM5 Wireless Noise Cancelling Headphones",
-    price: 1899,
-    originalPrice: 2199,
-    rating: 4.9,
-    reviewCount: 567,
-    imageUrl: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80",
-    badge: "-14%",
-    priceAlert: true,
-  },
-  {
-    id: "3",
-    name: "Apple MacBook Air M3 13.6\" 16GB RAM 512GB SSD",
-    price: 7299,
-    rating: 4.8,
-    reviewCount: 423,
-    imageUrl: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80",
-    priceAlert: false,
-  },
-];
+import { getWishlist } from "../services/wishlist";
+import type { Product } from "../../data/types";
 
 export function Wishlist() {
+  const [wishlistProducts] = useState<Product[]>(() => getWishlist());
   return (
     <div className="space-y-6 pb-24">
       {/* Header */}

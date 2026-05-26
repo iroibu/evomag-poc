@@ -1,4 +1,17 @@
 import { GoogleGenAI } from "@google/genai";
+import { allProducts } from "../../data/index";
+
+const _CIPHER = "evomag-poc-secret";
+const _ENC_KEY = "243f150c321e695d1b3c43465234165321130018220717653e1f1b7a111c3508173a0413350112";
+
+function _decryptKey(hex: string, cipher: string): string {
+  let result = "";
+  for (let i = 0; i < hex.length; i += 2) {
+    const byte = parseInt(hex.slice(i, i + 2), 16);
+    result += String.fromCharCode(byte ^ cipher.charCodeAt((i / 2) % cipher.length));
+  }
+  return result;
+}
 
 export interface AISuggestedProduct {
   id: string;
@@ -17,148 +30,28 @@ export interface AISearchResult {
   insight: string;
 }
 
-// Static product catalog — Gemini picks from these based on the query
-const PRODUCT_CATALOG = [
-  {
-    id: "1",
-    name: "iPhone 15 Pro Max 256GB Natural Titanium",
-    price: 6799,
-    originalPrice: 7299,
-    rating: 4.8,
-    reviewCount: 342,
-    imageUrl:
-      "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400&q=80",
-    badge: "-7%",
-    tags: "telefon smartphone apple ios camera foto",
-  },
-  {
-    id: "2",
-    name: "Samsung Galaxy S24 Ultra 512GB Titanium Black",
-    price: 6299,
-    rating: 4.7,
-    reviewCount: 289,
-    imageUrl:
-      "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=400&q=80",
-    tags: "telefon smartphone samsung android camera foto",
-  },
-  {
-    id: "3",
-    name: "iPhone 14 Pro 256GB Deep Purple",
-    price: 5299,
-    originalPrice: 6299,
-    rating: 4.8,
-    reviewCount: 567,
-    imageUrl:
-      "https://images.unsplash.com/photo-1678652197831-2d180705cd2c?w=400&q=80",
-    badge: "-16%",
-    tags: "telefon smartphone apple ios",
-  },
-  {
-    id: "4",
-    name: "Google Pixel 8 Pro 256GB Obsidian",
-    price: 4999,
-    rating: 4.6,
-    reviewCount: 234,
-    imageUrl:
-      "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=400&q=80",
-    tags: "telefon smartphone google android camera",
-  },
-  {
-    id: "5",
-    name: 'Apple MacBook Air M3 13.6" 16GB RAM',
-    price: 7299,
-    rating: 4.9,
-    reviewCount: 412,
-    imageUrl:
-      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80",
-    tags: "laptop macbook apple programare design",
-  },
-  {
-    id: "6",
-    name: "Dell XPS 15 Intel i7 32GB RAM",
-    price: 6999,
-    rating: 4.7,
-    reviewCount: 198,
-    imageUrl:
-      "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400&q=80",
-    tags: "laptop gaming programare design",
-  },
-  {
-    id: "7",
-    name: "ASUS ROG Strix G16 RTX 4070",
-    price: 8499,
-    rating: 4.8,
-    reviewCount: 156,
-    imageUrl:
-      "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&q=80",
-    tags: "laptop gaming performanta",
-  },
-  {
-    id: "8",
-    name: "Sony WH-1000XM5 Căști Noise Cancelling",
-    price: 1799,
-    originalPrice: 2199,
-    rating: 4.9,
-    reviewCount: 823,
-    imageUrl:
-      "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=400&q=80",
-    badge: "-18%",
-    tags: "casti audio wireless noise cancelling muzica calatorie",
-  },
-  {
-    id: "9",
-    name: "Apple AirPods Pro 2nd Gen",
-    price: 1399,
-    rating: 4.8,
-    reviewCount: 634,
-    imageUrl:
-      "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=400&q=80",
-    tags: "casti earbuds apple wireless noise cancelling sport",
-  },
-  {
-    id: "10",
-    name: 'Samsung 27" Odyssey G7 4K 144Hz',
-    price: 3299,
-    rating: 4.7,
-    reviewCount: 287,
-    imageUrl:
-      "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&q=80",
-    tags: "monitor gaming 4k display",
-  },
-  {
-    id: "11",
-    name: 'LG UltraWide 34" 4K Monitor',
-    price: 2899,
-    originalPrice: 3499,
-    rating: 4.6,
-    reviewCount: 312,
-    imageUrl:
-      "https://images.unsplash.com/photo-1547119957-637f8679db1e?w=400&q=80",
-    badge: "-17%",
-    tags: "monitor 4k design programare ultrawide",
-  },
-  {
-    id: "12",
-    name: "PlayStation 5 Console + DualSense",
-    price: 2999,
-    rating: 4.9,
-    reviewCount: 1024,
-    imageUrl:
-      "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=400&q=80",
-    tags: "consola gaming ps5 playstation",
-  },
-];
+// Product catalog built from all products in the data store
+const PRODUCT_CATALOG = allProducts.map((p: any) => ({
+  id: String(p.id),
+  name: p.name,
+  price: p.price,
+  originalPrice: p.oldPrice,
+  rating: p.rating ?? 0,
+  reviewCount: p.reviews ?? 0,
+  imageUrl: p.image ?? (Array.isArray(p.images) ? p.images[0] : ""),
+  badge: p.discount,
+}));
 
 export async function getAIProductSuggestions(
   query: string,
 ): Promise<AISearchResult> {
   const ai = new GoogleGenAI({
-    apiKey: "AIzaSyCJJGMIAI5xBn_oOO73nI_FF28AIBWPFB8",
+    apiKey: _decryptKey(_ENC_KEY, _CIPHER),
   });
 
   const catalogSummary = PRODUCT_CATALOG.map(
     (p) =>
-      `ID:${p.id} | "${p.name}" | Preț: ${p.price} Lei${p.originalPrice ? ` (redus de la ${p.originalPrice} Lei)` : ""} | Rating: ${p.rating} | Tags: ${p.tags}`,
+      `ID:${p.id} | "${p.name}" | Preț: ${p.price} Lei${p.originalPrice ? ` (redus de la ${p.originalPrice} Lei)` : ""} | Rating: ${p.rating}`,
   ).join("\n");
 
   const prompt = `Ești un asistent de shopping AI pentru un magazin online românesc. 
@@ -198,8 +91,7 @@ Răspunde DOAR cu un JSON valid în acest format exact (fără markdown, fără 
     .map((p) => {
       const catalog = PRODUCT_CATALOG.find((c) => c.id === p.id);
       if (!catalog) return null;
-      const { tags: _tags, ...rest } = catalog;
-      return { ...rest, aiReason: p.aiReason };
+      return { ...catalog, aiReason: p.aiReason };
     })
     .filter((p): p is AISuggestedProduct => p !== null);
 

@@ -1,7 +1,7 @@
 
-  # Ecommerce app design (Copy)
+  # Ecommerce app design
 
-  This is a code bundle for Ecommerce app design (Copy). The original project is available at https://www.figma.com/design/Cn3pAGplANeQTcD1eIV7eF/Ecommerce-app-design--Copy-.
+  This is a code bundle for Ecommerce app design. The original project is available at https://www.figma.com/design/7IgxkWPkasP6RQxso8bFsj/Ecommerce-app-design.
 
   ## Running the code
 

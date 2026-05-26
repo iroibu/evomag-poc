@@ -1,0 +1,22 @@
+[
+  { "id": "c1",  "name": "Laptopuri",                       "iconName": "Laptop",      "color": "text-indigo-600", "bg": "bg-indigo-100", "border": "border-indigo-200" },
+  { "id": "c2",  "name": "Telefoane, Tablete, Accesorii",   "iconName": "Smartphone",  "color": "text-blue-600",   "bg": "bg-blue-100",   "border": "border-blue-200" },
+  { "id": "c3",  "name": "TV & Multimedia",                 "iconName": "Tv",          "color": "text-purple-600", "bg": "bg-purple-100", "border": "border-purple-200" },
+  { "id": "c4",  "name": "Componente PC & Gaming",          "iconName": "Cpu",         "color": "text-emerald-600","bg": "bg-emerald-100","border": "border-emerald-200" },
+  { "id": "c5",  "name": "Calculatoare & Sisteme PC",       "iconName": "HardDrive",   "color": "text-slate-600",  "bg": "bg-slate-100",  "border": "border-slate-200" },
+  { "id": "c6",  "name": "Monitoare",                       "iconName": "Monitor",     "color": "text-cyan-600",   "bg": "bg-cyan-100",   "border": "border-cyan-200" },
+  { "id": "c7",  "name": "Electrocasnice",                  "iconName": "Coffee",      "color": "text-orange-600", "bg": "bg-orange-100", "border": "border-orange-200" },
+  { "id": "c8",  "name": "Imprimante",                      "iconName": "Printer",     "color": "text-gray-600",   "bg": "bg-gray-100",   "border": "border-gray-200" },
+  { "id": "c9",  "name": "Foto & Video",                    "iconName": "Camera",      "color": "text-yellow-600", "bg": "bg-yellow-100", "border": "border-yellow-200" },
+  { "id": "c10", "name": "Software",                        "iconName": "Disc",        "color": "text-blue-500",   "bg": "bg-blue-50",    "border": "border-blue-100" },
+  { "id": "c11", "name": "Rețelistică",                     "iconName": "Router",      "color": "text-teal-600",   "bg": "bg-teal-100",   "border": "border-teal-200" },
+  { "id": "c12", "name": "Îngrijire Personală",             "iconName": "Sparkles",    "color": "text-pink-600",   "bg": "bg-pink-100",   "border": "border-pink-200" },
+  { "id": "c13", "name": "Sport & Fitness",                 "iconName": "Dumbbell",    "color": "text-red-500",    "bg": "bg-red-100",    "border": "border-red-200" },
+  { "id": "c14", "name": "Bebe, Copii & Jucării",           "iconName": "Smile",       "color": "text-fuchsia-600","bg": "bg-fuchsia-100","border": "border-fuchsia-200" },
+  { "id": "c15", "name": "Casă, Decorațiuni, Bricolaj",     "iconName": "Home",        "color": "text-amber-600",  "bg": "bg-amber-100",  "border": "border-amber-200" },
+  { "id": "c16", "name": "Birotică",                        "iconName": "Paperclip",   "color": "text-stone-600",  "bg": "bg-stone-100",  "border": "border-stone-200" },
+  { "id": "c17", "name": "Ceasuri",                         "iconName": "Watch",       "color": "text-rose-500",   "bg": "bg-rose-100",   "border": "border-rose-200" },
+  { "id": "c18", "name": "Servicii",                        "iconName": "Wrench",      "color": "text-violet-600", "bg": "bg-violet-100", "border": "border-violet-200" },
+  { "id": "c19", "name": "Vouchere",                        "iconName": "Gift",        "color": "text-[#E31E24]",  "bg": "bg-red-100",    "border": "border-red-200" },
+  { "id": "c20", "name": "Resigilate",                      "iconName": "PackageOpen", "color": "text-[#E31E24]",  "bg": "bg-red-50",     "border": "border-[#E31E24]" }
+]

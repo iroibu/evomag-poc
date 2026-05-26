@@ -15,7 +15,7 @@ interface AISearchBarProps {
     products: AISuggestedProduct[],
     insight: string,
   ) => void;
-  onProductSelect?: (id: string) => void;
+  onProductSelect?: (product: any) => void;
 }
 
 const quickSuggestions = [
@@ -220,7 +220,7 @@ export function AISearchBar({
                   {suggestions.map((product) => (
                     <button
                       key={product.id}
-                      onClick={() => onProductSelect?.(product.id)}
+                      onClick={() => onProductSelect?.(product)}
                       className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-muted transition-colors text-left"
                     >
                       <img

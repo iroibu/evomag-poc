@@ -1,0 +1,26 @@
+[
+  {
+    "id": "h1",
+    "title": "Mașini de spălat Heinner",
+    "subtitle": "Extra reduceri aplicate",
+    "badge": "Mai 2026",
+    "image": "https://images.unsplash.com/photo-1761079976271-3a78f547ca67?w=800&q=80",
+    "gradient": "from-[#E31E24] to-[#a30b12]"
+  },
+  {
+    "id": "h2",
+    "title": "Televizor mini LED",
+    "subtitle": "la reducere",
+    "badge": "Ofertă Specială",
+    "image": "https://images.unsplash.com/photo-1636206508343-a6c955887476?w=800&q=80",
+    "gradient": "from-blue-600 to-indigo-900"
+  },
+  {
+    "id": "h3",
+    "title": "10% la o selecție",
+    "subtitle": "de laptopuri Lenovo",
+    "badge": "Extra Reduceri",
+    "image": "https://images.unsplash.com/photo-1763162410742-1d0097cea556?w=800&q=80",
+    "gradient": "from-slate-800 to-zinc-900"
+  }
+]

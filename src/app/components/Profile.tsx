@@ -1,33 +1,18 @@
 import { useState } from "react";
-import { Package, TrendingUp, CreditCard, Settings, ChevronRight, Sparkles, ChevronLeft, ThumbsUp, ThumbsDown, Info } from "lucide-react";
+import { Package, TrendingUp, CreditCard, Settings, ChevronRight, Sparkles, ChevronLeft, ThumbsUp, ThumbsDown, Info, MessageSquare, Zap } from "lucide-react";
 import { Card } from "./ui/card";
 import { Avatar } from "./ui/avatar";
 import { Badge } from "./ui/badge";
 import { Progress } from "./ui/progress";
 import { Button } from "./ui/button";
+import productsData from "../../data/products";
+import { getProductById } from "../../data";
 
 interface ProfileProps {
-  onProductClick?: (id: string) => void;
+  onProductClick?: (product: any) => void;
 }
 
-const initialEquipment = [
-  {
-    id: "e1",
-    name: "iPhone 12 Pro",
-    purchaseDate: "2021-03-15",
-    upgradeScore: 85,
-    recommendation: "iPhone 15 Pro recomandată",
-    productId: "1", // Linking to real product
-  },
-  {
-    id: "e2",
-    name: "MacBook Air M1",
-    purchaseDate: "2021-06-20",
-    upgradeScore: 65,
-    recommendation: "MacBook Air M3 disponibilă",
-    productId: "s1",
-  },
-];
+const initialEquipment = productsData.equipment;
 
 export function Profile({ onProductClick }: ProfileProps) {
   const [activeView, setActiveView] = useState<"main" | "orders" | "payments">("main");
@@ -147,8 +132,7 @@ export function Profile({ onProductClick }: ProfileProps) {
       {/* Equipment Lifecycle */}
       <div className="space-y-4">
         <div className="flex items-center justify-between px-4">
-          <h2 className="flex items-center gap-2 font-bold">
-            <Sparkles className="h-5 w-5 text-primary" />
+          <h2 className="flex items-center gap-2 font-bold text-lg">
             Echipamentele tale
           </h2>
         </div>
@@ -158,8 +142,8 @@ export function Profile({ onProductClick }: ProfileProps) {
           <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 flex gap-3 text-blue-800 text-xs">
             <Info className="h-4 w-4 shrink-0 mt-0.5" />
             <div className="leading-relaxed">
-              <strong>Ce este Scorul de Upgrade?</strong><br />
-              Un scor <span className="font-bold text-red-600">ridicat</span> înseamnă că dispozitivul tău este învechit și e momentul ideal pentru un upgrade. Un scor <span className="font-bold text-green-600">scăzut</span> înseamnă că dispozitivul încă îndeplinește standardele optime.
+              <strong>Ce înseamnă "Necesită schimbare"?</strong><br />
+              Un procentaj <span className="font-bold text-red-600">ridicat</span> arată că dispozitivul tău este învechit și e momentul ideal pentru un upgrade. Un procentaj <span className="font-bold text-green-600">scăzut</span> înseamnă că dispozitivul încă îndeplinește standardele optime.
             </div>
           </div>
         </div>
@@ -179,7 +163,7 @@ export function Profile({ onProductClick }: ProfileProps) {
                     <span className={`text-xl font-black ${item.upgradeScore > 75 ? 'text-red-600' : item.upgradeScore < 40 ? 'text-green-600' : 'text-orange-500'}`}>
                       {item.upgradeScore}%
                     </span>
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Scor Upgrade</p>
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Necesită schimbare</p>
                   </div>
                 </div>
 
@@ -189,29 +173,58 @@ export function Profile({ onProductClick }: ProfileProps) {
                   indicatorClassName={item.upgradeScore > 75 ? 'bg-red-600' : item.upgradeScore < 40 ? 'bg-green-500' : 'bg-orange-500'} 
                 />
 
-                <div className="bg-muted/30 rounded-lg p-3 mt-2 border border-gray-50">
-                  <p className="text-xs font-medium text-center mb-2">Mai ești mulțumit de cum funcționează?</p>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => handleFeedback(item.id, true)} className="flex-1 h-8 bg-white hover:bg-green-50 hover:text-green-700 hover:border-green-200">
-                      <ThumbsUp className="h-3 w-3 mr-1" /> Da, perfect
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleFeedback(item.id, false)} className="flex-1 h-8 bg-white hover:bg-red-50 hover:text-red-700 hover:border-red-200">
-                      <ThumbsDown className="h-3 w-3 mr-1" /> Mai puțin
-                    </Button>
+                <div className="bg-gradient-to-br from-indigo-50/80 to-blue-50/80 rounded-xl p-3 mt-3 border border-indigo-100 shadow-inner relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-1 opacity-20">
+                    <Zap className="h-10 w-10 text-indigo-500" />
+                  </div>
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-xs font-bold text-indigo-900 flex items-center gap-1.5">
+                        <MessageSquare className="h-3.5 w-3.5 text-indigo-600" />
+                        Cum se comportă dispozitivul tău?
+                      </p>
+                      <span className="text-[9px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wide">Feedback rapid</span>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => handleFeedback(item.id, true)} 
+                        className="flex-1 h-9 bg-white shadow-sm border-indigo-100 hover:bg-green-50 hover:text-green-700 hover:border-green-300 transition-all active:scale-95 group"
+                      >
+                        <span className="bg-green-100 text-green-700 p-1 rounded-full mr-1.5 group-hover:bg-green-200 transition-colors">
+                          <ThumbsUp className="h-3 w-3" />
+                        </span>
+                        Excelent
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => handleFeedback(item.id, false)} 
+                        className="flex-1 h-9 bg-white shadow-sm border-indigo-100 hover:bg-orange-50 hover:text-orange-700 hover:border-orange-300 transition-all active:scale-95 group"
+                      >
+                        <span className="bg-orange-100 text-orange-700 p-1 rounded-full mr-1.5 group-hover:bg-orange-200 transition-colors">
+                          <ThumbsDown className="h-3 w-3" />
+                        </span>
+                        Probleme
+                      </Button>
+                    </div>
+                    
+                    <p className="text-[10px] text-indigo-600/70 text-center mt-2 font-medium">Te ajutăm cu recomandări personalizate pe baza răspunsului tău.</p>
                   </div>
                 </div>
 
                 {item.upgradeScore > 70 && (
                   <button 
-                    onClick={() => onProductClick?.(item.productId)}
-                    className="w-full flex items-center gap-2 p-3 bg-gradient-to-r from-red-50 to-primary/5 rounded-xl border border-red-100 hover:shadow-sm transition-all text-left"
+                    onClick={() => onProductClick?.(getProductById(item.productId) ?? { id: item.productId, name: item.recommendation })}
+                    className="w-full flex items-center gap-2 p-3 bg-gradient-to-r from-red-50 to-primary/5 rounded-xl border border-red-100 hover:shadow-sm transition-all text-left group"
                   >
-                    <TrendingUp className="h-5 w-5 text-primary shrink-0" />
                     <div className="flex-1">
-                      <span className="block text-[10px] font-bold text-red-600 uppercase mb-0.5">Recomandare AI</span>
+                      <span className="block text-[10px] font-bold text-red-600 uppercase mb-0.5">evoMAG recomandă</span>
                       <p className="text-sm font-semibold text-gray-900">{item.recommendation}</p>
                     </div>
-                    <ChevronRight className="h-4 w-4 text-primary shrink-0" />
+                    <ChevronRight className="h-4 w-4 text-primary shrink-0 group-hover:translate-x-1 transition-transform" />
                   </button>
                 )}
               </div>

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "b1",
+    "title": "Pachet Gaming Starter",
+    "description": "Mouse G102 + Tastatură Mecanică",
+    "price": 350,
+    "originalPrice": 450,
+    "image1": "https://images.unsplash.com/photo-1527814050087-1793437a34e9?w=200&q=80",
+    "image2": "https://images.unsplash.com/photo-1595225476474-87563907a212?w=200&q=80",
+    "badge": "Economisești 100 Lei"
+  },
+  {
+    "id": "b2",
+    "title": "Vlogger Kit",
+    "description": "Cameră Sony ZV-1 + Microfon",
+    "price": 3799,
+    "originalPrice": 4100,
+    "image1": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=200&q=80",
+    "image2": "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=200&q=80",
+    "badge": "-7% Reducere"
+  },
+  {
+    "id": "b3",
+    "title": "Home Office Pro",
+    "description": "Monitor 27\" + Căști Noise Cancelling",
+    "price": 1899,
+    "originalPrice": 2200,
+    "image1": "https://images.unsplash.com/photo-1527443224154-c4a3942d4aff?w=200&q=80",
+    "image2": "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=200&q=80",
+    "badge": "Pachet Avantajos"
+  }
+]
