@@ -9,7 +9,7 @@ interface BottomNavProps {
 
 const tabs = [
   { id: "home", icon: Home, label: "Acasă" },
-  { id: "assistant", icon: MessageCircle, label: "AI" },
+  { id: "assistant", icon: MessageCircle, label: "EvoMi" },
   { id: "cart", icon: ShoppingCart, label: "Coș" },
   { id: "profile", icon: User, label: "Profil" },
 ];

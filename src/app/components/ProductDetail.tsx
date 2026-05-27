@@ -244,15 +244,6 @@ export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailPro
               </div>
               <div className="flex items-center gap-3 p-3 bg-muted/50 border border-gray-100 rounded-xl">
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <Truck className="h-4 w-4 text-primary" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-800">Livrare în aceeași zi</p>
-                  <p className="text-xs text-muted-foreground">Cost: 35 Lei</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-3 bg-muted/50 border border-gray-100 rounded-xl">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <Check className="h-4 w-4 text-primary" />
                 </div>
                 <div>
@@ -265,7 +256,7 @@ export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailPro
                   <Check className="h-4 w-4 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-800">Ridicare personală din depozit</p>
+                  <p className="text-sm font-semibold text-gray-800">Ridicare personala (depozit)</p>
                   <p className="text-xs text-muted-foreground">Gratuit din showroom evoMAG</p>
                 </div>
               </div>

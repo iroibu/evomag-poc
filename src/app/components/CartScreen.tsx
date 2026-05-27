@@ -205,7 +205,7 @@ export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onChecko
           <span className="font-black text-xl text-primary">{total.toLocaleString('ro-RO')} Lei</span>
         </div>
         <Button onClick={onCheckout} className="w-full h-12 rounded-full text-base font-bold shadow-lg shadow-primary/20">
-          Spre finalizare
+          Continuă
         </Button>
       </div>
     </div>

@@ -26,7 +26,7 @@ export function AIAssistant() {
     {
       id: "1",
       type: "assistant",
-      content: "Buna! Sunt asistentul tau EvoMi. Cum te pot ajuta astazi?",
+      content: "Buna! Sunt EvoMi. Cum te pot ajuta astazi?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -90,7 +90,7 @@ export function AIAssistant() {
             <Sparkles className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h2>Asistent EvoMi</h2>
+            <h2>EvoMi</h2>
             <p className="text-sm text-muted-foreground">Mereu disponibil pentru tine</p>
           </div>
         </div>

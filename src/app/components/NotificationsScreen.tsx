@@ -27,16 +27,6 @@ export function NotificationsScreen({ onBack }: NotificationsScreenProps) {
       color: "text-green-600",
       bgColor: "bg-green-100",
       unread: true
-    },
-    {
-      id: 3,
-      title: "Scor de upgrade actualizat",
-      description: "AI-ul nostru sugerează că MacBook Air M1 al tău ar putea fi înlocuit în curând.",
-      time: "Acum 2 zile",
-      icon: Bell,
-      color: "text-orange-600",
-      bgColor: "bg-orange-100",
-      unread: false
     }
   ];
 
