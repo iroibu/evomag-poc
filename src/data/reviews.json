@@ -1,0 +1,866 @@
+[
+  {
+    "id": "r001",
+    "productId": "t1",
+    "firstName": "Alexandru",
+    "lastName": "Ionescu",
+    "rating": 5,
+    "text": "Consolă fantastică! Jocurile arată superb și timpii de încărcare sunt aproape zero. Merită fiecare leu."
+  },
+  {
+    "id": "r002",
+    "productId": "t1",
+    "firstName": "Mihai",
+    "lastName": "Popescu",
+    "rating": 5,
+    "text": "PS5 Slim este mult mai compact decât mă așteptam. Funcționează silențios și performanța este excelentă."
+  },
+  {
+    "id": "r003",
+    "productId": "t1",
+    "firstName": "Andrei",
+    "lastName": "Constantin",
+    "rating": 4,
+    "text": "Foarte bun, dar jocurile exclusive sunt puține deocamdată. În rest, experiența este de top."
+  },
+  {
+    "id": "r004",
+    "productId": "t2",
+    "firstName": "Elena",
+    "lastName": "Dumitrescu",
+    "rating": 5,
+    "text": "iPad-ul M2 este incredibil de rapid. Ecranul Liquid Retina XDR este cel mai frumos pe care l-am văzut vreodată."
+  },
+  {
+    "id": "r005",
+    "productId": "t2",
+    "firstName": "Ioana",
+    "lastName": "Popa",
+    "rating": 4,
+    "text": "Excelent pentru design și editare foto. Singurul minus este prețul ridicat al accesoriilor Apple Pencil."
+  },
+  {
+    "id": "r006",
+    "productId": "t2",
+    "firstName": "Radu",
+    "lastName": "Munteanu",
+    "rating": 5,
+    "text": "L-am cumpărat pentru facultate și este perfect. Bateria ține o zi întreagă fără nicio problemă."
+  },
+  {
+    "id": "r007",
+    "productId": "t3",
+    "firstName": "Cristian",
+    "lastName": "Gheorghe",
+    "rating": 5,
+    "text": "Cel mai bun mouse pe care l-am folosit vreodată. Rotița MagSpeed este o revelație, nu mai pot lucra fără ea."
+  },
+  {
+    "id": "r008",
+    "productId": "t3",
+    "firstName": "Daniela",
+    "lastName": "Stoica",
+    "rating": 4,
+    "text": "Mouse ergonomic, perfect pentru lucrul la birou ore întregi. Conexiunea Bluetooth este stabilă și rapidă."
+  },
+  {
+    "id": "r009",
+    "productId": "t3",
+    "firstName": "Florin",
+    "lastName": "Niculescu",
+    "rating": 5,
+    "text": "Investiție excelentă! Bateria ține luni de zile și precizia senzorului este remarcabilă."
+  },
+  {
+    "id": "r010",
+    "productId": "t4",
+    "firstName": "Bogdan",
+    "lastName": "Stan",
+    "rating": 5,
+    "text": "iPhone 15 Pro este o bestie! Camera 48MP face poze uimitoare, iar A17 Pro este fulgerător."
+  },
+  {
+    "id": "r011",
+    "productId": "t4",
+    "firstName": "Raluca",
+    "lastName": "Dima",
+    "rating": 5,
+    "text": "Telefonul ideal. Design din titan, ușor, ecran superb. Trecerea la USB-C a fost mult așteptată."
+  },
+  {
+    "id": "r012",
+    "productId": "t4",
+    "firstName": "Vlad",
+    "lastName": "Petre",
+    "rating": 4,
+    "text": "Excelent în toate privințele. Ușor dezamăgit de autonomia bateriei față de concurență, dar iOS compensează."
+  },
+  {
+    "id": "r013",
+    "productId": "t5",
+    "firstName": "Mircea",
+    "lastName": "Tudor",
+    "rating": 5,
+    "text": "Galaxy S24 este incredibil. Snapdragon 8 Gen 3 face totul instant, iar camera excelează în orice condiții."
+  },
+  {
+    "id": "r014",
+    "productId": "t5",
+    "firstName": "Andreea",
+    "lastName": "Vasile",
+    "rating": 4,
+    "text": "Design rafinat și ecran AMOLED spectaculos. One UI 6.1 este intuitiv și bine optimizat."
+  },
+  {
+    "id": "r015",
+    "productId": "t5",
+    "firstName": "Sorin",
+    "lastName": "Matei",
+    "rating": 5,
+    "text": "Cel mai bun Android pe care l-am avut. Zoom-ul 3× este surprinzător de bun și autonomia este solidă."
+  },
+  {
+    "id": "r016",
+    "productId": "t6",
+    "firstName": "Cătălin",
+    "lastName": "Radu",
+    "rating": 5,
+    "text": "Camera Leica este de neegalat. Pozele ies profesionale chiar și în condiții de lumină slabă."
+  },
+  {
+    "id": "r017",
+    "productId": "t6",
+    "firstName": "Nicoleta",
+    "lastName": "Enache",
+    "rating": 4,
+    "text": "Telefon premium în toate privințele. Ecranul 120Hz este fluid și încărcarea 120W este uluitoare."
+  },
+  {
+    "id": "r018",
+    "productId": "t6",
+    "firstName": "Laurențiu",
+    "lastName": "Bădescu",
+    "rating": 5,
+    "text": "HyperOS este o îmbunătățire reală față de MIUI. Telefonul zboară și arată senzațional."
+  },
+  {
+    "id": "r019",
+    "productId": "t7",
+    "firstName": "Teodora",
+    "lastName": "Mihai",
+    "rating": 5,
+    "text": "MacBook Air M3 este extraordinar. Silențios, ușor și cu o autonomie de 18 ore. Perfectul laptop."
+  },
+  {
+    "id": "r020",
+    "productId": "t7",
+    "firstName": "Sebastian",
+    "lastName": "Florea",
+    "rating": 5,
+    "text": "Am renunțat la Windows pentru acesta și nu regret. Totul funcționează impecabil, build quality de excepție."
+  },
+  {
+    "id": "r021",
+    "productId": "t7",
+    "firstName": "Corina",
+    "lastName": "Lupescu",
+    "rating": 4,
+    "text": "Perfect pentru programare și design. Singurul minus: doar 2 porturi Thunderbolt, dar hub-ul rezolvă problema."
+  },
+  {
+    "id": "r022",
+    "productId": "t8",
+    "firstName": "Marius",
+    "lastName": "Preda",
+    "rating": 5,
+    "text": "ThinkPad-ul suprem pentru business. Tastatura este legendară, iar durabilitatea este de neegalat."
+  },
+  {
+    "id": "r023",
+    "productId": "t8",
+    "firstName": "Alina",
+    "lastName": "Crețu",
+    "rating": 4,
+    "text": "Laptop robust și fiabil. Autonomia este excelentă și se simte că va dura mulți ani."
+  },
+  {
+    "id": "r024",
+    "productId": "t8",
+    "firstName": "Gabriel",
+    "lastName": "Ionescu",
+    "rating": 5,
+    "text": "Intel Ultra 7 și 32 GB RAM fac orice task instantaneu. Cel mai bun laptop de business pe care l-am testat."
+  },
+  {
+    "id": "r025",
+    "productId": "t9",
+    "firstName": "Patricia",
+    "lastName": "Olteanu",
+    "rating": 5,
+    "text": "Ecranul OLED este spectaculos. Culorile sunt vii, negrul este perfect și privitul pe el este o plăcere."
+  },
+  {
+    "id": "r026",
+    "productId": "t9",
+    "firstName": "Octavian",
+    "lastName": "Marinescu",
+    "rating": 4,
+    "text": "Excelent raport calitate-preț. Ryzen 7 gestionează cu ușurință multitasking-ul intens."
+  },
+  {
+    "id": "r027",
+    "productId": "t9",
+    "firstName": "Simona",
+    "lastName": "Dragomir",
+    "rating": 4,
+    "text": "Laptop subțire și elegant cu un display OLED de top. Puțin cald la sarcini grele, dar acceptabil."
+  },
+  {
+    "id": "r028",
+    "productId": "t10",
+    "firstName": "Ionuț",
+    "lastName": "Barbu",
+    "rating": 5,
+    "text": "Dell XPS 15 este un monstru de performanță. RTX 4060 și OLED 4K fac editarea video un vis."
+  },
+  {
+    "id": "r029",
+    "productId": "t10",
+    "firstName": "Adriana",
+    "lastName": "Coman",
+    "rating": 4,
+    "text": "Cel mai frumos laptop pe care l-am văzut. Construcție premium, ecran superb, performanță solidă."
+  },
+  {
+    "id": "r030",
+    "productId": "t10",
+    "firstName": "Ciprian",
+    "lastName": "Toma",
+    "rating": 5,
+    "text": "32 GB RAM și SSD rapid fac totul instant. Ideal pentru content creation profesional."
+  },
+  {
+    "id": "r031",
+    "productId": "t11",
+    "firstName": "Dragoș",
+    "lastName": "Luca",
+    "rating": 5,
+    "text": "MSI Katana 15 oferă performanță de gaming serioasă la un preț accesibil. RTX 4070 este o bestie."
+  },
+  {
+    "id": "r032",
+    "productId": "t11",
+    "firstName": "Roxana",
+    "lastName": "Dănilă",
+    "rating": 4,
+    "text": "Foarte bun pentru gaming. Se încălzește un pic sub sarcini maxime, dar performanța compensează."
+  },
+  {
+    "id": "r033",
+    "productId": "t11",
+    "firstName": "Valentin",
+    "lastName": "Nistor",
+    "rating": 4,
+    "text": "Laptop de gaming solid. 144 Hz la 1080p arată fluid și jocurile moderne rulează excelent."
+  },
+  {
+    "id": "r034",
+    "productId": "t12",
+    "firstName": "Luminița",
+    "lastName": "Apostol",
+    "rating": 5,
+    "text": "TV-ul 8K Samsung este spectaculos. Imaginea este atât de clară încât simți că ești în film."
+  },
+  {
+    "id": "r035",
+    "productId": "t12",
+    "firstName": "Constantin",
+    "lastName": "Zamfir",
+    "rating": 5,
+    "text": "Cel mai bun TV pe care l-am văzut vreodată. Neo QLED cu 8K este o experiență cu totul diferită."
+  },
+  {
+    "id": "r036",
+    "productId": "t12",
+    "firstName": "Georgiana",
+    "lastName": "Popa",
+    "rating": 4,
+    "text": "Imagine impresionantă, Tizen OS fluid. Conținut nativ 8K este rar, dar upscaling-ul Samsung face minuni."
+  },
+  {
+    "id": "r037",
+    "productId": "t13",
+    "firstName": "Dan",
+    "lastName": "Moldovan",
+    "rating": 5,
+    "text": "LG OLED C4 este pur și simplu perfect. Negrul absolut și culorile OLED sunt de neegalat."
+  },
+  {
+    "id": "r038",
+    "productId": "t13",
+    "firstName": "Irina",
+    "lastName": "Sandu",
+    "rating": 5,
+    "text": "Cel mai bun TV pentru gaming și cinema. 120 Hz și HDMI 2.1 fac PS5-ul să strălucească cu adevărat."
+  },
+  {
+    "id": "r039",
+    "productId": "t13",
+    "firstName": "Nicu",
+    "lastName": "Oancea",
+    "rating": 4,
+    "text": "Imagine de cinema acasă. webOS este cel mai bun sistem smart TV de pe piață, intuitiv și rapid."
+  },
+  {
+    "id": "r040",
+    "productId": "t14",
+    "firstName": "Lavinia",
+    "lastName": "Chirilă",
+    "rating": 5,
+    "text": "Sony Bravia QD-OLED este o revelație. Culorile cuantice plus negrul OLED creează o imagine fantastică."
+  },
+  {
+    "id": "r041",
+    "productId": "t14",
+    "firstName": "Eugen",
+    "lastName": "Dobre",
+    "rating": 5,
+    "text": "Google TV este cel mai bun sistem smart al momentului. Procesorul XR face ca imaginea să pară reală."
+  },
+  {
+    "id": "r042",
+    "productId": "t14",
+    "firstName": "Camelia",
+    "lastName": "Florescu",
+    "rating": 4,
+    "text": "TV superb, prețul este justificat de calitatea imaginii. Dolby Atmos sună incredibil în combinație cu soundbar."
+  },
+  {
+    "id": "r043",
+    "productId": "t15",
+    "firstName": "Ștefan",
+    "lastName": "Avram",
+    "rating": 5,
+    "text": "Placă de bază excelentă pentru AM5. PCIe 5.0 pe SSD și GPU oferă viteze uluitoare."
+  },
+  {
+    "id": "r044",
+    "productId": "t15",
+    "firstName": "Bianca",
+    "lastName": "Stănescu",
+    "rating": 4,
+    "text": "BIOS-ul ASUS este cel mai bun de pe piață. Overclocking-ul DDR5 a mers impecabil, am ajuns la 6400 MHz stabil."
+  },
+  {
+    "id": "r045",
+    "productId": "t15",
+    "firstName": "Relu",
+    "lastName": "Petrescu",
+    "rating": 5,
+    "text": "Montaj ușor și documentație clară. Suportul tehnic ASUS este rapid și competent."
+  },
+  {
+    "id": "r046",
+    "productId": "t16",
+    "firstName": "Cosmin",
+    "lastName": "Andrei",
+    "rating": 5,
+    "text": "Ryzen 9 7950X este un monstru de randare. Am redus timpii de compilare la jumătate față de vechiul PC."
+  },
+  {
+    "id": "r047",
+    "productId": "t16",
+    "firstName": "Veronica",
+    "lastName": "Badea",
+    "rating": 4,
+    "text": "Procesor fantastic pentru workstation. 16 nuclee și 32 fire fac multitasking-ul extrem o joacă."
+  },
+  {
+    "id": "r048",
+    "productId": "t16",
+    "firstName": "Tiberiu",
+    "lastName": "Hristea",
+    "rating": 5,
+    "text": "Cel mai rapid procesor pe care l-am testat. Boost-ul la 5.7 GHz este consistent și stabil."
+  },
+  {
+    "id": "r049",
+    "productId": "t17",
+    "firstName": "Anamaria",
+    "lastName": "Rus",
+    "rating": 5,
+    "text": "DDR5 la 6000 MHz este o diferență notabilă față de DDR4. Sistemul a câștigat cel puțin 20% performanță."
+  },
+  {
+    "id": "r050",
+    "productId": "t17",
+    "firstName": "Liviu",
+    "lastName": "Oprea",
+    "rating": 4,
+    "text": "Kit de memorie premium. RGB-ul arată spectaculos în carcasă și stabilitatea EXPO este impecabilă."
+  },
+  {
+    "id": "r051",
+    "productId": "t17",
+    "firstName": "Geanina",
+    "lastName": "Mihalcea",
+    "rating": 5,
+    "text": "Memorii rapide și fiabile. Latențele CL30 sunt excelente pentru această frecvență."
+  },
+  {
+    "id": "r052",
+    "productId": "t18",
+    "firstName": "Horia",
+    "lastName": "Cârstea",
+    "rating": 5,
+    "text": "RTX 4080 Super este o bestie absolută. 4K maxim în orice joc modern cu framerate excelent."
+  },
+  {
+    "id": "r053",
+    "productId": "t18",
+    "firstName": "Mădălina",
+    "lastName": "Duță",
+    "rating": 5,
+    "text": "DLSS 3.5 cu Frame Generation este magie curată. Performanța a crescut de 3 ori față de placa anterioară."
+  },
+  {
+    "id": "r054",
+    "productId": "t18",
+    "firstName": "Claudiu",
+    "lastName": "Văcaru",
+    "rating": 4,
+    "text": "Placa grafică ideală pentru 4K gaming și ray tracing. Consumul de 320W este singurul dezavantaj."
+  },
+  {
+    "id": "r055",
+    "productId": "t19",
+    "firstName": "Petru",
+    "lastName": "Costache",
+    "rating": 5,
+    "text": "Cea mai bună tastatură mecanică wireless de pe piață. Switch-urile Yellow sunt silențioase și precise."
+  },
+  {
+    "id": "r056",
+    "productId": "t19",
+    "firstName": "Oana",
+    "lastName": "Balan",
+    "rating": 4,
+    "text": "RGB-ul Chroma este spectaculos. Conexiunea wireless 2.4GHz nu are niciun lag perceptibil în gaming."
+  },
+  {
+    "id": "r057",
+    "productId": "t19",
+    "firstName": "Relu",
+    "lastName": "Manolescu",
+    "rating": 5,
+    "text": "Tastatură de top calitate. Construcție solidă și bateria de 4000 mAh ține zile întregi fără RGB."
+  },
+  {
+    "id": "r058",
+    "productId": "t20",
+    "firstName": "Narcisa",
+    "lastName": "Petre",
+    "rating": 5,
+    "text": "Cască gaming wireless perfectă. Sunetul 7.1 virtual este imersiv și autonomia de 65 ore este uimitoare."
+  },
+  {
+    "id": "r059",
+    "productId": "t20",
+    "firstName": "Adrian",
+    "lastName": "Sîrbu",
+    "rating": 4,
+    "text": "Difuzoarele de 50mm sună excelent. Microfonul retractabil captează vocea clar fără zgomot de fundal."
+  },
+  {
+    "id": "r060",
+    "productId": "t20",
+    "firstName": "Loredana",
+    "lastName": "Mirea",
+    "rating": 5,
+    "text": "Cască confortabilă ore întregi. Dolby Atmos face o diferență uriașă în jocurile suportate."
+  },
+  {
+    "id": "r061",
+    "productId": "t21",
+    "firstName": "Mariana",
+    "lastName": "Ungureanu",
+    "rating": 4,
+    "text": "Google Nest Hub este perfect pentru bucătărie. Rețetele pe ecran și Google Assistant sunt super utile."
+  },
+  {
+    "id": "r062",
+    "productId": "t21",
+    "firstName": "Dorel",
+    "lastName": "Gheorghiu",
+    "rating": 4,
+    "text": "Dispozitiv inteligent și ușor de configurat. Controlul caselor inteligente este simplu și rapid."
+  },
+  {
+    "id": "r063",
+    "productId": "t21",
+    "firstName": "Felicia",
+    "lastName": "Ionescu",
+    "rating": 3,
+    "text": "Util pentru casa inteligentă, dar ecranul ar putea fi mai luminos. Google Assistant funcționează bine."
+  },
+  {
+    "id": "r064",
+    "productId": "t22",
+    "firstName": "Octavia",
+    "lastName": "Tănase",
+    "rating": 5,
+    "text": "Becurile Hue sunt incredibil de versatile. Culorile sunt vii și aplicația funcționează perfect."
+  },
+  {
+    "id": "r065",
+    "productId": "t22",
+    "firstName": "Relu",
+    "lastName": "Ciobanu",
+    "rating": 4,
+    "text": "Kit excelent pentru începători în smart home. Hue Bridge oferă răspuns instantaneu față de conexiunea Wi-Fi."
+  },
+  {
+    "id": "r066",
+    "productId": "t22",
+    "firstName": "Cristina",
+    "lastName": "Nedelcu",
+    "rating": 5,
+    "text": "Am transformat complet atmosfera casei. Automatizările cu Apple HomeKit funcționează impecabil."
+  },
+  {
+    "id": "r067",
+    "productId": "t23",
+    "firstName": "Dumitru",
+    "lastName": "Alexe",
+    "rating": 5,
+    "text": "Purificatorul Xiaomi a schimbat calitatea aerului din casă vizibil. Senzorul PM2.5 este precis."
+  },
+  {
+    "id": "r068",
+    "productId": "t23",
+    "firstName": "Valentina",
+    "lastName": "Rusu",
+    "rating": 4,
+    "text": "Silențios și eficient. Mi Home App oferă statistici detaliate despre calitatea aerului în timp real."
+  },
+  {
+    "id": "r069",
+    "productId": "t23",
+    "firstName": "Nelu",
+    "lastName": "Constantin",
+    "rating": 5,
+    "text": "Filtrul HEPA face o treabă excelentă cu alergenii. Recomand tuturor celor cu alergii."
+  },
+  {
+    "id": "r070",
+    "productId": "t24",
+    "firstName": "Cornelia",
+    "lastName": "Matei",
+    "rating": 5,
+    "text": "Deco XE75 a acoperit perfect toată casa fără zone moarte. Wi-Fi 6E oferă viteze incredibile."
+  },
+  {
+    "id": "r071",
+    "productId": "t24",
+    "firstName": "Petre",
+    "lastName": "Bîrsan",
+    "rating": 4,
+    "text": "Sistem mesh ușor de configurat prin aplicație. Semnalul este consistent în toată casa pe 3 etaje."
+  },
+  {
+    "id": "r072",
+    "productId": "t24",
+    "firstName": "Rodica",
+    "lastName": "Vlad",
+    "rating": 5,
+    "text": "Am scăpat de toate zonele moarte din casă. TP-Link HomeCare oferă protecție excelentă de securitate."
+  },
+  {
+    "id": "r073",
+    "productId": "t25",
+    "firstName": "Ecaterina",
+    "lastName": "Neagu",
+    "rating": 5,
+    "text": "Apple Watch Series 9 este cel mai bun smartwatch. ECG și SpO2 mi-au detectat o problemă la timp."
+  },
+  {
+    "id": "r074",
+    "productId": "t25",
+    "firstName": "Relu",
+    "lastName": "Stoian",
+    "rating": 5,
+    "text": "Ecranul Always-On este foarte util. Integrarea cu iPhone este perfectă și notificările sunt clare."
+  },
+  {
+    "id": "r075",
+    "productId": "t25",
+    "firstName": "Marinela",
+    "lastName": "Bucur",
+    "rating": 4,
+    "text": "Ceas inteligent excelent cu senzori de sănătate precisi. Bateria de 18 ore este singurul compromis."
+  },
+  {
+    "id": "r076",
+    "productId": "a1",
+    "firstName": "Florica",
+    "lastName": "Dinu",
+    "rating": 5,
+    "text": "Mașina de spălat Heinner este silențioasă și spală impecabil. Clasa A+++ reduce considerabil factura la curent."
+  },
+  {
+    "id": "r077",
+    "productId": "a1",
+    "firstName": "Gheorghe",
+    "lastName": "Manea",
+    "rating": 5,
+    "text": "Funcționează perfect de 6 luni. Programele sunt variate și ciclul de spălare economic este excelent."
+  },
+  {
+    "id": "r078",
+    "productId": "a1",
+    "firstName": "Stefania",
+    "lastName": "Popa",
+    "rating": 4,
+    "text": "Mașină solidă și fiabilă. Afișajul LCD este clar și ușor de utilizat chiar și pentru bunici."
+  },
+  {
+    "id": "r079",
+    "productId": "a2",
+    "firstName": "Vasile",
+    "lastName": "Dănilă",
+    "rating": 5,
+    "text": "Uscătorul cu pompă de căldură consumă jumătate față de cel vechi cu rezistențe. O investiție inteligentă."
+  },
+  {
+    "id": "r080",
+    "productId": "a2",
+    "firstName": "Mihaela",
+    "lastName": "Ionescu",
+    "rating": 4,
+    "text": "Rufe perfect uscate și moi fără balsam. Programele sunt bine gândite pentru diferite tipuri de materiale."
+  },
+  {
+    "id": "r081",
+    "productId": "a2",
+    "firstName": "Aurel",
+    "lastName": "Niculae",
+    "rating": 5,
+    "text": "Cel mai bun uscător pe care l-am avut. Silențios, eficient energetic și cu un design modern."
+  },
+  {
+    "id": "r082",
+    "productId": "a3",
+    "firstName": "Zorica",
+    "lastName": "Enescu",
+    "rating": 5,
+    "text": "Mașina de spălat vase Heinner spală perfect 12 seturi. Consumul de apă este remarcabil de mic."
+  },
+  {
+    "id": "r083",
+    "productId": "a3",
+    "firstName": "Traian",
+    "lastName": "Popescu",
+    "rating": 4,
+    "text": "Funcționează silențios și vasele ies strălucitoare. Programul rapid de 30 minute este foarte util."
+  },
+  {
+    "id": "r084",
+    "productId": "a3",
+    "firstName": "Doina",
+    "lastName": "Marin",
+    "rating": 4,
+    "text": "Excelent raport calitate-preț pentru o mașină de spălat vase independentă. Instalarea a fost simplă."
+  },
+  {
+    "id": "r085",
+    "productId": "tv1",
+    "firstName": "Ion",
+    "lastName": "Bogdan",
+    "rating": 5,
+    "text": "Samsung Neo QLED 65\" este spectaculos. Imaginea 4K cu HDR este atât de clară că simți că ești acolo."
+  },
+  {
+    "id": "r086",
+    "productId": "tv1",
+    "firstName": "Anișoara",
+    "lastName": "Cojocaru",
+    "rating": 5,
+    "text": "Tizen OS este fluid și rapid. Gaming Mode cu 120Hz și VRR face PS5-ul să strălucească cu adevărat."
+  },
+  {
+    "id": "r087",
+    "productId": "tv1",
+    "firstName": "Bogdan",
+    "lastName": "Dumitrescu",
+    "rating": 4,
+    "text": "TV excelent cu imagine impresionantă. Sunetul de 60W cu Dolby Atmos este suficient fără soundbar."
+  },
+  {
+    "id": "r088",
+    "productId": "tv2",
+    "firstName": "Maricica",
+    "lastName": "Stancu",
+    "rating": 5,
+    "text": "LG OLED C3 este pur și simplu magistral. Negrul perfect și culorile vii fac orice conținut spectaculos."
+  },
+  {
+    "id": "r089",
+    "productId": "tv2",
+    "firstName": "Relu",
+    "lastName": "Iordache",
+    "rating": 5,
+    "text": "Cel mai bun TV pe care l-am văzut. OLED-ul face o diferență uriașă față de LED-urile obișnuite."
+  },
+  {
+    "id": "r090",
+    "productId": "tv2",
+    "firstName": "Liliana",
+    "lastName": "Trifan",
+    "rating": 5,
+    "text": "webOS este intuitiv și actualizat constant. Procesorul α9 Gen6 face upscaling-ul impresionant."
+  },
+  {
+    "id": "r091",
+    "productId": "tv3",
+    "firstName": "Marian",
+    "lastName": "Petrescu",
+    "rating": 5,
+    "text": "TCL Mini LED cu 144Hz este o revelație. Gaming-ul pe acest TV este o experiență cu totul nouă."
+  },
+  {
+    "id": "r092",
+    "productId": "tv3",
+    "firstName": "Carmen",
+    "lastName": "Dobrin",
+    "rating": 4,
+    "text": "Raport calitate-preț imbatabil. Mini LED la acest preț este incredibil, imaginea este superbă."
+  },
+  {
+    "id": "r093",
+    "productId": "tv3",
+    "firstName": "Florentina",
+    "lastName": "Neculai",
+    "rating": 5,
+    "text": "Google TV cu toate aplicațiile disponibile este perfect. IMAX Enhanced face filmele să pară la cinema."
+  },
+  {
+    "id": "r094",
+    "productId": "lp1",
+    "firstName": "Toma",
+    "lastName": "Bratu",
+    "rating": 5,
+    "text": "Lenovo Legion Pro 5 este un laptop de gaming complet. RTX 4060 + Ryzen 7 gestionează orice joc la maxim."
+  },
+  {
+    "id": "r095",
+    "productId": "lp1",
+    "firstName": "Gabriela",
+    "lastName": "Chiriac",
+    "rating": 5,
+    "text": "Tastatura mecanică TrueStrike este o plăcere de utilizat. Ecranul 165Hz este fluid și precis."
+  },
+  {
+    "id": "r096",
+    "productId": "lp1",
+    "firstName": "Ionel",
+    "lastName": "Moga",
+    "rating": 4,
+    "text": "Laptop de gaming solid la un preț corect. Ventilatoarele sunt zgomotoase la turații maxime, dar aceasta este de așteptat."
+  },
+  {
+    "id": "r097",
+    "productId": "lp2",
+    "firstName": "Sabina",
+    "lastName": "Ciornei",
+    "rating": 4,
+    "text": "IdeaPad Slim 3 este perfect pentru studenți. Ușor, subțire și suficient de rapid pentru cursuri și proiecte."
+  },
+  {
+    "id": "r098",
+    "productId": "lp2",
+    "firstName": "Mirela",
+    "lastName": "Voinea",
+    "rating": 5,
+    "text": "Excelent laptop de buget. Core i5 cu SSD face Windows 11 rapid și plăcut de utilizat zilnic."
+  },
+  {
+    "id": "r099",
+    "productId": "lp2",
+    "firstName": "Gelu",
+    "lastName": "Câmpeanu",
+    "rating": 4,
+    "text": "Bun pentru birou și navigare web. Nu este pentru gaming, dar pentru productivitate zilnică este ideal."
+  },
+  {
+    "id": "r100",
+    "productId": "lp3",
+    "firstName": "Nadia",
+    "lastName": "Borcea",
+    "rating": 5,
+    "text": "ThinkPad E14 Gen 5 este un laptop de business excelent. Tastatura este confortabilă și bateria ține toată ziua."
+  },
+  {
+    "id": "r101",
+    "productId": "lp3",
+    "firstName": "Florin",
+    "lastName": "Tomescu",
+    "rating": 4,
+    "text": "Build quality excelentă, specific ThinkPad. Thunderbolt 4 face docking-ul la birou o simplă conectare."
+  },
+  {
+    "id": "r102",
+    "productId": "lp3",
+    "firstName": "Luminița",
+    "lastName": "Grecu",
+    "rating": 5,
+    "text": "Perfect pentru lucrul remote. Ecranul anti-reflective este ideal pentru lucrul lângă fereastră."
+  },
+  {
+    "id": "r103",
+    "productId": "d1",
+    "firstName": "Rareș",
+    "lastName": "Lăzărescu",
+    "rating": 5,
+    "text": "iPhone 15 Pro Max este cel mai bun telefon pe care l-am avut. Camera 5× telephoto este uimitoare."
+  },
+  {
+    "id": "r104",
+    "productId": "d1",
+    "firstName": "Denisa",
+    "lastName": "Rotaru",
+    "rating": 5,
+    "text": "Design din titan superb și ecran de 6.7\" impresionant. A17 Pro face totul fulgerător de rapid."
+  },
+  {
+    "id": "r105",
+    "productId": "d1",
+    "firstName": "Ionel",
+    "lastName": "Păduraru",
+    "rating": 4,
+    "text": "Telefon premium în toate privințele. Singura nemulțumire este greutatea de 221g, dar merită."
+  },
+  {
+    "id": "r106",
+    "productId": "d2",
+    "firstName": "Livia",
+    "lastName": "Munteanu",
+    "rating": 5,
+    "text": "Galaxy S24 Ultra cu camera de 200MP este incredibil. Zoom-ul 10× face poze clare de la distanță mare."
+  },
+  {
+    "id": "r107",
+    "productId": "d2",
+    "firstName": "Claudiu",
+    "lastName": "Sîrbu",
+    "rating": 5,
+    "text": "Cel mai complet smartphone Android. S Pen integrat, cameră fenomenală și baterie de 5000 mAh."
+  },
+  {
+    "id": "r108",
+    "productId": "d2",
+    "firstName": "Teodora",
+    "lastName": "Oprea",
+    "rating": 4,
+    "text": "Telefon flagship extraordinar. Galaxy AI adaugă funcționalități utile, deși unele sunt mai mult demonstrative."
+  }
+]

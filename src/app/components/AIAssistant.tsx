@@ -195,7 +195,7 @@ export function AIAssistant() {
       )}
 
       {/* Input */}
-      <div className="shrink-0 border-t bg-background px-4 py-4 pb-24">
+      <div className="shrink-0 border-t bg-background px-4 py-4">
         <div className="flex gap-2">
           <Input
             value={input}

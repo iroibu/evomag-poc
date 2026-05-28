@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-import { allProducts } from "../../data/index";
+import products from "../../data/products.json";
 
 const _CIPHER = "evomag-poc-secret";
 const _ENC_KEY =
@@ -25,7 +25,7 @@ export interface CatalogProduct {
   badge?: string;
 }
 
-export const PRODUCT_CATALOG: CatalogProduct[] = allProducts.map((p: any) => ({
+export const PRODUCT_CATALOG: CatalogProduct[] = products.map((p: any) => ({
   id: String(p.id),
   name: p.name,
   price: p.price,

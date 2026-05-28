@@ -5,27 +5,24 @@ import { ChevronRight, Clock, ShoppingCart, Smartphone, Laptop, Tv, Gamepad2, He
 import { Card } from "./ui/card";
 import { AnimatePresence, motion } from "motion/react";
 import { toast } from "sonner";
-import productsData from "../../data/products";
 import { loadPreferences } from "../services/userPreferences";
 import { getRecentlyViewed } from "../services/recentlyViewed";
 import type { Product } from "../../data/types";
+import categories from "../../data/categories.json";
+import heroBanners from "../../data/heroBanners.json";
+import noutati from "../../data/noutati.json";
+import servicii from "../../data/servicii.json";
+import products from "../../data/products.json";
 
 const categoryIconMap: Record<string, LucideIcon> = {
   Laptop, Smartphone, Tv, Cpu, HardDrive, Monitor, Coffee, Printer, Camera,
   Disc, Router, Sparkles, Dumbbell, Smile, Home, Paperclip, Watch, Wrench, Gift, PackageOpen,
 };
 
-const categories = productsData.categories.map((c) => ({
+const categoriesWithIcons = categories.map((c) => ({
   ...c,
   icon: categoryIconMap[c.iconName] ?? Laptop,
 }));
-
-const {
-  heroBanners,
-  noutati,
-  servicii,
-  products,
-} = productsData;
 
 function SectionHeader({ title, subtitle, showSeeAll = true, onSeeAll }: { title: string, subtitle?: string, showSeeAll?: boolean, onSeeAll?: () => void }) {
   return (
@@ -93,7 +90,7 @@ function ProductScroll({ children }: { children: React.ReactNode }) {
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
       onClickCapture={handleClickCapture}
-      className={`flex overflow-x-auto scrollbar-hide px-4 pb-4 gap-3 select-none touch-pan-x ${
+      className={`flex overflow-x-auto scrollbar-hide px-4 scroll-pl-4 pb-4 gap-3 select-none touch-pan-x ${
         isDragging ? "snap-none cursor-grabbing" : "snap-x snap-mandatory cursor-grab"
       }`}
     >
@@ -292,7 +289,7 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
   }
 
   return (
-    <div className="pb-24 bg-[#f8f9fa] min-h-full flex flex-col gap-3 relative">
+    <div className="pb-3 bg-[#f8f9fa] min-h-full flex flex-col gap-3 relative">
       <FiltersPanel 
         activeFilter={activeFilter} 
         onClose={() => setActiveFilter(null)} 
@@ -307,7 +304,7 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
       {/* 1. Categories Row */}
       <div className="bg-white pt-4 pb-3 shadow-sm rounded-b-2xl z-10 relative">
         <ProductScroll>
-          {categories.map((cat) => {
+          {categoriesWithIcons.map((cat) => {
             const Icon = cat.icon;
             return (
               <div key={cat.id} className="flex flex-col items-center gap-2 shrink-0 snap-start w-[88px] cursor-pointer" onClick={() => onSeeAllClick?.(cat.name, getProductsForCategory(cat.name))}>

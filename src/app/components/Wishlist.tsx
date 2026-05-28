@@ -1,129 +1,83 @@
 import { useState } from "react";
-import { Bell, TrendingDown, Package } from "lucide-react";
+import { ProductCard } from "./ProductCard";
+import { Bell, TrendingDown, Package, Heart, Trash2, X, ChevronLeft } from "lucide-react";
+import { Card } from "./ui/card";
+import { Badge } from "./ui/badge";
 import { Switch } from "./ui/switch";
-import { getWishlist } from "../services/wishlist";
+import { Button } from "./ui/button";
+import { getWishlist, removeFromWishlist } from "../services/wishlist";
 import type { Product } from "../../data/types";
 
-export function Wishlist() {
-  const [wishlistProducts] = useState<Product[]>(() => getWishlist());
-  const [alertsEnabled, setAlertsEnabled] = useState(true);
-  const [productAlerts, setProductAlerts] = useState<Record<string, boolean>>(() =>
-    Object.fromEntries(wishlistProducts.map((p) => [p.id, p.priceDropped ?? false]))
-  );
+interface WishlistProps {
+  onProductClick?: (product: Product) => void;
+  onAddToCart?: (product: Product) => void;
+  onBack?: () => void;
+}
 
-  const dropsCount = wishlistProducts.filter((p) => p.priceDropped).length;
+export function Wishlist({ onProductClick, onAddToCart, onBack }: WishlistProps) {
+  const [wishlistProducts, setWishlistProducts] = useState<Product[]>(() => getWishlist());
 
-  const getSavings = (p: Product): string => {
-    const original = p.oldPrice ?? p.originalPrice;
-    if (!original) return "";
-    const saved = original - p.price;
-    return `${saved.toLocaleString("ro-RO")} lei economisiți`;
-  };
-
-  const getDiscountPct = (p: Product): number => {
-    const original = p.oldPrice ?? p.originalPrice;
-    if (!original) return 0;
-    return Math.round(((original - p.price) / original) * 100);
+  const handleRemove = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    removeFromWishlist(id);
+    setWishlistProducts(prev => prev.filter(p => p.id !== id));
   };
 
   return (
-    <div className="pb-24">
+    <div className="flex flex-col h-full bg-[#F5F5F7] pb-4 overflow-y-auto">
       {/* Header */}
-      <div className="px-5 pt-4 flex items-center justify-between mb-3.5">
-        <h1 className="text-[22px] font-extrabold">Favorite</h1>
-        {dropsCount > 0 && (
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/30">
-            <TrendingDown className="h-3 w-3 text-orange-500" />
-            <span className="text-xs font-bold text-orange-500">{dropsCount} reduceri azi</span>
-          </div>
-        )}
-      </div>
-
-      {/* Price alert banner */}
-      <div className="mx-5 mb-3.5 bg-primary/10 border border-primary/20 rounded-2xl p-4 flex items-center gap-3">
-        <Bell className="h-[18px] w-[18px] text-primary shrink-0" />
-        <div className="flex-1">
-          <p className="text-[13px] font-bold">Alerte prețuri active</p>
-          <p className="text-[11px] text-muted-foreground">Notificare la orice reducere</p>
-        </div>
-        <Switch
-          checked={alertsEnabled}
-          onCheckedChange={setAlertsEnabled}
-        />
-      </div>
-
-      {/* Product cards */}
-      {wishlistProducts.length > 0 ? (
-        <div className="px-5 flex flex-col gap-3">
-          {wishlistProducts.map((p) => {
-            const hasDrop = !!p.priceDropped;
-            const original = p.oldPrice ?? p.originalPrice;
-            const discountPct = getDiscountPct(p);
-            const savings = getSavings(p);
-            const imgSrc = p.imageUrl ?? p.image;
-            const alertOn = productAlerts[p.id] ?? false;
-
-            return (
-              <div
-                key={p.id}
-                className={`bg-card rounded-2xl border overflow-hidden relative flex ${
-                  hasDrop ? "border-orange-500/30" : "border-border"
-                }`}
+      <div className="bg-white px-5 pt-8 pb-5 shadow-sm mb-4">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            {onBack ? (
+              <button 
+                onClick={onBack} 
+                className="p-2 -ml-2 rounded-full hover:bg-muted mr-1 flex items-center justify-center"
               >
-                {hasDrop && (
-                  <div className="absolute top-0 left-0 right-0 h-[3px] bg-orange-500 rounded-t-2xl" />
-                )}
-                {/* Image */}
-                <div className="w-[90px] shrink-0 bg-muted">
-                  {imgSrc && (
-                    <img
-                      src={imgSrc}
-                      alt={p.name}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
-                </div>
-                {/* Info */}
-                <div className="p-3 flex-1">
-                  {hasDrop && (
-                    <div className="flex items-center gap-1 mb-1">
-                      <TrendingDown className="h-3 w-3 text-orange-500" />
-                      <span className="text-[10px] font-bold text-orange-500 uppercase">
-                        Preț scăzut{savings ? ` · ${savings}` : ""}
-                      </span>
-                    </div>
-                  )}
-                  <p className="text-[12px] font-bold leading-snug mb-1.5 line-clamp-2">{p.name}</p>
-                  <div className="flex items-center gap-1.5 mb-2">
-                    <span className="text-[15px] font-extrabold">
-                      {p.price.toLocaleString("ro-RO")} lei
-                    </span>
-                    {original && (
-                      <span className="text-[11px] text-muted-foreground line-through">
-                        {original.toLocaleString("ro-RO")}
-                      </span>
-                    )}
-                    {discountPct > 0 && (
-                      <span className="text-[10px] font-bold text-orange-500 bg-orange-500/10 px-1.5 py-0.5 rounded-full">
-                        -{discountPct}%
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-center justify-end gap-1.5">
-                    <Bell className="h-3 w-3 text-muted-foreground" />
-                    <Switch
-                      checked={alertOn}
-                      onCheckedChange={(v) =>
-                        setProductAlerts((prev) => ({ ...prev, [p.id]: v }))
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+                <ChevronLeft className="h-6 w-6 text-[#111111]" />
+              </button>
+            ) : (
+              <Heart className="w-6 h-6 text-[#E30613] fill-[#E30613]" />
+            )}
+            <h1 className="text-[22px] font-black text-[#111111] tracking-tight">Favorite</h1>
+          </div>
+          <Badge variant="secondary" className="bg-[#FEF2F2] text-[#E30613] hover:bg-[#FEF2F2] border-0 font-bold">{wishlistProducts.length} produse</Badge>
         </div>
-      ) : (
+        
+        {/* Global Price Alert Toggle */}
+        <div className="bg-[#F5F5F7] rounded-xl p-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm shrink-0">
+              <Bell className="h-5 w-5 text-[#E30613]" />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm text-[#111111]">Alerte prețuri active</h3>
+              <p className="text-[11px] font-medium text-[#6B7280]">Notificare la orice reducere</p>
+            </div>
+          </div>
+          <Switch defaultChecked className="data-[state=checked]:bg-[#E30613]" />
+        </div>
+      </div>
+
+      {/* Wishlist Products */}
+      <div className="px-4">
+        <div className="grid grid-cols-2 gap-4">
+          {wishlistProducts.map((product) => (
+            <div key={product.id} className="relative group cursor-pointer" onClick={() => onProductClick?.(product)}>
+              <ProductCard {...product} onAddToCart={() => onAddToCart?.(product)} />
+              <button 
+                onClick={(e) => handleRemove(e, product.id)}
+                className="absolute top-2 right-2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm z-10 active:scale-95 transition-transform"
+              >
+                <Trash2 className="w-4 h-4 text-[#E30613]" />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Empty State (hidden when there are items) */}
+      {wishlistProducts.length === 0 && (
         <div className="flex flex-col items-center justify-center py-16 px-4">
           <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center mb-4">
             <Package className="h-12 w-12 text-muted-foreground" />

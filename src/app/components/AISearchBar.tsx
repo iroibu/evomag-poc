@@ -78,7 +78,7 @@ export function AISearchBar({
         setError(
           err instanceof Error
             ? err.message
-            : "Eroare la obținerea sugestiilor AI",
+            : "Eroare la obținerea sugestiilor",
         );
         setSuggestions([]);
       } finally {
@@ -129,7 +129,7 @@ export function AISearchBar({
           onKeyDown={handleKeyDown}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setTimeout(() => setIsFocused(false), 200)}
-          placeholder="Caută cu AI..."
+          placeholder="Caută..."
           className="h-14 pl-12 pr-12 rounded-2xl bg-muted border-0 text-base"
         />
         {isLoading ? (
@@ -156,7 +156,7 @@ export function AISearchBar({
             {!query && (
               <div className="p-4 space-y-2">
                 <p className="text-sm text-muted-foreground px-2">
-                  Sugestii AI
+                  Sugestii
                 </p>
                 {quickSuggestions.map((suggestion, index) => (
                   <button
@@ -179,7 +179,7 @@ export function AISearchBar({
                 <div className="flex items-center gap-2 px-2 mb-3">
                   <Sparkles className="h-4 w-4 text-primary animate-pulse" />
                   <p className="text-sm text-muted-foreground">
-                    AI analizează căutarea...
+                    Se analizează căutarea...
                   </p>
                 </div>
                 {[1, 2, 3].map((i) => (
@@ -214,7 +214,7 @@ export function AISearchBar({
                   <div className="flex items-center gap-2 px-2 py-1">
                     <Sparkles className="h-4 w-4 text-primary" />
                     <p className="text-sm font-medium text-primary">
-                      Sugestii AI
+                      Sugestii
                     </p>
                   </div>
                   {suggestions.map((product) => (

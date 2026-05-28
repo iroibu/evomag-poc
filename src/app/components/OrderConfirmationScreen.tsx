@@ -1,6 +1,6 @@
 import { CheckCircle2, Package, Home, ShoppingBag } from "lucide-react";
 import { Button } from "./ui/button";
-import { type Order } from "./CheckoutScreen";
+import { type Order } from "../services/orders";
 
 interface OrderConfirmationScreenProps {
   order: Order;

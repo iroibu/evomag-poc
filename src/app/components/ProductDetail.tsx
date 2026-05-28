@@ -7,6 +7,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
 import { Progress } from "./ui/progress";
 import { motion } from "motion/react";
 import { isInWishlist, toggleWishlist } from "../services/wishlist";
+import specificationsData from "../../data/specifications.json";
+import reviewsData from "../../data/reviews.json";
 
 interface ProductDetailProps {
   product: any;
@@ -26,6 +28,8 @@ export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailPro
   const productColors: { name: string; color: string }[] | undefined = product.colors;
   const productStorage: string[] | undefined = product.storage;
   const discountPercent = oldPrice ? Math.round((1 - product.price / oldPrice) * 100) : null;
+  const productSpecs = specificationsData.find((s) => s.productId === String(product.id))?.specs ?? [];
+  const productReviews = reviewsData.filter((r) => r.productId === String(product.id));
 
   return (
     <div className="h-screen flex flex-col bg-background max-w-md mx-auto overflow-hidden">
@@ -59,7 +63,7 @@ export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailPro
       </header>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto pb-32">
+      <div className="flex-1 overflow-y-auto">
         {/* Image Gallery */}
         <div className="relative aspect-square bg-transparent">
           <motion.img
@@ -197,40 +201,43 @@ export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailPro
             </TabsList>
             <TabsContent value="specs" className="space-y-3 mt-4">
               <div className="space-y-2">
-                <div className="flex justify-between py-3 border-b">
-                  <span className="text-muted-foreground">Display</span>
-                  <span className="font-medium">6.7" Super Retina XDR</span>
-                </div>
-                <div className="flex justify-between py-3 border-b">
-                  <span className="text-muted-foreground">Procesor</span>
-                  <span className="font-medium">A17 Pro</span>
-                </div>
-                <div className="flex justify-between py-3 border-b">
-                  <span className="text-muted-foreground">Cameră</span>
-                  <span className="font-medium">48MP + 12MP + 12MP</span>
-                </div>
-                <div className="flex justify-between py-3 border-b">
-                  <span className="text-muted-foreground">Baterie</span>
-                  <span className="font-medium">4422 mAh</span>
-                </div>
+                {productSpecs.length > 0 ? (
+                  productSpecs.map((spec, index) => (
+                    <div key={index} className="flex justify-between py-3 border-b">
+                      <span className="text-muted-foreground">{spec.label}</span>
+                      <span className="font-medium text-right ml-4">{spec.value}</span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-muted-foreground text-sm py-4 text-center">
+                    Specificațiile nu sunt disponibile pentru acest produs.
+                  </p>
+                )}
               </div>
             </TabsContent>
             <TabsContent value="reviews" className="space-y-4 mt-4">
-              {[1, 2, 3].map((i) => (
-                <Card key={i} className="p-4 border-0 shadow-sm">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="flex items-center gap-1">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star key={star} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      ))}
+              {productReviews.length > 0 ? (
+                productReviews.map((review) => (
+                  <Card key={review.id} className="p-4 border-0 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="flex items-center gap-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star
+                            key={star}
+                            className={`h-4 w-4 ${star <= review.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/30"}`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-sm font-medium">{review.firstName} {review.lastName}</span>
                     </div>
-                    <span className="text-sm font-medium">Andrei M.</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Telefon excelent! Performanța este incredibilă și camera face poze superbe chiar și noaptea.
-                  </p>
-                </Card>
-              ))}
+                    <p className="text-sm text-muted-foreground">{review.text}</p>
+                  </Card>
+                ))
+              ) : (
+                <p className="text-muted-foreground text-sm py-4 text-center">
+                  Nu există recenzii pentru acest produs.
+                </p>
+              )}
             </TabsContent>
             <TabsContent value="delivery" className="space-y-3 mt-4">
               <div className="flex items-center gap-3 p-3 bg-muted/50 border border-gray-100 rounded-xl">

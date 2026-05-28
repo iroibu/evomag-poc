@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { loadPreferences } from "./services/userPreferences";
 import { addRecentlyViewed } from "./services/recentlyViewed";
+import { getCart, saveCart, clearCart } from "./services/cart";
 import { BottomNav } from "./components/BottomNav";
 import { HomeFeed } from "./components/HomeFeed";
 import { SearchScreen } from "./components/SearchScreen";
@@ -19,7 +20,7 @@ import { Search, Bell } from "lucide-react";
 import { ProductDetail } from "./components/ProductDetail";
 import { Badge } from "./components/ui/badge";
 import { Button } from "./components/ui/button";
-import { type Order } from "./components/CheckoutScreen";
+import { type Order } from "./services/orders";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("home");
@@ -30,7 +31,7 @@ export default function App() {
     addRecentlyViewed(product);
     setSelectedProduct(product);
   };
-  const [cartItems, setCartItems] = useState<CartItemType[]>([]);
+  const [cartItems, setCartItems] = useState<CartItemType[]>(() => getCart());
   const [showCheckout, setShowCheckout] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState<Order | null>(null);
   const [viewingOrder, setViewingOrder] = useState<Order | null>(null);
@@ -40,12 +41,11 @@ export default function App() {
   const handleAddToCart = (product: any) => {
     setCartItems(prev => {
       const existing = prev.find(item => item.id === product.id);
-      if (existing) {
-        return prev.map(item => 
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      }
-      return [...prev, { ...product, quantity: 1 }];
+      const updated = existing
+        ? prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item)
+        : [...prev, { ...product, quantity: 1 }];
+      saveCart(updated);
+      return updated;
     });
     toast.success("Produs adăugat în coș!", {
       duration: 2000,
@@ -54,17 +54,25 @@ export default function App() {
   };
 
   const updateCartQuantity = (id: string, delta: number) => {
-    setCartItems(prev => prev.map(item => {
-      if (item.id === id) {
-        const newQ = item.quantity + delta;
-        return newQ > 0 ? { ...item, quantity: newQ } : item;
-      }
-      return item;
-    }));
+    setCartItems(prev => {
+      const updated = prev.map(item => {
+        if (item.id === id) {
+          const newQ = item.quantity + delta;
+          return newQ > 0 ? { ...item, quantity: newQ } : item;
+        }
+        return item;
+      });
+      saveCart(updated);
+      return updated;
+    });
   };
 
   const removeFromCart = (id: string) => {
-    setCartItems(prev => prev.filter(item => item.id !== id));
+    setCartItems(prev => {
+      const updated = prev.filter(item => item.id !== id);
+      saveCart(updated);
+      return updated;
+    });
   };
 
   const renderScreen = () => {
@@ -87,9 +95,9 @@ export default function App() {
                  onCheckout={() => setShowCheckout(true)} 
                />;
       case "wishlist":
-        return <Wishlist />;
+        return <Wishlist onProductClick={handleProductClick} onAddToCart={handleAddToCart} />;
       case "profile":
-        return <Profile onProductClick={handleProductClick} />;
+        return <Profile onProductClick={handleProductClick} onAddToCart={handleAddToCart} />;
       default:
         return <HomeFeed 
                  onProductClick={handleProductClick} 
@@ -134,6 +142,7 @@ export default function App() {
           onBack={() => setShowCheckout(false)}
           onSuccess={(order) => {
             setCartItems([]);
+            clearCart();
             setShowCheckout(false);
             setConfirmedOrder(order);
           }}

@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { X, MapPin, Check, Search } from "lucide-react";
-import { Button } from "./ui/button";
+import { X, MapPin, Check, Search, Package, ChevronRight, CheckCircle2, SlidersHorizontal } from "lucide-react";
 import {
   MapContainer,
   TileLayer,
@@ -165,15 +164,21 @@ const COMPANY_LABELS: Record<Locker["company"], string> = {
 };
 
 const COMPANY_PIN_BG: Record<Locker["company"], string> = {
-  easybox: "#f97316",
-  fanbox: "#2563eb",
-  cargus: "#dc2626",
+  easybox: "#E30613",
+  fanbox: "#00529B",
+  cargus: "#F39200",
+};
+
+const COMPANY_TYPE_BG: Record<Locker["company"], string> = {
+  easybox: "#FEF2F2",
+  fanbox: "#F0F7FF",
+  cargus: "#FFF7ED",
 };
 
 const COMPANY_FILTER_ACTIVE: Record<Locker["company"], string> = {
-  easybox: "bg-orange-500 text-white border-orange-500",
-  fanbox: "bg-blue-600 text-white border-blue-600",
-  cargus: "bg-red-600 text-white border-red-600",
+  easybox: "bg-[#E30613] text-white border-[#E30613] shadow-md",
+  fanbox: "bg-[#00529B] text-white border-[#00529B] shadow-md",
+  cargus: "bg-[#F39200] text-white border-[#F39200] shadow-md",
 };
 
 const BUCHAREST_CENTER: [number, number] = [44.4268, 26.1025];
@@ -268,9 +273,7 @@ export function LockerPickerModal({
   onSelect,
   selectedLockerId,
 }: LockerPickerModalProps) {
-  const [activeCompanies, setActiveCompanies] = useState<Set<Locker["company"]>>(
-    new Set(["easybox", "fanbox", "cargus"]),
-  );
+  const [activeCompany, setActiveCompany] = useState<Locker["company"] | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(
     selectedLockerId ?? null,
   );
@@ -279,7 +282,9 @@ export function LockerPickerModal({
 
   const listRef = useRef<HTMLDivElement>(null);
 
-  const visibleByCompany = LOCKERS.filter((l) => activeCompanies.has(l.company));
+  const visibleByCompany = activeCompany
+    ? LOCKERS.filter((l) => l.company === activeCompany)
+    : LOCKERS;
 
   const visibleOnMap = mapBounds
     ? visibleByCompany.filter((l) =>
@@ -299,17 +304,8 @@ export function LockerPickerModal({
     ? LOCKERS.find((l) => l.id === selectedId) ?? null
     : null;
 
-  const toggleCompany = (company: Locker["company"]) => {
-    setActiveCompanies((prev) => {
-      const next = new Set(prev);
-      if (next.has(company)) {
-        if (next.size === 1) return next;
-        next.delete(company);
-      } else {
-        next.add(company);
-      }
-      return next;
-    });
+  const selectCompany = (company: Locker["company"]) => {
+    setActiveCompany((prev) => (prev === company ? null : company));
   };
 
   const handleMarkerClick = useCallback((locker: Locker) => {
@@ -326,133 +322,185 @@ export function LockerPickerModal({
   }, []);
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-white">
-      {/* Header */}
-      <header className="shrink-0 flex items-center justify-between px-4 py-4 border-b bg-white">
-        <h2 className="text-lg font-bold">Alege Locker / Punct ridicare</h2>
-        <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100">
-          <X className="h-5 w-5" />
-        </button>
-      </header>
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-4">
+      {/* Background Dim */}
+      <div
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
+      />
 
-      {/* Company filter tabs */}
-      <div className="shrink-0 flex gap-2 px-4 py-3 border-b bg-white">
-        {(["easybox", "fanbox", "cargus"] as Locker["company"][]).map((company) => (
-          <button
-            key={company}
-            onClick={() => toggleCompany(company)}
-            className={`flex-1 py-2 rounded-full text-sm font-semibold border-2 transition-colors ${
-              activeCompanies.has(company)
-                ? COMPANY_FILTER_ACTIVE[company]
-                : "border-gray-200 text-gray-400 bg-white"
-            }`}
-          >
-            {COMPANY_LABELS[company]}
-          </button>
-        ))}
-      </div>
+      {/* Modal Sheet */}
+      <div className="relative w-full max-w-md bg-white rounded-t-[28px] sm:rounded-[28px] shadow-2xl flex flex-col h-[90vh] sm:h-auto sm:max-h-[800px] overflow-hidden">
 
-      {/* Map */}
-      <div className="shrink-0 h-56 w-full">
-        <MapContainer
-          center={BUCHAREST_CENTER}
-          zoom={12}
-          style={{ width: "100%", height: "100%" }}
-          zoomControl={true}
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <MapLayer
-            lockers={visibleByCompany}
-            selectedId={selectedId}
-            onMarkerClick={handleMarkerClick}
-            onBoundsChange={handleBoundsChange}
-          />
-        </MapContainer>
-      </div>
-
-      {/* Search */}
-      <div className="shrink-0 px-4 py-2 border-b bg-white">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Caută locker după nume sau adresă..."
-            className="w-full pl-9 pr-3 py-2.5 text-sm rounded-lg border bg-gray-50 focus:outline-primary"
-          />
+        {/* Drag handle — visible on mobile only */}
+        <div className="sm:hidden flex justify-center pt-3 pb-1 shrink-0">
+          <div className="w-10 h-1 rounded-full bg-[#D1D1D6]" />
         </div>
-        <p className="text-xs text-muted-foreground mt-1.5">
-          {listLockers.length}{" "}
-          {listLockers.length === 1 ? "locker vizibil" : "lockere vizibile"} pe
-          hartă
-        </p>
-      </div>
 
-      {/* Locker list */}
-      <div ref={listRef} className="flex-1 overflow-y-auto divide-y divide-gray-100">
-        {listLockers.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-muted-foreground gap-2">
-            <MapPin className="h-8 w-8 opacity-30" />
-            <p className="text-sm">Niciun locker găsit în această zonă</p>
+        {/* Header */}
+        <div className="shrink-0 px-5 pt-3 pb-4 border-b border-[#E5E5EA] sm:pt-5">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-lg font-bold text-[#111111] leading-tight">Alege Locker</h2>
+              <p className="text-xs text-[#6B7280] mt-0.5">Alege cel mai convenabil punct pentru tine</p>
+            </div>
+            <button
+              onClick={onClose}
+              className="p-2 -mr-2 bg-[#F5F5F7] rounded-full text-[#6B7280] active:bg-gray-200 transition-colors touch-manipulation"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
-        ) : (
-          listLockers.map((locker) => {
-            const isSelected = locker.id === selectedId;
-            return (
-              <button
-                key={locker.id}
-                data-id={locker.id}
-                onClick={() => setSelectedId(locker.id)}
-                className={`w-full flex items-start gap-3 px-4 py-3 text-left transition-colors ${
-                  isSelected ? "bg-primary/5" : "hover:bg-gray-50"
-                }`}
-              >
-                <span
-                  className="mt-0.5 shrink-0 w-2.5 h-2.5 rounded-full"
-                  style={{ backgroundColor: COMPANY_PIN_BG[locker.company] }}
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <p
-                      className={`text-sm font-semibold truncate ${isSelected ? "text-primary" : "text-gray-800"}`}
-                    >
-                      {locker.name}
-                    </p>
-                    <span
-                      className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white"
-                      style={{ backgroundColor: COMPANY_PIN_BG[locker.company] }}
-                    >
-                      {COMPANY_LABELS[locker.company]}
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                    {locker.address}
-                  </p>
-                </div>
-                {isSelected && (
-                  <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                )}
-              </button>
-            );
-          })
-        )}
-      </div>
+        </div>
 
-      {/* Confirm button */}
-      <div className="shrink-0 px-4 py-4 border-t bg-white">
-        <Button
-          disabled={!selectedLocker}
-          onClick={() => selectedLocker && onSelect(selectedLocker)}
-          className="w-full h-12 rounded-full text-sm font-bold"
-        >
-          {selectedLocker
-            ? `Selectează: ${selectedLocker.name}`
-            : "Selectează un locker de pe hartă"}
-        </Button>
+        {/* Static Content (filters + map + search) */}
+        <div className="shrink-0 bg-[#F5F5F7]">
+
+          {/* Company filter tabs */}
+          <div className="bg-white px-5 py-4">
+            <div className="flex gap-2">
+              {(["easybox", "fanbox", "cargus"] as Locker["company"][]).map((company) => (
+                <button
+                  key={company}
+                  onClick={() => selectCompany(company)}
+                  className={`flex-1 flex justify-center items-center py-2.5 px-2 rounded-full text-xs font-bold transition-all border touch-manipulation active:scale-95 ${
+                    activeCompany === company
+                      ? COMPANY_FILTER_ACTIVE[company]
+                      : "bg-white text-[#111111] border-[#E5E5EA] active:bg-gray-50"
+                  }`}
+                >
+                  {COMPANY_LABELS[company]}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Map */}
+          <div className="px-5 pb-2">
+            <div className="relative w-full h-[200px] sm:h-[220px] rounded-2xl border border-[#E5E5EA] overflow-hidden shadow-sm">
+              <MapContainer
+                center={BUCHAREST_CENTER}
+                zoom={12}
+                style={{ width: "100%", height: "100%" }}
+                zoomControl={true}
+              >
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <MapLayer
+                  lockers={visibleByCompany}
+                  selectedId={selectedId}
+                  onMarkerClick={handleMarkerClick}
+                  onBoundsChange={handleBoundsChange}
+                />
+              </MapContainer>
+            </div>
+          </div>
+
+          {/* Search Area */}
+          <div className="px-5 pt-3 pb-2">
+            <div className="flex gap-3">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#6B7280]" />
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Caută locker după nume sau adresă..."
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-[#E5E5EA] rounded-xl text-base font-medium focus:outline-none focus:ring-1 focus:ring-gray-300 transition-shadow placeholder:text-[#6B7280]"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Locker List — scrollable */}
+        <div className="flex-1 overflow-y-auto overscroll-contain bg-[#F5F5F7]">
+
+          {/* List Section */}
+          <div className="px-5 pt-2 pb-8">
+            {listLockers.length === 0 ?(
+              <div className="flex flex-col items-center justify-center py-12 text-[#6B7280] gap-2 bg-white rounded-[20px] border border-[#E5E5EA]">
+                <MapPin className="h-8 w-8 opacity-30" />
+                <p className="text-sm">Niciun locker găsit în această zonă</p>
+              </div>
+            ) : (
+              <div className="space-y-4" ref={listRef}>
+                {listLockers.map((locker) => {
+                  const isSelected = locker.id === selectedId;
+                  const color = COMPANY_PIN_BG[locker.company];
+                  const bgColor = COMPANY_TYPE_BG[locker.company];
+
+                  return isSelected ? (
+                    <div
+                      key={locker.id}
+                      data-id={locker.id}
+                      onClick={() => setSelectedId(locker.id)}
+                      className="rounded-[20px] p-4 border shadow-md flex items-center gap-4 cursor-pointer relative overflow-hidden transition-all active:scale-[0.98] touch-manipulation"
+                      style={{ backgroundColor: bgColor, borderColor: color }}
+                    >
+                      <div className="absolute top-0 right-0 w-16 h-16 rounded-bl-3xl opacity-10" style={{ backgroundImage: `linear-gradient(to bottom left, ${color}, transparent)` }} />
+                      <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm shrink-0">
+                        <Package className="w-6 h-6" style={{ color }} />
+                      </div>
+                      <div className="flex-1 relative z-10 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h4 className="font-bold text-base leading-tight truncate" style={{ color }}>{locker.name}</h4>
+                          <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-md uppercase tracking-wide bg-white shadow-sm border border-gray-100" style={{ color }}>
+                            {COMPANY_LABELS[locker.company]}
+                          </span>
+                        </div>
+                        <p className="text-xs mb-1 leading-relaxed opacity-80 truncate" style={{ color }}>{locker.address}</p>
+                      </div>
+                      <div className="shrink-0 relative z-10">
+                        <CheckCircle2 className="w-6 h-6" style={{ color }} fill="#fff" />
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      key={locker.id}
+                      data-id={locker.id}
+                      onClick={() => setSelectedId(locker.id)}
+                      className="bg-white rounded-[20px] p-4 border border-[#E5E5EA] shadow-sm flex items-center gap-4 cursor-pointer active:border-gray-300 active:bg-gray-50 transition-colors touch-manipulation"
+                    >
+                      <div className="w-12 h-12 bg-[#F5F5F7] rounded-xl flex items-center justify-center shrink-0">
+                        <Package className="w-6 h-6 text-[#111111]" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h4 className="font-bold text-[#111111] text-base leading-tight truncate">{locker.name}</h4>
+                          <span
+                            className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-md uppercase tracking-wide bg-gray-50 border border-gray-100"
+                            style={{ color: COMPANY_PIN_BG[locker.company] }}
+                          >
+                            {COMPANY_LABELS[locker.company]}
+                          </span>
+                        </div>
+                        <p className="text-xs text-[#6B7280] mb-1 leading-relaxed truncate">{locker.address}</p>
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-[#E5E5EA] shrink-0" />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="shrink-0 bg-white border-t border-[#E5E5EA] px-5 pt-4 pb-5 pb-safe">
+          <button
+            disabled={!selectedLocker}
+            onClick={() => selectedLocker && onSelect(selectedLocker)}
+            className="w-full h-14 text-white bg-[#E30613] rounded-[20px] font-bold text-base flex items-center justify-center shadow-[0_4px_14px_rgba(227,6,19,0.3)] transition-transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 touch-manipulation"
+          >
+            {selectedLocker
+              ? `Selectează: ${selectedLocker.name}`
+              : "Selectează un locker de pe hartă"}
+          </button>
+        </div>
+
       </div>
     </div>
   );

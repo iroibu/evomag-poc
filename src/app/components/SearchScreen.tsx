@@ -74,9 +74,9 @@ export function SearchScreen({
   };
 
   return (
-    <div className="space-y-6 pb-24">
+    <div className="flex flex-col h-full">
       {/* Search Bar */}
-      <div className="sticky top-0 bg-background z-10 px-4 pt-4 pb-2 flex gap-2 items-center">
+      <div className="shrink-0 bg-background z-10 px-4 pt-4 pb-2 flex gap-2 items-center border-b">
         <div className="flex-1">
           <AISearchBar
             value={searchBarValue}
@@ -93,6 +93,8 @@ export function SearchScreen({
         </button>
       </div>
 
+      <div className="flex-1 overflow-y-auto">
+        <div className="space-y-6 py-6">
       {!hasSearched ? (
         <>
           {/* Trending Searches */}
@@ -139,7 +141,7 @@ export function SearchScreen({
             <div className="bg-gradient-to-br from-primary/10 to-red-600/10 rounded-2xl p-6 border border-primary/20">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="h-5 w-5 text-primary" />
-                <h3>Căutare inteligentă AI</h3>
+                <h3>Căutare inteligentă</h3>
               </div>
               <p className="text-sm text-muted-foreground">
                 Poți căuta în limbaj natural: "laptop pentru programare sub 5000
@@ -157,7 +159,7 @@ export function SearchScreen({
               <Badge variant="secondary">{aiResults.length} produse</Badge>
             </div>
             <p className="text-sm text-muted-foreground">
-              AI-ul a găsit cele mai relevante produse pentru tine
+              Am găsit cele mai relevante produse pentru tine
             </p>
           </div>
 
@@ -166,13 +168,13 @@ export function SearchScreen({
             <div className="bg-gradient-to-br from-primary to-red-600 rounded-2xl p-4 text-white">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="h-5 w-5" />
-                <h3>Recomandare AI</h3>
+                <h3>Recomandare</h3>
               </div>
               {isLoadingResults || !aiInsight ? (
                 <div className="flex items-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
                   <p className="text-sm text-white/90">
-                    AI analizează produsele...
+                    Se analizează produsele...
                   </p>
                 </div>
               ) : (
@@ -208,6 +210,8 @@ export function SearchScreen({
           </div>
         </>
       )}
+        </div>
+      </div>
     </div>
   );
 }

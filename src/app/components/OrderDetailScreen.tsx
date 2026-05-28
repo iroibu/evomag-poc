@@ -1,7 +1,7 @@
 import { ChevronLeft, Package, Truck, CheckCircle2, Clock, XCircle, MapPin, Calendar, Hash } from "lucide-react";
 import { Card } from "./ui/card";
 import { Badge } from "./ui/badge";
-import { type Order, type DeliveryStatus } from "./CheckoutScreen";
+import { type Order, type DeliveryStatus } from "../services/orders";
 
 interface OrderDetailScreenProps {
   order: Order;
@@ -12,26 +12,26 @@ interface OrderDetailScreenProps {
 const TRACKING_STEPS: { status: DeliveryStatus; label: string; description: string }[] = [
   { status: "pending", label: "Comandă plasată", description: "Comanda ta a fost primită și urmează să fie procesată." },
   { status: "processing", label: "În procesare", description: "Comanda este pregătită pentru expediere." },
-  { status: "shipped", label: "Expediată", description: "Coletul este în drum spre destinație." },
+  { status: "shipped", label: "În livrare", description: "Coletul este în drum spre destinație." },
   { status: "delivered", label: "Livrată", description: "Comanda a fost livrată cu succes." },
 ];
 
 const STATUS_ORDER: DeliveryStatus[] = ["pending", "processing", "shipped", "delivered"];
 
 const deliveryStatusLabels: Record<DeliveryStatus, string> = {
-  pending: "În așteptare",
+  pending: "În procesare",
   processing: "În procesare",
-  shipped: "Expediată",
+  shipped: "În livrare",
   delivered: "Livrată",
-  cancelled: "Anulată",
+  cancelled: "Returnată",
 };
 
 const deliveryStatusStyles: Record<DeliveryStatus, string> = {
-  pending: "bg-yellow-100 text-yellow-700",
-  processing: "bg-blue-100 text-blue-700",
-  shipped: "bg-purple-100 text-purple-700",
-  delivered: "bg-green-100 text-green-700",
-  cancelled: "bg-red-100 text-red-700",
+  pending: "bg-orange-100 text-orange-700",
+  processing: "bg-orange-100 text-orange-700",
+  shipped: "bg-blue-100 text-blue-700",
+  delivered: "bg-[#DDF7E7] text-[#2E9B4F]",
+  cancelled: "bg-gray-100 text-gray-700",
 };
 
 function TrackingTimeline({ status }: { status: DeliveryStatus }) {
@@ -117,7 +117,7 @@ export function OrderDetailScreen({ order, onBack, onProductClick }: OrderDetail
         </Badge>
       </header>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 pb-24">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {/* Tracking timeline */}
         <TrackingTimeline status={order.deliveryStatus} />
 

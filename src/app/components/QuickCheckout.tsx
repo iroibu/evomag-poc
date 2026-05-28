@@ -104,7 +104,7 @@ export function QuickCheckout({ onBack, onComplete }: QuickCheckoutProps) {
       </header>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto pb-32">
+      <div className="flex-1 overflow-y-auto">
         <div className="px-4 py-6 space-y-6">
           {/* AI Optimization Notice */}
           <Card className="p-4 bg-gradient-to-br from-primary/10 to-red-600/10 border-primary/20">

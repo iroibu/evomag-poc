@@ -44,7 +44,7 @@ function ProductScroll({ children }: { children: React.ReactNode }) {
       onClickCapture={(e) => {
         if (dragged) { e.stopPropagation(); e.preventDefault(); }
       }}
-      className={`flex overflow-x-auto scrollbar-hide px-4 pb-4 gap-3 select-none touch-pan-x ${
+      className={`flex overflow-x-auto scrollbar-hide px-4 scroll-pl-4 pb-4 gap-3 select-none touch-pan-x ${
         isDragging ? "snap-none cursor-grabbing" : "snap-x snap-mandatory cursor-grab"
       }`}
     >
@@ -93,7 +93,7 @@ export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onChecko
   }
 
   return (
-    <div className="flex flex-col h-full bg-gray-50 pb-24">
+    <div className="flex flex-col h-full bg-gray-50">
       <header className="shrink-0 flex items-center px-4 py-4 bg-white border-b sticky top-0 z-10">
         <h1 className="text-xl font-bold ml-2 flex-1">Coșul meu</h1>
         <span className="text-sm font-semibold bg-muted px-2 py-1 rounded-full">
@@ -201,7 +201,7 @@ export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onChecko
 
       <div className="bg-white border-t p-4 pb-safe space-y-4">
         <div className="flex justify-between items-center">
-          <span className="font-bold text-base">Total</span>
+          <span className="font-bold text-base">Total estimat</span>
           <span className="font-black text-xl text-primary">{total.toLocaleString('ro-RO')} Lei</span>
         </div>
         <Button onClick={onCheckout} className="w-full h-12 rounded-full text-base font-bold shadow-lg shadow-primary/20">
