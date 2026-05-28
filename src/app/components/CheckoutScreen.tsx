@@ -9,11 +9,53 @@ import {
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { LockerPickerModal, type Locker } from "./LockerPickerModal";
+import { type CartItemType } from "./CartScreen";
+
+export interface OrderProduct {
+  id: string;
+  name: string;
+  imageUrl: string;
+  paidPrice: number;
+  quantity: number;
+}
+
+export type DeliveryStatus = "pending" | "processing" | "shipped" | "delivered" | "cancelled";
+
+export interface Order {
+  orderNumber: number;
+  orderDate: string;
+  products: OrderProduct[];
+  deliveryStatus: DeliveryStatus;
+}
+
+const ORDERS_STORAGE_KEY = "evomag_orders";
+
+function saveOrder(cartItems: CartItemType[], total: number): Order {
+  const existing: Order[] = JSON.parse(localStorage.getItem(ORDERS_STORAGE_KEY) ?? "[]");
+  const lastOrderNumber = existing.length > 0 ? Math.max(...existing.map((o) => o.orderNumber)) : 0;
+
+  const order: Order = {
+    orderNumber: lastOrderNumber + 1,
+    orderDate: new Date().toISOString(),
+    products: cartItems.map((item) => ({
+      id: item.id,
+      name: item.name,
+      imageUrl: item.imageUrl,
+      paidPrice: item.price,
+      quantity: item.quantity,
+    })),
+    deliveryStatus: "pending",
+  };
+
+  localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify([...existing, order]));
+  return order;
+}
 
 interface CheckoutScreenProps {
   onBack: () => void;
-  onSuccess: () => void;
+  onSuccess: (order: Order) => void;
   total: number;
+  cartItems: CartItemType[];
 }
 
 const STEPS = ["Facturare", "Livrare", "Plată"] as const;
@@ -22,6 +64,7 @@ export function CheckoutScreen({
   onBack,
   onSuccess,
   total,
+  cartItems,
 }: CheckoutScreenProps) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [persoanaType, setPersoanaType] = useState<"fizica" | "juridica">(
@@ -56,7 +99,10 @@ export function CheckoutScreen({
 
   const handleContinue = () => {
     if (step < 3) setStep((s) => (s + 1) as 1 | 2 | 3);
-    else onSuccess();
+    else {
+      const order = saveOrder(cartItems, total);
+      onSuccess(order);
+    }
   };
 
   const stepTitles: Record<1 | 2 | 3, string> = {
@@ -119,57 +165,39 @@ export function CheckoutScreen({
         {/* Step 1: Facturare */}
         {step === 1 && (
           <div className="space-y-4">
-            {/* Person type */}
+            {/* Person type + Contact fields */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <label className="flex items-center gap-3 p-4 border-b border-gray-50 cursor-pointer">
-                <div
-                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${persoanaType === "fizica" ? "border-primary" : "border-muted-foreground"}`}
-                >
-                  {persoanaType === "fizica" && (
-                    <div className="w-2.5 h-2.5 bg-primary rounded-full" />
-                  )}
-                </div>
-                <span
-                  className="font-medium text-sm"
-                  onClick={() => setPersoanaType("fizica")}
-                >
-                  Persoană fizică
-                </span>
-              </label>
-              <label className="flex items-center gap-3 p-4 cursor-pointer">
-                <div
-                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${persoanaType === "juridica" ? "border-primary" : "border-muted-foreground"}`}
-                >
-                  {persoanaType === "juridica" && (
-                    <div className="w-2.5 h-2.5 bg-primary rounded-full" />
-                  )}
-                </div>
-                <span
-                  className="font-medium text-sm"
-                  onClick={() => setPersoanaType("juridica")}
-                >
-                  Persoană juridică
-                </span>
-              </label>
-            </div>
-
-            {/* Contact fields */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-3">
-              <input
-                type="text"
-                placeholder="Nume și prenume"
-                className="w-full text-sm p-3 rounded-lg border bg-gray-50 focus:outline-primary"
-              />
-              <input
-                type="email"
-                placeholder="E-mail"
-                className="w-full text-sm p-3 rounded-lg border bg-gray-50 focus:outline-primary"
-              />
-              <input
-                type="tel"
-                placeholder="Telefon"
-                className="w-full text-sm p-3 rounded-lg border bg-gray-50 focus:outline-primary"
-              />
+              <div className="flex border-b border-gray-100">
+                <label className="flex items-center gap-2 px-4 py-3 flex-1 cursor-pointer" onClick={() => setPersoanaType("fizica")}>
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${persoanaType === "fizica" ? "border-primary" : "border-muted-foreground"}`}>
+                    {persoanaType === "fizica" && <div className="w-2.5 h-2.5 bg-primary rounded-full" />}
+                  </div>
+                  <span className="font-medium text-sm">Persoană fizică</span>
+                </label>
+                <label className="flex items-center gap-2 px-4 py-3 flex-1 cursor-pointer" onClick={() => setPersoanaType("juridica")}>
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${persoanaType === "juridica" ? "border-primary" : "border-muted-foreground"}`}>
+                    {persoanaType === "juridica" && <div className="w-2.5 h-2.5 bg-primary rounded-full" />}
+                  </div>
+                  <span className="font-medium text-sm">Persoană juridică</span>
+                </label>
+              </div>
+              <div className="p-4 space-y-3">
+                <input
+                  type="text"
+                  placeholder="Nume și prenume"
+                  className="w-full text-sm p-3 rounded-lg border bg-gray-50 focus:outline-primary"
+                />
+                <input
+                  type="email"
+                  placeholder="E-mail"
+                  className="w-full text-sm p-3 rounded-lg border bg-gray-50 focus:outline-primary"
+                />
+                <input
+                  type="tel"
+                  placeholder="Telefon"
+                  className="w-full text-sm p-3 rounded-lg border bg-gray-50 focus:outline-primary"
+                />
+              </div>
             </div>
 
             {/* Company details — shown only for Persoana juridica */}
@@ -423,17 +451,6 @@ export function CheckoutScreen({
           <Button
             onClick={handleContinue}
             className="w-full h-14 rounded-full text-base font-bold shadow-lg flex items-center gap-2 justify-center"
-            style={
-              paymentMethod === "apple"
-                ? { backgroundColor: "black", color: "white" }
-                : paymentMethod === "google"
-                  ? {
-                      backgroundColor: "white",
-                      color: "black",
-                      border: "1px solid #e5e7eb",
-                    }
-                  : {}
-            }
           >
             Trimite comanda
           </Button>

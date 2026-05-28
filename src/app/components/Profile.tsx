@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Package, TrendingUp, CreditCard, Settings, ChevronRight, Sparkles, ChevronLeft, ThumbsUp, ThumbsDown, Info, MessageSquare, Zap } from "lucide-react";
+import { useState, Fragment } from "react";
+import { Package, TrendingUp, CreditCard, Settings, ChevronRight, Sparkles, ChevronLeft, ThumbsUp, ThumbsDown, Info, MessageSquare, Zap, ChevronUp, ChevronDown, ShieldCheck, Gauge, Shield, ArrowLeftRight } from "lucide-react";
 import { Card } from "./ui/card";
 import { Avatar } from "./ui/avatar";
 import { Badge } from "./ui/badge";
@@ -7,17 +7,99 @@ import { Progress } from "./ui/progress";
 import { Button } from "./ui/button";
 import productsData from "../../data/products";
 import { getProductById } from "../../data";
+import { type Order, type DeliveryStatus } from "./CheckoutScreen";
+import { OrderDetailScreen } from "./OrderDetailScreen";
+
+const ORDERS_STORAGE_KEY = "evomag_orders";
+
+function loadOrders(): Order[] {
+  try {
+    return JSON.parse(localStorage.getItem(ORDERS_STORAGE_KEY) ?? "[]");
+  } catch {
+    return [];
+  }
+}
+
+const deliveryStatusLabels: Record<DeliveryStatus, string> = {
+  pending: "În așteptare",
+  processing: "În procesare",
+  shipped: "Expediată",
+  delivered: "Livrată",
+  cancelled: "Anulată",
+};
+
+const deliveryStatusStyles: Record<DeliveryStatus, string> = {
+  pending: "bg-yellow-100 text-yellow-700",
+  processing: "bg-blue-100 text-blue-700",
+  shipped: "bg-purple-100 text-purple-700",
+  delivered: "bg-green-100 text-green-700",
+  cancelled: "bg-red-100 text-red-700",
+};
 
 interface ProfileProps {
   onProductClick?: (product: any) => void;
 }
 
-const initialEquipment = productsData.equipment;
+const initialEquipment = [
+  {
+    id: "e1",
+    name: "iPhone 12 Pro",
+    specs: "128 GB, Pacific Blue",
+    image: "https://images.unsplash.com/photo-1603921326210-6edd2d60ca68?w=200&q=80",
+    purchaseDate: "2021-03-15",
+    upgradeScore: 85,
+    recommendation: "iPhone 15 Pro",
+    productId: "1",
+    features: [
+      { icon: ShieldCheck, label: "Garanție", status: "activă 6 luni" },
+      { icon: Gauge, label: "Performanță inteligentă", status: "activată" },
+      { icon: Shield, label: "Protejare ecran", status: "valabilă" },
+      { icon: ArrowLeftRight, label: "Trade-in", status: "valabil" }
+    ],
+    upgradeDetails: "Pe sistemele portabile admiți de upgrade, nu instalează actualizări. Este recomandat upgrade-ul după 3 ani."
+  },
+  {
+    id: "e2",
+    name: "MacBook Air M1",
+    specs: "8GB RAM, 256GB SSD, Space Gray",
+    image: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=200&q=80",
+    purchaseDate: "2021-06-20",
+    upgradeScore: 65,
+    recommendation: "MacBook Air M3",
+    productId: "s1",
+    features: [
+      { icon: ShieldCheck, label: "Garanție", status: "activă 1 an" },
+      { icon: Gauge, label: "Performanță inteligentă", status: "activată" },
+      { icon: Shield, label: "Protejare fizică", status: "valabilă" },
+      { icon: ArrowLeftRight, label: "Trade-in", status: "valabil" }
+    ],
+    upgradeDetails: "Dispozitivul funcționează optim, dar M3 aduce îmbunătățiri semnificative de performanță."
+  },
+  {
+    id: "e3",
+    name: "Apple Watch (3rd gen)",
+    specs: "42mm, Space Gray",
+    image: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=200&q=80",
+    purchaseDate: "2020-11-10",
+    upgradeScore: 45,
+    recommendation: "Apple Watch Series 9",
+    productId: "s2",
+    features: [
+      { icon: ShieldCheck, label: "Garanție", status: "expirată" },
+      { icon: Gauge, label: "Performanță inteligentă", status: "activată" },
+      { icon: Shield, label: "Protejare ecran", status: "expirată" },
+      { icon: ArrowLeftRight, label: "Trade-in", status: "valabil" }
+    ],
+    upgradeDetails: "Funcționează bine pentru uzul zilnic, dar lipsa unor funcții moderne poate fi limitativă."
+  }
+];
 
 export function Profile({ onProductClick }: ProfileProps) {
   const [activeView, setActiveView] = useState<"main" | "orders" | "payments">("main");
   const [selectedCard, setSelectedCard] = useState<string>("card1");
   const [equipment, setEquipment] = useState(initialEquipment);
+  const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   const handleFeedback = (id: string, isPositive: boolean) => {
     setEquipment(prev => prev.map(item => {
@@ -32,34 +114,73 @@ export function Profile({ onProductClick }: ProfileProps) {
     }));
   };
 
-  if (activeView === "orders") {
+  if (selectedOrder) {
     return (
-      <div className="flex flex-col h-full bg-gray-50 pb-24">
+      <OrderDetailScreen
+        order={selectedOrder}
+        onBack={() => setSelectedOrder(null)}
+        onProductClick={onProductClick}
+      />
+    );
+  }
+
+  if (activeView === "orders") {
+    const orders = loadOrders().slice().reverse();
+    return (
+      <div className="flex flex-col h-full bg-gray-50">
         <header className="shrink-0 flex items-center px-4 py-4 bg-white border-b sticky top-0 z-10">
           <button onClick={() => setActiveView("main")} className="p-2 -ml-2 rounded-full hover:bg-muted mr-2">
             <ChevronLeft className="h-6 w-6" />
           </button>
           <h1 className="text-xl font-bold flex-1">Comenzile mele</h1>
         </header>
-        <div className="p-4 space-y-3">
-          {[1, 2].map((i) => (
-            <Card key={i} className="p-4 border border-gray-100 shadow-sm">
-              <div className="flex justify-between items-center mb-3">
-                <span className="text-sm font-bold text-muted-foreground">Comanda #{1000 + i}</span>
-                <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-0">Livrată</Badge>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-muted rounded p-1">
-                  <img src="https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=100&q=80" className="w-full h-full object-contain" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium line-clamp-1">iPhone 15 Pro Max 256GB</p>
-                  <p className="text-xs text-muted-foreground">15 Martie 2024</p>
-                </div>
-                <div className="font-bold text-primary">6.799 Lei</div>
-              </div>
-            </Card>
-          ))}
+        <div className="flex-1 overflow-y-auto p-4 space-y-3 pb-24">
+          {orders.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <Package className="h-12 w-12 text-muted-foreground/40 mb-3" />
+              <p className="font-semibold text-muted-foreground">Nu ai comenzi încă</p>
+              <p className="text-sm text-muted-foreground/70 mt-1">Comenzile tale vor apărea aici după plasare.</p>
+            </div>
+          ) : (
+            orders.map((order) => {
+              const orderTotal = order.products.reduce((sum, p) => sum + p.paidPrice * p.quantity, 0);
+              return (
+                <Card
+                  key={order.orderNumber}
+                  onClick={() => setSelectedOrder(order)}
+                  className="gap-0 p-3 border border-gray-100 shadow-sm cursor-pointer hover:border-primary/30 transition-colors"
+                >
+                  <div className="flex justify-between items-center mb-1.5">
+                    <span className="text-sm font-bold text-muted-foreground">Comanda #{order.orderNumber}</span>
+                    <Badge className={`hover:opacity-100 border-0 ${deliveryStatusStyles[order.deliveryStatus]}`}>
+                      {deliveryStatusLabels[order.deliveryStatus]}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    {new Date(order.orderDate).toLocaleDateString("ro-RO", { day: "numeric", month: "long", year: "numeric" })}
+                  </p>
+                  <div className="space-y-1">
+                    {order.products.map((product) => (
+                      <div key={product.id} className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-gray-100 rounded-lg p-0.5 shrink-0">
+                          <img src={product.imageUrl} alt={product.name} className="w-full h-full object-contain" />
+                        </div>
+                        <span className="text-sm text-gray-800 flex-1 line-clamp-1">{product.name}</span>
+                        <span className="text-xs text-muted-foreground shrink-0">x{product.quantity}</span>
+                        <span className="text-sm font-semibold text-primary shrink-0">
+                          {(product.paidPrice * product.quantity).toLocaleString("ro-RO")} Lei
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
+                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wide">Total</span>
+                    <span className="font-black text-primary">{orderTotal.toLocaleString("ro-RO")} Lei</span>
+                  </div>
+                </Card>
+              );
+            })
+          )}
         </div>
       </div>
     );
@@ -131,105 +252,115 @@ export function Profile({ onProductClick }: ProfileProps) {
 
       {/* Equipment Lifecycle */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between px-4">
-          <h2 className="flex items-center gap-2 font-bold text-lg">
-            Echipamentele tale
-          </h2>
-        </div>
-        
-        {/* Info box about Upgrade Score */}
         <div className="px-4">
-          <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 flex gap-3 text-blue-800 text-xs">
-            <Info className="h-4 w-4 shrink-0 mt-0.5" />
-            <div className="leading-relaxed">
-              <strong>Ce înseamnă "Necesită schimbare"?</strong><br />
-              Un procentaj <span className="font-bold text-red-600">ridicat</span> arată că dispozitivul tău este învechit și e momentul ideal pentru un upgrade. Un procentaj <span className="font-bold text-green-600">scăzut</span> înseamnă că dispozitivul încă îndeplinește standardele optime.
+          <h2 className="font-bold text-lg mb-1">
+            Ține evidența produselor tale
+          </h2>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Monitorizăm garanțiile și produsele tale. Primești notificări automate când dispozitivul necesită upgrade sau când expiră garanția.
+          </p>
+        </div>
+
+        {/* Progress Timeline */}
+        <div className="px-4">
+          <div className="flex items-start">
+            {(['Produs înregistrat', 'Monitorizare activă', 'Notificare upgrade', 'Beneficii'] as const).map((label, idx) => {
+              const step = idx + 1;
+              return (
+                <Fragment key={step}>
+                  <div className="flex flex-col items-center">
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold ${step === 1 ? 'bg-primary text-white' : step === 2 ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'}`}>
+                      {step}
+                    </div>
+                    <span className="w-16 text-center text-[9px] text-muted-foreground mt-1">{label}</span>
+                  </div>
+                  {idx < 3 && <div className={`flex-1 h-0.5 mt-4 ${step <= 2 ? 'bg-green-500' : 'bg-gray-200'}`} />}
+                </Fragment>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Banner */}
+        <div className="px-4">
+          <div className="bg-gradient-to-br from-primary/10 via-red-50 to-red-100/50 rounded-xl p-4 border border-primary/20 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl" />
+            <div className="relative z-10">
+              <h3 className="font-bold text-sm mb-1">Ține evidența produselor de top și fii la curent</h3>
+              <p className="text-xs text-muted-foreground">Monitorizăm automat dispozitivele tale și îți oferim recomandări personalizate de upgrade</p>
             </div>
           </div>
         </div>
 
-        <div className="px-4 space-y-4">
-          {equipment.map((item) => (
-            <Card key={item.id} className="p-4 border border-gray-100 shadow-sm bg-white">
-              <div className="space-y-3">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="font-bold text-base">{item.name}</h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      Cumpărat în {new Date(item.purchaseDate).toLocaleDateString('ro-RO', { month: 'long', year: 'numeric' })}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <span className={`text-xl font-black ${item.upgradeScore > 75 ? 'text-red-600' : item.upgradeScore < 40 ? 'text-green-600' : 'text-orange-500'}`}>
-                      {item.upgradeScore}%
-                    </span>
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Necesită schimbare</p>
-                  </div>
-                </div>
-
-                <Progress 
-                  value={item.upgradeScore} 
-                  className="h-1.5" 
-                  indicatorClassName={item.upgradeScore > 75 ? 'bg-red-600' : item.upgradeScore < 40 ? 'bg-green-500' : 'bg-orange-500'} 
-                />
-
-                <div className="bg-gradient-to-br from-indigo-50/80 to-blue-50/80 rounded-xl p-3 mt-3 border border-indigo-100 shadow-inner relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-1 opacity-20">
-                    <Zap className="h-10 w-10 text-indigo-500" />
-                  </div>
-                  <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-xs font-bold text-indigo-900 flex items-center gap-1.5">
-                        <MessageSquare className="h-3.5 w-3.5 text-indigo-600" />
-                        Cum se comportă dispozitivul tău?
+        <div className="px-4 space-y-3">
+          {equipment.map((item) => {
+            const isExpanded = expandedItems.includes(item.id);
+            return (
+              <Card key={item.id} className="border border-gray-100 shadow-sm bg-white overflow-hidden">
+                <div className="p-4 space-y-3">
+                  {/* Header with Image and Title */}
+                  <div className="flex gap-3">
+                    <div className="w-16 h-16 bg-gray-50 rounded-lg p-2 shrink-0">
+                      <img src={item.image} className="w-full h-full object-contain" alt={item.name} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-sm">{item.name}</h3>
+                      <p className="text-xs text-muted-foreground">{item.specs}</p>
+                      <p className="text-[10px] text-muted-foreground mt-1">
+                        Cumpărat în {new Date(item.purchaseDate).toLocaleDateString('ro-RO', { month: 'long', year: 'numeric' })}
                       </p>
-                      <span className="text-[9px] bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wide">Feedback rapid</span>
                     </div>
-                    
-                    <div className="flex gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => handleFeedback(item.id, true)} 
-                        className="flex-1 h-9 bg-white shadow-sm border-indigo-100 hover:bg-green-50 hover:text-green-700 hover:border-green-300 transition-all active:scale-95 group"
-                      >
-                        <span className="bg-green-100 text-green-700 p-1 rounded-full mr-1.5 group-hover:bg-green-200 transition-colors">
-                          <ThumbsUp className="h-3 w-3" />
-                        </span>
-                        Excelent
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => handleFeedback(item.id, false)} 
-                        className="flex-1 h-9 bg-white shadow-sm border-indigo-100 hover:bg-orange-50 hover:text-orange-700 hover:border-orange-300 transition-all active:scale-95 group"
-                      >
-                        <span className="bg-orange-100 text-orange-700 p-1 rounded-full mr-1.5 group-hover:bg-orange-200 transition-colors">
-                          <ThumbsDown className="h-3 w-3" />
-                        </span>
-                        Probleme
-                      </Button>
-                    </div>
-                    
-                    <p className="text-[10px] text-indigo-600/70 text-center mt-2 font-medium">Te ajutăm cu recomandări personalizate pe baza răspunsului tău.</p>
                   </div>
+
+                  {/* Features Grid */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {item.features.map((feature, idx) => {
+                      const Icon = feature.icon;
+                      const isActive = feature.status.includes('activă') || feature.status.includes('valabil');
+                      return (
+                        <div key={idx} className={`flex items-center gap-2 p-2 rounded-lg border ${isActive ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
+                          <div className={`w-6 h-6 rounded-full flex items-center justify-center ${isActive ? 'bg-green-100' : 'bg-gray-200'}`}>
+                            <Icon className={`h-3 w-3 ${isActive ? 'text-green-600' : 'text-gray-500'}`} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[10px] font-bold text-gray-900 leading-tight">{feature.label}</p>
+                            <p className={`text-[9px] leading-tight ${isActive ? 'text-green-600' : 'text-gray-500'}`}>{feature.status}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Recommendation Link */}
+                  {item.upgradeScore > 40 && (
+                    <button
+                      className="w-full flex items-center justify-between p-2.5 bg-gradient-to-r from-red-50 to-primary/5 rounded-lg border border-red-100 hover:shadow-sm transition-all text-left group"
+                    >
+                      <span className="text-xs font-medium text-gray-900">Vezi oferta personalizată pentru upgrade</span>
+                      <ChevronRight className="h-4 w-4 text-primary shrink-0 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  )}
                 </div>
 
-                {item.upgradeScore > 70 && (
-                  <button 
-                    onClick={() => onProductClick?.(getProductById(item.productId) ?? { id: item.productId, name: item.recommendation })}
-                    className="w-full flex items-center gap-2 p-3 bg-gradient-to-r from-red-50 to-primary/5 rounded-xl border border-red-100 hover:shadow-sm transition-all text-left group"
-                  >
-                    <div className="flex-1">
-                      <span className="block text-[10px] font-bold text-red-600 uppercase mb-0.5">evoMAG recomandă</span>
-                      <p className="text-sm font-semibold text-gray-900">{item.recommendation}</p>
-                    </div>
-                    <ChevronRight className="h-4 w-4 text-primary shrink-0 group-hover:translate-x-1 transition-transform" />
-                  </button>
+                {/* Expandable Section */}
+                <button
+                  onClick={() => setExpandedItems(prev =>
+                    isExpanded ? prev.filter(id => id !== item.id) : [...prev, item.id]
+                  )}
+                  className="w-full flex items-center justify-between px-4 py-2.5 bg-gray-50 border-t border-gray-100 hover:bg-gray-100 transition-colors"
+                >
+                  <span className="text-xs font-medium text-gray-700">Recomandări timp de upgrade</span>
+                  {isExpanded ? <ChevronUp className="h-4 w-4 text-gray-500" /> : <ChevronDown className="h-4 w-4 text-gray-500" />}
+                </button>
+
+                {isExpanded && (
+                  <div className="px-4 py-3 bg-blue-50/50 border-t border-blue-100">
+                    <p className="text-xs text-gray-700 leading-relaxed">{item.upgradeDetails}</p>
+                  </div>
                 )}
-              </div>
-            </Card>
-          ))}
+              </Card>
+            );
+          })}
         </div>
       </div>
 
@@ -243,7 +374,9 @@ export function Profile({ onProductClick }: ProfileProps) {
             <Package className="h-5 w-5 text-primary" />
           </div>
           <span className="flex-1 text-left font-medium">Comenzile mele</span>
-          <Badge className="bg-primary/10 text-primary border-0 rounded-full">3</Badge>
+          {loadOrders().length > 0 && (
+            <Badge className="bg-primary/10 text-primary border-0 rounded-full">{loadOrders().length}</Badge>
+          )}
           <ChevronRight className="h-5 w-5 text-muted-foreground" />
         </button>
 

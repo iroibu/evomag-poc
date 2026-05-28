@@ -1,4 +1,4 @@
-import { Home, Search, MessageCircle, ShoppingCart, User } from "lucide-react";
+import { Home, MessageCircle, ShoppingCart, Heart, User } from "lucide-react";
 import { motion } from "motion/react";
 
 interface BottomNavProps {
@@ -10,6 +10,7 @@ interface BottomNavProps {
 const tabs = [
   { id: "home", icon: Home, label: "Acasă" },
   { id: "assistant", icon: MessageCircle, label: "EvoMi" },
+  { id: "wishlist", icon: Heart, label: "Favorite" },
   { id: "cart", icon: ShoppingCart, label: "Coș" },
   { id: "profile", icon: User, label: "Profil" },
 ];

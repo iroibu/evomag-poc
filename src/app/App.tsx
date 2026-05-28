@@ -7,6 +7,8 @@ import { SearchScreen } from "./components/SearchScreen";
 import { AIAssistant } from "./components/AIAssistant";
 import { CartScreen, CartItemType } from "./components/CartScreen";
 import { CheckoutScreen } from "./components/CheckoutScreen";
+import { OrderConfirmationScreen } from "./components/OrderConfirmationScreen";
+import { OrderDetailScreen } from "./components/OrderDetailScreen";
 import { Toaster, toast } from "sonner";
 import { Wishlist } from "./components/Wishlist";
 import { Profile } from "./components/Profile";
@@ -17,6 +19,7 @@ import { Search, Bell } from "lucide-react";
 import { ProductDetail } from "./components/ProductDetail";
 import { Badge } from "./components/ui/badge";
 import { Button } from "./components/ui/button";
+import { type Order } from "./components/CheckoutScreen";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("home");
@@ -29,6 +32,8 @@ export default function App() {
   };
   const [cartItems, setCartItems] = useState<CartItemType[]>([]);
   const [showCheckout, setShowCheckout] = useState(false);
+  const [confirmedOrder, setConfirmedOrder] = useState<Order | null>(null);
+  const [viewingOrder, setViewingOrder] = useState<Order | null>(null);
   const [showNotifications, setShowNotifications] = useState(false);
   const [categoryView, setCategoryView] = useState<{ title: string, products: any[] } | null>(null);
 
@@ -81,6 +86,8 @@ export default function App() {
                  onRemoveItem={removeFromCart} 
                  onCheckout={() => setShowCheckout(true)} 
                />;
+      case "wishlist":
+        return <Wishlist />;
       case "profile":
         return <Profile onProductClick={handleProductClick} />;
       default:
@@ -123,13 +130,43 @@ export default function App() {
       <div className="h-screen flex flex-col bg-background max-w-md mx-auto overflow-hidden">
         <CheckoutScreen 
           total={cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}
+          cartItems={cartItems}
           onBack={() => setShowCheckout(false)}
-          onSuccess={() => {
+          onSuccess={(order) => {
             setCartItems([]);
             setShowCheckout(false);
-            setActiveTab("home");
-            alert("Comanda a fost plasată cu succes!");
+            setConfirmedOrder(order);
           }}
+        />
+      </div>
+    );
+  }
+
+  if (confirmedOrder) {
+    return (
+      <div className="h-screen flex flex-col bg-background max-w-md mx-auto overflow-hidden">
+        <OrderConfirmationScreen
+          order={confirmedOrder}
+          onGoHome={() => {
+            setConfirmedOrder(null);
+            setActiveTab("home");
+          }}
+          onViewOrder={(order) => {
+            setConfirmedOrder(null);
+            setViewingOrder(order);
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (viewingOrder) {
+    return (
+      <div className="h-screen flex flex-col bg-background max-w-md mx-auto overflow-hidden">
+        <OrderDetailScreen
+          order={viewingOrder}
+          onBack={() => setViewingOrder(null)}
+          onProductClick={handleProductClick}
         />
       </div>
     );
