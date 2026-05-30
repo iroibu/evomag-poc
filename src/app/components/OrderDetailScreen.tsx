@@ -74,6 +74,8 @@ function TrackingTimeline({ status }: { status: DeliveryStatus }) {
                 >
                   {isCompleted && !isActive ? (
                     <CheckCircle2 className="h-4 w-4" />
+                  ) : isActive && step.status === "delivered" ? (
+                    <CheckCircle2 className="h-4 w-4" />
                   ) : isActive ? (
                     <Clock className="h-3.5 w-3.5" />
                   ) : (

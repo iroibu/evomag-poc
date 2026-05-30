@@ -93,6 +93,8 @@ export default function App() {
                  onUpdateQuantity={updateCartQuantity} 
                  onRemoveItem={removeFromCart} 
                  onCheckout={() => setShowCheckout(true)} 
+                 onProductClick={handleProductClick}
+                 onAddToCart={handleAddToCart}
                />;
       case "wishlist":
         return <Wishlist onProductClick={handleProductClick} onAddToCart={handleAddToCart} />;

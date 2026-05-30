@@ -27,6 +27,20 @@ export function getOrders(): Order[] {
   }
 }
 
+export function seedOrder(products: OrderProduct[], deliveryStatus: DeliveryStatus): void {
+  const existing = getOrders();
+  if (existing.length > 0) return;
+
+  const order: Order = {
+    orderNumber: 1,
+    orderDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    products,
+    deliveryStatus,
+  };
+
+  localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify([order]));
+}
+
 export function saveOrder(cartItems: CartItemType[], total: number): Order {
   const existing = getOrders();
   const lastOrderNumber = existing.length > 0 ? Math.max(...existing.map((o) => o.orderNumber)) : 0;

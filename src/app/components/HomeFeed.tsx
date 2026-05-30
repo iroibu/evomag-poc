@@ -261,13 +261,11 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
 
     const { selectedCategories, selectedBrands } = prefs;
 
-    const score = (p: typeof allProducts[0]) => {
-      const brandMatch = p.brand && selectedBrands.includes(p.brand) ? 2 : 0;
-      const categoryMatch = p.category && selectedCategories.includes(p.category) ? 1 : 0;
-      return brandMatch + categoryMatch;
-    };
-
-    return [...allProducts].sort((a, b) => score(b) - score(a));
+    return allProducts.filter((p) => {
+      const brandMatch = p.brand && selectedBrands.includes(p.brand);
+      const categoryMatch = p.category && selectedCategories.includes(p.category);
+      return brandMatch || categoryMatch;
+    });
   }, []);
 
   const hasPersonalization = useMemo(() => {

@@ -1,14 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Heart, Share2, Star, TrendingDown, Sparkles, ShoppingCart, ChevronLeft, Check, Truck, Scale } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Card } from "./ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
 import { Progress } from "./ui/progress";
+import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
 import { motion } from "motion/react";
 import { isInWishlist, toggleWishlist } from "../services/wishlist";
+import { getRecentlyViewed } from "../services/recentlyViewed";
 import specificationsData from "../../data/specifications.json";
 import reviewsData from "../../data/reviews.json";
+import productsData from "../../data/products.json";
+import { ProductCard } from "./ProductCard";
 
 interface ProductDetailProps {
   product: any;
@@ -21,15 +25,74 @@ export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailPro
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedStorage, setSelectedStorage] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(() => isInWishlist(String(product.id)));
+  const [city, setCity] = useState<string | null>(null);
+  const [cityLoading, setCityLoading] = useState(true);
+
+  const deliveryDate = (() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toLocaleDateString("ro-RO", { day: "numeric", month: "long" });
+  })();
+
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setCityLoading(false);
+      setCity("BUCUREȘTI");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${coords.latitude}&lon=${coords.longitude}&format=json`,
+            { headers: { "Accept-Language": "ro" } }
+          );
+          const data = await res.json();
+          const name =
+            data.address?.city ||
+            data.address?.town ||
+            data.address?.village ||
+            data.address?.county ||
+            "BUCUREȘTI";
+          setCity(name);
+        } catch {
+          setCity("BUCUREȘTI");
+        } finally {
+          setCityLoading(false);
+        }
+      },
+      () => {
+        setCity("BUCUREȘTI");
+        setCityLoading(false);
+      }
+    );
+  }, []);
 
   const imageList: string[] = product.images ?? [product.imageUrl ?? product.image ?? ""];
   const oldPrice: number | undefined = product.oldPrice ?? product.originalPrice;
-  const reviewCount: number = product.reviews ?? product.reviewCount ?? 0;
   const productColors: { name: string; color: string }[] | undefined = product.colors;
   const productStorage: string[] | undefined = product.storage;
   const discountPercent = oldPrice ? Math.round((1 - product.price / oldPrice) * 100) : null;
   const productSpecs = specificationsData.find((s) => s.productId === String(product.id))?.specs ?? [];
   const productReviews = reviewsData.filter((r) => r.productId === String(product.id));
+  const reviewCount = productReviews.length;
+  const computedRating = reviewCount > 0
+    ? Math.round((productReviews.reduce((sum, r) => sum + r.rating, 0) / reviewCount) * 10) / 10
+    : null;
+
+  const allProducts = productsData as any[];
+  const recommended = useMemo(() =>
+    allProducts.filter(p => p.category === product.category && String(p.id) !== String(product.id)).slice(0, 8),
+    [product.id, product.category]
+  );
+  const recentlyViewed = useMemo(() =>
+    getRecentlyViewed().filter(p => String(p.id) !== String(product.id)),
+    [product.id]
+  );
+  const boughtByOthers = useMemo(() =>
+    allProducts.filter(p => String(p.id) !== String(product.id)).slice(3, 11),
+    [product.id]
+  );
 
   return (
     <div className="h-screen flex flex-col bg-background max-w-md mx-auto overflow-hidden">
@@ -99,7 +162,7 @@ export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailPro
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-1">
                 <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <span className="font-bold text-sm">{product.rating ?? 4.5}</span>
+                <span className="font-bold text-sm">{computedRating ?? "—"}</span>
                 <span className="text-xs text-muted-foreground underline ml-1">({reviewCount} recenzii)</span>
               </div>
               <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-0 font-semibold px-2 py-0.5">În stoc</Badge>
@@ -113,14 +176,27 @@ export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailPro
             </div>
 
             {/* Delivery ETA */}
-            <div className="flex items-center gap-3 mt-4 p-3 bg-muted/50 rounded-xl border border-gray-100">
-              <div className="bg-white p-2 rounded-full shadow-sm">
-                <Truck className="h-4 w-4 text-primary" />
+            {cityLoading ? (
+              <div className="flex items-center gap-3 mt-4 p-3 bg-muted/50 rounded-xl border border-gray-100 animate-pulse">
+                <div className="bg-white p-2 rounded-full shadow-sm shrink-0">
+                  <Truck className="h-4 w-4 text-muted-foreground/30" />
+                </div>
+                <div className="flex-1 space-y-2">
+                  <div className="h-3.5 bg-muted-foreground/20 rounded w-3/4" />
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-semibold">Livrare estimată în BUCUREȘTI pe 26 Octombrie</p>
+            ) : (
+              <div className="flex items-center gap-3 mt-4 p-3 bg-muted/50 rounded-xl border border-gray-100">
+                <div className="bg-white p-2 rounded-full shadow-sm">
+                  <Truck className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold">
+                    Livrare estimată în {city!.toUpperCase()} pe {deliveryDate}
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Review Summary */}
@@ -131,7 +207,11 @@ export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailPro
                   Rezumat Recenzii
                 </h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Cumpărătorii apreciază <strong>autonomia excelentă a bateriei</strong> și <strong>calitatea camerei foto</strong>. Unii utilizatori au menționat că telefonul se poate încălzi ușor în timpul jocurilor intense.
+                  {product.reviewSummary
+                    ? product.reviewSummary.split(/\*\*(.+?)\*\*/g).map((part: string, i: number) =>
+                        i % 2 === 1 ? <strong key={i}>{part}</strong> : part
+                      )
+                    : "Nu există un rezumat disponibil pentru acest produs."}
                 </p>
               </div>
             </div>
@@ -270,6 +350,35 @@ export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailPro
             </TabsContent>
           </Tabs>
         </div>
+
+        {/* Product Carousels */}
+        {[
+          { title: "Îți mai recomandăm și...", items: recommended },
+          { title: "Cumpărate de alți clienți", items: boughtByOthers },
+          { title: "Văzute recent", items: recentlyViewed },
+        ].map(({ title, items }) => items.length > 0 && (
+          <div key={title} className="py-4 border-t">
+            <h2 className="text-base font-bold px-4 mb-3">{title}</h2>
+            <Carousel opts={{ align: "start", dragFree: true }}>
+              <CarouselContent className="-ml-2 px-4">
+                {items.map((p: any) => (
+                  <CarouselItem key={p.id} className="pl-2 basis-[160px]">
+                    <ProductCard
+                      id={String(p.id)}
+                      name={p.name}
+                      price={p.price}
+                      originalPrice={p.oldPrice}
+                      rating={p.rating}
+                      reviewCount={p.reviewCount ?? p.reviews}
+                      imageUrl={p.imageUrl ?? p.image ?? ""}
+                      badge={p.badge}
+                    />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+          </div>
+        ))}
       </div>
 
       {/* Bottom CTA */}

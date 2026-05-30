@@ -3,6 +3,8 @@ import { ChevronLeft, MapPin, CreditCard, ShieldCheck, Smartphone, Wallet, Landm
 import { Button } from "./ui/button";
 import { LockerPickerModal, type Locker } from "./LockerPickerModal";
 import { saveOrder, type Order } from "../services/orders";
+import { loadAddresses } from "../services/addresses";
+import { loadCards, addCard } from "../services/cards";
 import { type CartItemType } from "./CartScreen";
 
 interface CheckoutScreenProps {
@@ -21,17 +23,22 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
   const [deliveryMethod, setDeliveryMethod] = useState<"curier" | "depozit" | "locker">("curier");
   
   const [paymentMethod, setPaymentMethod] = useState<string>("apple_pay");
-  const [selectedSavedCard, setSelectedSavedCard] = useState<string>("card1");
+  const [selectedSavedCard, setSelectedSavedCard] = useState<string>(() => {
+    const cards = loadCards();
+    return cards.find(c => c.isMain)?.id ?? cards[0]?.id ?? "";
+  });
   const [installments, setInstallments] = useState<number>(3);
   const [agreedTerms, setAgreedTerms] = useState(false);
   const [newsletter, setNewsletter] = useState(false);
   const [isLockerModalOpen, setIsLockerModalOpen] = useState(false);
   const [selectedLocker, setSelectedLocker] = useState<Locker | null>(null);
+  const [isAddCardModalOpen, setIsAddCardModalOpen] = useState(false);
+  const [newCardForm, setNewCardForm] = useState({ number: "", expiry: "", name: "", cvv: "" });
+  const [savedCardsState, setSavedCardsState] = useState(() => loadCards());
 
-  const savedCards = [
-    { id: "card1", number: "**** **** **** 4242", type: "Visa", expiry: "12/26", isMain: true },
-    { id: "card2", number: "**** **** **** 5555", type: "Mastercard", expiry: "08/25", isMain: false }
-  ];
+  const mainAddress = loadAddresses().find(a => a.isMain) ?? null;
+
+  const savedCards = savedCardsState;
 
   const PAYMENT_GROUPS = [
     {
@@ -189,8 +196,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                       <span className="font-semibold text-sm text-[#111111]">Adresa din profil</span>
                     </div>
                     <p className="text-xs text-[#6B7280] leading-relaxed">
-                      Str. Primăverii nr. 14, Bl. A, Ap. 12<br />
-                      București, Sector 1
+                      {mainAddress ? <>{mainAddress.street}<br />{mainAddress.city}</> : "Nicio adresă salvată"}
                     </p>
                   </div>
                 </label>
@@ -288,8 +294,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                         <span className="font-semibold text-sm text-[#111111]">Adresa din profil</span>
                       </div>
                       <p className="text-xs text-[#6B7280] leading-relaxed">
-                        Str. Primăverii nr. 14, Bl. A, Ap. 12<br />
-                        București, Sector 1
+                        {mainAddress ? <>{mainAddress.street}<br />{mainAddress.city}</> : "Nicio adresă salvată"}
                       </p>
                     </div>
                   </label>
@@ -422,7 +427,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                                     </div>
                                   </label>
                                 ))}
-                                <label className="flex items-center gap-3 p-3 rounded-xl border border-dashed border-gray-300 bg-white/50 hover:bg-white hover:border-[#E31E24] cursor-pointer transition-colors mt-2" onClick={() => setSelectedSavedCard("new")}>
+                                <label className="flex items-center gap-3 p-3 rounded-xl border border-dashed border-gray-300 bg-white/50 hover:bg-white hover:border-[#E31E24] cursor-pointer transition-colors mt-2" onClick={() => setIsAddCardModalOpen(true)}>
                                   <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${selectedSavedCard === "new" ? 'border-[#E31E24]' : 'border-gray-300'}`}>
                                     {selectedSavedCard === "new" && <div className="w-2 h-2 bg-[#E31E24] rounded-full" />}
                                   </div>
@@ -655,6 +660,96 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
             setIsLockerModalOpen(false);
           }}
         />
+      )}
+
+      {isAddCardModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setIsAddCardModalOpen(false)}>
+          <div className="bg-[#F5F5F7] rounded-t-3xl sm:rounded-2xl w-full sm:max-w-md p-5 space-y-4 shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="font-black text-lg text-[#111111]">Adaugă card nou</h3>
+              <button onClick={() => setIsAddCardModalOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-[#E5E5EA] text-[#6B7280] hover:bg-gray-300 transition-colors">✕</button>
+            </div>
+            <div className="bg-white p-4 rounded-2xl border border-[#E5E5EA] shadow-sm space-y-4">
+              <div>
+                <label className="text-xs font-bold text-[#6B7280] mb-1.5 block">Număr card</label>
+                <input
+                  type="text"
+                  placeholder="0000 0000 0000 0000"
+                  maxLength={19}
+                  className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-[#E31E24] outline-none transition-all"
+                  value={newCardForm.number}
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, "").slice(0, 16);
+                    const formatted = digits.replace(/(.{4})/g, "$1 ").trim();
+                    setNewCardForm({...newCardForm, number: formatted});
+                  }}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-[#6B7280] mb-1.5 block">Nume titular</label>
+                <input
+                  type="text"
+                  placeholder="Nume Prenume"
+                  className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-[#E31E24] outline-none transition-all"
+                  value={newCardForm.name}
+                  onChange={(e) => setNewCardForm({...newCardForm, name: e.target.value})}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-bold text-[#6B7280] mb-1.5 block">Expirare</label>
+                  <input
+                    type="text"
+                    placeholder="LL/AA"
+                    maxLength={5}
+                    className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-[#E31E24] outline-none transition-all"
+                    value={newCardForm.expiry}
+                    onChange={(e) => setNewCardForm({...newCardForm, expiry: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-[#6B7280] mb-1.5 block">CVV</label>
+                  <input
+                    type="password"
+                    placeholder="***"
+                    maxLength={3}
+                    className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-[#E31E24] outline-none transition-all"
+                    value={newCardForm.cvv}
+                    onChange={(e) => setNewCardForm({...newCardForm, cvv: e.target.value})}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setIsAddCardModalOpen(false)}
+                className="flex-1 py-3.5 rounded-xl font-bold text-[#111111] bg-white border border-[#E5E5EA] hover:bg-gray-50 transition-colors"
+              >
+                Renunță
+              </button>
+              <button
+                onClick={() => {
+                  if (newCardForm.number.length > 4) {
+                    const lastFour = newCardForm.number.replace(/\s/g, "").slice(-4);
+                    const updated = addCard({
+                      number: `**** **** **** ${lastFour}`,
+                      expiry: newCardForm.expiry || "12/28",
+                      type: newCardForm.number.trim().startsWith("4") ? "Visa" : "Mastercard",
+                      isMain: savedCardsState.length === 0,
+                    });
+                    setSavedCardsState(updated);
+                    setSelectedSavedCard(updated[updated.length - 1].id);
+                    setIsAddCardModalOpen(false);
+                    setNewCardForm({ number: "", expiry: "", name: "", cvv: "" });
+                  }
+                }}
+                className="flex-1 py-3.5 rounded-xl font-bold text-white bg-[#E31E24] hover:bg-red-700 transition-colors"
+              >
+                Salvează card
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

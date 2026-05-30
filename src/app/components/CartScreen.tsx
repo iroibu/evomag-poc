@@ -3,6 +3,7 @@ import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { Button } from "./ui/button";
 import { ProductCard } from "./ProductCard";
 import { getWishlist } from "../services/wishlist";
+import { getOrders } from "../services/orders";
 import productsJson from "../../data/products.json";
 import type { Product } from "../../data/types";
 
@@ -66,12 +67,26 @@ interface CartScreenProps {
   onUpdateQuantity: (id: string, delta: number) => void;
   onRemoveItem: (id: string) => void;
   onCheckout: () => void;
+  onProductClick?: (product: any) => void;
+  onAddToCart?: (product: any) => void;
 }
 
-export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onCheckout }: CartScreenProps) {
+export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onCheckout, onProductClick, onAddToCart }: CartScreenProps) {
   const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   const wishlistProducts = useMemo<Product[]>(() => getWishlist(), []);
+
+  const buyAgainProducts = useMemo(() => {
+    const orders = getOrders();
+    const seen = new Set<string>();
+    return orders
+      .flatMap((o) => o.products)
+      .filter((p) => {
+        if (seen.has(p.id)) return false;
+        seen.add(p.id);
+        return true;
+      });
+  }, []);
 
   const frequentlyBought = useMemo<Product[]>(() => {
     const shuffled = [...productsJson].sort(() => Math.random() - 0.5);
@@ -159,7 +174,7 @@ export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onChecko
           <SectionHeader title="Cumpărate frecvent împreună" />
           <ProductScroll>
             {frequentlyBought.map((product) => (
-              <div key={product.id} className="w-[150px] shrink-0 snap-start">
+              <div key={product.id} className="w-[150px] shrink-0 snap-start" onClick={() => onProductClick?.(product)}>
                 <ProductCard
                   id={product.id}
                   name={product.name}
@@ -169,6 +184,7 @@ export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onChecko
                   badge={product.badge}
                   rating={product.rating}
                   reviewCount={product.reviewCount ?? product.reviews}
+                  onAddToCart={() => onAddToCart?.(product)}
                 />
               </div>
             ))}
@@ -181,7 +197,7 @@ export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onChecko
             <SectionHeader title="Produsele tale favorite" />
             <ProductScroll>
               {wishlistProducts.map((product) => (
-                <div key={product.id} className="w-[150px] shrink-0 snap-start">
+                <div key={product.id} className="w-[150px] shrink-0 snap-start" onClick={() => onProductClick?.(product)}>
                   <ProductCard
                     id={product.id}
                     name={product.name}
@@ -191,6 +207,27 @@ export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onChecko
                     badge={product.badge}
                     rating={product.rating}
                     reviewCount={product.reviewCount ?? product.reviews}
+                    onAddToCart={() => onAddToCart?.(product)}
+                  />
+                </div>
+              ))}
+            </ProductScroll>
+          </section>
+        )}
+
+        {/* Cumpara din nou */}
+        {buyAgainProducts.length > 0 && (
+          <section className="bg-white rounded-xl py-4 shadow-sm -mx-4 px-0">
+            <SectionHeader title="Cumpara din nou" />
+            <ProductScroll>
+              {buyAgainProducts.map((product) => (
+                <div key={product.id} className="w-[150px] shrink-0 snap-start" onClick={() => onProductClick?.({ id: product.id, name: product.name, price: product.paidPrice, imageUrl: product.imageUrl })}>
+                  <ProductCard
+                    id={product.id}
+                    name={product.name}
+                    price={product.paidPrice}
+                    imageUrl={product.imageUrl}
+                    onAddToCart={() => onAddToCart?.({ id: product.id, name: product.name, price: product.paidPrice, imageUrl: product.imageUrl })}
                   />
                 </div>
               ))}

@@ -3,6 +3,8 @@ import { Wishlist } from "./Wishlist";
 import { OrderDetailScreen } from "./OrderDetailScreen";
 import { getOrders, type Order } from "../services/orders";
 import { getWishlist } from "../services/wishlist";
+import { loadAddresses, saveAddresses, updateAddress, deleteAddress, type Address } from "../services/addresses";
+import { loadCards, addCard, setMainCard, deleteCard, type PaymentCard } from "../services/cards";
 import { 
   Package, 
   CreditCard, 
@@ -29,7 +31,8 @@ import {
   Calendar,
   Tag,
   Activity,
-  Search
+  Search,
+  Trash2
 } from "lucide-react";
 import { Card } from "./ui/card";
 import { Avatar } from "./ui/avatar";
@@ -134,15 +137,14 @@ export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
   const [isAddingCard, setIsAddingCard] = useState(false);
   const [newCardData, setNewCardData] = useState({ number: "", expiry: "", name: "" });
 
-  const [addresses, setAddresses] = useState([
-    { id: "a1", name: "Acasă", street: "Strada Primăverii, Nr. 14, Bl. A", city: "București, Sector 1", isMain: true },
-    { id: "a2", name: "Birou", street: "Bulevardul Pipera, Nr. 1", city: "București, Sector 2", isMain: false },
-  ]);
+  // Address adding state
+  const [isAddingAddress, setIsAddingAddress] = useState(false);
+  const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
+  const [newAddressData, setNewAddressData] = useState({ judet: "", localitate: "", adresa: "", codPostal: "" });
 
-  const [cards, setCards] = useState([
-    { id: "c1", number: "**** **** **** 4242", expiry: "12/26", type: "Visa", isMain: true },
-    { id: "c2", number: "**** **** **** 5555", expiry: "08/25", type: "Mastercard", isMain: false },
-  ]);
+  const [addresses, setAddresses] = useState<Address[]>(() => loadAddresses());
+
+  const [cards, setCards] = useState<PaymentCard[]>(() => loadCards());
 
   const handleOpenOrders = (filter: OrderStatus) => {
     setOrderFilter(filter);
@@ -151,21 +153,70 @@ export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
 
   const handleSaveCard = () => {
     if (newCardData.number.length > 4) {
-      const lastFour = newCardData.number.slice(-4);
-      const isVisa = newCardData.number.startsWith("4");
-      
-      setCards([...cards, {
-        id: Math.random().toString(),
+      const lastFour = newCardData.number.replace(/\s/g, "").slice(-4);
+      const isVisa = newCardData.number.trim().startsWith("4");
+      const updated = addCard({
         number: `**** **** **** ${lastFour}`,
         expiry: newCardData.expiry || "12/28",
         type: isVisa ? "Visa" : "Mastercard",
         isMain: cards.length === 0
-      }]);
+      });
+      setCards(updated);
       setIsAddingCard(false);
       setNewCardData({ number: "", expiry: "", name: "" });
     } else {
       alert("Introduceți un număr de card valid.");
     }
+  };
+
+  const handleSaveAddress = () => {
+    if (newAddressData.adresa.trim().length > 0 && newAddressData.localitate.trim().length > 0) {
+      const newAddress: Address = {
+        id: Date.now().toString(),
+        name: newAddressData.localitate.trim(),
+        street: newAddressData.adresa.trim(),
+        city: `${newAddressData.localitate.trim()}${newAddressData.judet.trim() ? ", " + newAddressData.judet.trim() : ""}`,
+        isMain: addresses.length === 0
+      };
+      const updated = [...addresses, newAddress];
+      saveAddresses(updated);
+      setAddresses(updated);
+      setIsAddingAddress(false);
+      setNewAddressData({ judet: "", localitate: "", adresa: "", codPostal: "" });
+    } else {
+      alert("Introduceți cel puțin adresa și localitatea.");
+    }
+  };
+
+  const handleEditAddress = (addr: Address) => {
+    setEditingAddressId(addr.id);
+    setNewAddressData({
+      judet: "",
+      localitate: addr.name,
+      adresa: addr.street,
+      codPostal: ""
+    });
+  };
+
+  const handleUpdateAddress = () => {
+    if (!editingAddressId) return;
+    if (newAddressData.adresa.trim().length > 0 && newAddressData.localitate.trim().length > 0) {
+      const updated = updateAddress(editingAddressId, {
+        name: newAddressData.localitate.trim(),
+        street: newAddressData.adresa.trim(),
+        city: `${newAddressData.localitate.trim()}${newAddressData.judet.trim() ? ", " + newAddressData.judet.trim() : ""}`
+      });
+      setAddresses(updated);
+      setEditingAddressId(null);
+      setNewAddressData({ judet: "", localitate: "", adresa: "", codPostal: "" });
+    } else {
+      alert("Introduceți cel puțin adresa și localitatea.");
+    }
+  };
+
+  const handleDeleteAddress = (id: string) => {
+    const updated = deleteAddress(id);
+    setAddresses(updated);
   };
 
   const renderHeader = (title: string, onBack?: () => void) => (
@@ -280,7 +331,11 @@ export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
                   maxLength={19}
                   className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-[#E31E24] outline-none transition-all"
                   value={newCardData.number}
-                  onChange={(e) => setNewCardData({...newCardData, number: e.target.value})}
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, "").slice(0, 16);
+                    const formatted = digits.replace(/(.{4})/g, "$1 ").trim();
+                    setNewCardData({...newCardData, number: formatted});
+                  }}
                 />
               </div>
               <div>
@@ -344,7 +399,8 @@ export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
             <Card 
               key={card.id}
               onClick={() => {
-                setCards(cards.map(c => ({ ...c, isMain: c.id === card.id })));
+                const updated = setMainCard(card.id);
+                setCards(updated);
               }}
               className={`p-4 border-2 shadow-sm rounded-2xl relative overflow-hidden cursor-pointer transition-colors ${
                 card.isMain ? "border-[#E31E24] bg-[#FEF2F2]" : "border-[#E5E5EA] bg-white hover:border-gray-300"
@@ -352,13 +408,36 @@ export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
             >
               {card.isMain && <div className="absolute top-0 right-0 bg-[#E31E24] text-white text-[10px] font-bold px-2.5 py-1 rounded-bl-lg">Principal</div>}
               <div className="flex items-center gap-4">
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 ${card.isMain ? 'bg-white text-[#E31E24]' : 'bg-[#F5F5F7] text-[#6B7280]'}`}>
-                  <CreditCard className="h-6 w-6" />
+                <div className={`w-14 h-10 rounded-lg flex items-center justify-center shrink-0 overflow-hidden ${card.isMain ? 'bg-white shadow-sm' : 'bg-[#F5F5F7]'}`}>
+                  {card.type.toLowerCase() === "visa" ? (
+                    <svg viewBox="0 0 48 20" className="w-10 h-auto" aria-label="Visa">
+                      <text x="24" y="15" textAnchor="middle" fontFamily="Arial, sans-serif" fontWeight="bold" fontSize="15" fill="#1A1F71" letterSpacing="-0.5">VISA</text>
+                    </svg>
+                  ) : card.type.toLowerCase() === "mastercard" ? (
+                    <svg viewBox="0 0 38 24" className="w-9 h-auto" aria-label="Mastercard">
+                      <circle cx="13" cy="12" r="10" fill="#EB001B" />
+                      <circle cx="25" cy="12" r="10" fill="#F79E1B" />
+                      <path d="M19 4.8a10 10 0 0 1 0 14.4A10 10 0 0 1 19 4.8z" fill="#FF5F00" />
+                    </svg>
+                  ) : (
+                    <CreditCard className={`h-6 w-6 ${card.isMain ? 'text-[#E31E24]' : 'text-[#6B7280]'}`} />
+                  )}
                 </div>
                 <div>
                   <p className={`font-bold text-base ${card.isMain ? 'text-[#E31E24]' : 'text-[#111111]'}`}>{card.number}</p>
                   <p className={`text-xs ${card.isMain ? 'text-[#E31E24]/70' : 'text-[#6B7280]'}`}>Expiră {card.expiry} • {card.type}</p>
                 </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const updated = deleteCard(card.id);
+                    setCards(updated);
+                  }}
+                  className="ml-auto p-2 rounded-xl text-gray-400 hover:text-[#E31E24] hover:bg-red-50 transition-colors"
+                  aria-label="Șterge card"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
             </Card>
           ))}
@@ -374,15 +453,93 @@ export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
   }
 
   if (activeView === "addresses") {
+    if (isAddingAddress || editingAddressId !== null) {
+      const isEditing = editingAddressId !== null;
+      return (
+        <div className="flex flex-col h-full bg-[#F5F5F7]">
+          {renderHeader(isEditing ? "Editează adresa" : "Adaugă adresă nouă", () => {
+            setIsAddingAddress(false);
+            setEditingAddressId(null);
+            setNewAddressData({ judet: "", localitate: "", adresa: "", codPostal: "" });
+          })}
+          <div className="p-4 space-y-4 overflow-y-auto">
+            <div className="bg-white p-5 rounded-2xl border border-[#E5E5EA] shadow-sm space-y-4">
+              <div>
+                <label className="text-xs font-bold text-[#6B7280] mb-1.5 block">Județ</label>
+                <input
+                  type="text"
+                  placeholder="Județ"
+                  className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-[#E31E24] outline-none transition-all"
+                  value={newAddressData.judet}
+                  onChange={(e) => setNewAddressData({...newAddressData, judet: e.target.value})}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-[#6B7280] mb-1.5 block">Localitate/sector</label>
+                <input
+                  type="text"
+                  placeholder="Localitate/sector"
+                  className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-[#E31E24] outline-none transition-all"
+                  value={newAddressData.localitate}
+                  onChange={(e) => setNewAddressData({...newAddressData, localitate: e.target.value})}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-[#6B7280] mb-1.5 block">Adresă</label>
+                <input
+                  type="text"
+                  placeholder="Adresă"
+                  className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-[#E31E24] outline-none transition-all"
+                  value={newAddressData.adresa}
+                  onChange={(e) => setNewAddressData({...newAddressData, adresa: e.target.value})}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-[#6B7280] mb-1.5 block">Cod poștal</label>
+                <input
+                  type="text"
+                  placeholder="Cod poștal"
+                  className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-[#E31E24] outline-none transition-all"
+                  value={newAddressData.codPostal}
+                  onChange={(e) => setNewAddressData({...newAddressData, codPostal: e.target.value})}
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={() => {
+                  setIsAddingAddress(false);
+                  setEditingAddressId(null);
+                  setNewAddressData({ judet: "", localitate: "", adresa: "", codPostal: "" });
+                }}
+                className="flex-1 py-3.5 rounded-xl font-bold text-[#111111] bg-white border border-[#E5E5EA] hover:bg-gray-50 transition-colors"
+              >
+                Renunță
+              </button>
+              <button
+                onClick={isEditing ? handleUpdateAddress : handleSaveAddress}
+                className="flex-1 py-3.5 rounded-xl font-bold text-white bg-[#E31E24] hover:bg-red-700 transition-colors"
+              >
+                {isEditing ? "Actualizează adresa" : "Salvează adresa"}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="flex flex-col h-full bg-[#F5F5F7]">
         {renderHeader("Adresele mele")}
         <div className="p-4 space-y-3 overflow-y-auto">
           {addresses.map(addr => (
-            <Card 
+            <Card
               key={addr.id}
               onClick={() => {
-                setAddresses(addresses.map(a => ({ ...a, isMain: a.id === addr.id })));
+                const updated = addresses.map(a => ({ ...a, isMain: a.id === addr.id }));
+                saveAddresses(updated);
+                setAddresses(updated);
               }}
               className={`p-4 border-2 shadow-sm rounded-2xl relative overflow-hidden cursor-pointer transition-colors ${
                 addr.isMain ? "border-[#E31E24] bg-[#FEF2F2]" : "border-[#E5E5EA] bg-white hover:border-gray-300"
@@ -393,14 +550,24 @@ export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 mt-1 ${addr.isMain ? 'bg-white text-[#E31E24]' : 'bg-[#F5F5F7] text-[#6B7280]'}`}>
                   <MapPin className="h-5 w-5" />
                 </div>
-                <div>
+                <div className="flex-1 min-w-0">
                   <h4 className={`font-bold text-sm mb-1 ${addr.isMain ? 'text-[#E31E24]' : 'text-[#111111]'}`}>{addr.name}</h4>
                   <p className={`text-xs leading-relaxed ${addr.isMain ? 'text-[#E31E24]/80' : 'text-[#6B7280]'}`}>{addr.street}<br/>{addr.city}</p>
                 </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteAddress(addr.id);
+                  }}
+                  className="shrink-0 p-1.5 rounded-full text-[#6B7280] hover:text-[#E31E24] hover:bg-[#FEF2F2] transition-colors self-center"
+                  aria-label="Șterge adresa"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
             </Card>
           ))}
-          <button className="w-full flex items-center justify-center gap-2 py-4 border-2 border-dashed border-[#E5E5EA] rounded-2xl text-[#111111] font-bold hover:bg-white hover:border-gray-300 transition-colors mt-2">
+          <button onClick={() => setIsAddingAddress(true)} className="w-full flex items-center justify-center gap-2 py-4 border-2 border-dashed border-[#E5E5EA] rounded-2xl text-[#111111] font-bold hover:bg-white hover:border-gray-300 transition-colors mt-2">
             <Plus className="w-5 h-5" /> Adaugă adresă nouă
           </button>
         </div>
