@@ -5,8 +5,18 @@
     "description": "Montaj rapid și sigur",
     "image": "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&q=80",
     "subServices": [
-      { "id": "s1_1", "name": "Serviciu instalare aer condiționat 9000-12000 BTU",  "price": 450, "imageUrl": "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&q=80" },
-      { "id": "s1_2", "name": "Serviciu instalare aer condiționat 18000-24000 BTU", "price": 550, "imageUrl": "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&q=80" }
+      {
+        "id": "s1_1",
+        "name": "Serviciu instalare aer condiționat 9000-12000 BTU",
+        "price": 450,
+        "imageUrl": "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&q=80"
+      },
+      {
+        "id": "s1_2",
+        "name": "Serviciu instalare aer condiționat 18000-24000 BTU",
+        "price": 550,
+        "imageUrl": "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&q=80"
+      }
     ]
   },
   {
@@ -15,8 +25,18 @@
     "description": "Instalare profesională",
     "image": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&q=80",
     "subServices": [
-      { "id": "s2_1", "name": "Serviciu instalare mașină de spălat rufe", "price": 150, "imageUrl": "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?w=400&q=80" },
-      { "id": "s2_2", "name": "Serviciu instalare plită incorporabilă",   "price": 180, "imageUrl": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&q=80" }
+      {
+        "id": "s2_1",
+        "name": "Serviciu instalare mașină de spălat rufe",
+        "price": 150,
+        "imageUrl": "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?w=400&q=80"
+      },
+      {
+        "id": "s2_2",
+        "name": "Serviciu instalare plită incorporabilă",
+        "price": 180,
+        "imageUrl": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&q=80"
+      }
     ]
   },
   {
@@ -25,8 +45,18 @@
     "description": "Suport și montare pe perete",
     "image": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&q=80",
     "subServices": [
-      { "id": "s3_1", "name": "Serviciu montare suport TV pe perete (până la 43\")", "price": 150, "imageUrl": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&q=80" },
-      { "id": "s3_2", "name": "Serviciu montare suport TV pe perete (peste 43\")",   "price": 200, "imageUrl": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&q=80" }
+      {
+        "id": "s3_1",
+        "name": "Serviciu montare suport TV pe perete (până la 43\")",
+        "price": 150,
+        "imageUrl": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&q=80"
+      },
+      {
+        "id": "s3_2",
+        "name": "Serviciu montare suport TV pe perete (peste 43\")",
+        "price": 200,
+        "imageUrl": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&q=80"
+      }
     ]
   },
   {
@@ -35,8 +65,18 @@
     "description": "Asamblare benzi și biciclete",
     "image": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&q=80",
     "subServices": [
-      { "id": "s4_1", "name": "Serviciu asamblare bandă de alergat", "price": 250, "imageUrl": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&q=80" },
-      { "id": "s4_2", "name": "Serviciu asamblare bicicletă fitness", "price": 150, "imageUrl": "https://images.unsplash.com/photo-1540496905036-5937c10647cc?w=400&q=80" }
+      {
+        "id": "s4_1",
+        "name": "Serviciu asamblare bandă de alergat",
+        "price": 250,
+        "imageUrl": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&q=80"
+      },
+      {
+        "id": "s4_2",
+        "name": "Serviciu asamblare bicicletă fitness",
+        "price": 150,
+        "imageUrl": "https://images.unsplash.com/photo-1540496905036-5937c10647cc?w=400&q=80"
+      }
     ]
   },
   {
@@ -45,9 +85,24 @@
     "description": "Asamblare componente PC",
     "image": "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400&q=80",
     "subServices": [
-      { "id": "s5_1", "name": "Serviciu asamblare PC Standard",                        "price": 149, "imageUrl": "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400&q=80" },
-      { "id": "s5_2", "name": "Serviciu asamblare PC Premium (Wire management)",       "price": 249, "imageUrl": "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400&q=80" },
-      { "id": "s5_3", "name": "Serviciu montare componentă PC",                        "price": 50,  "imageUrl": "https://images.unsplash.com/photo-1555680202-c86f0e12f086?w=400&q=80" }
+      {
+        "id": "s5_1",
+        "name": "Serviciu asamblare PC Standard",
+        "price": 149,
+        "imageUrl": "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400&q=80"
+      },
+      {
+        "id": "s5_2",
+        "name": "Serviciu asamblare PC Premium (Wire management)",
+        "price": 249,
+        "imageUrl": "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400&q=80"
+      },
+      {
+        "id": "s5_3",
+        "name": "Serviciu montare componentă PC",
+        "price": 50,
+        "imageUrl": "https://images.unsplash.com/photo-1555680202-c86f0e12f086?w=400&q=80"
+      }
     ]
   }
 ]

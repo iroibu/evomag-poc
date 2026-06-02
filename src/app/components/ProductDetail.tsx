@@ -68,7 +68,7 @@ export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailPro
     );
   }, []);
 
-  const imageList: string[] = product.images ?? [product.imageUrl ?? product.image ?? ""];
+  const imageList: string[] = product.images ?? [];
   const oldPrice: number | undefined = product.oldPrice ?? product.originalPrice;
   const productColors: { name: string; color: string }[] | undefined = product.colors;
   const productStorage: string[] | undefined = product.storage;
@@ -112,7 +112,7 @@ export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailPro
                 name: product.name,
                 price: product.price,
                 oldPrice: product.oldPrice ?? product.originalPrice,
-                imageUrl: imageList[0],
+                images: imageList,
                 rating: product.rating,
                 reviews: product.reviews ?? product.reviewCount,
               });
@@ -128,14 +128,29 @@ export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailPro
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
         {/* Image Gallery */}
-        <div className="relative aspect-square bg-transparent">
+        <motion.div
+          className="relative aspect-square bg-transparent overflow-hidden"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.15}
+          onDragEnd={(_, info) => {
+            if (info.offset.x < -50) {
+              setSelectedImage(i => Math.min(i + 1, imageList.length - 1));
+            } else if (info.offset.x > 50) {
+              setSelectedImage(i => Math.max(i - 1, 0));
+            }
+          }}
+        >
           <motion.img
             key={selectedImage}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -30 }}
+            transition={{ duration: 0.2 }}
             src={imageList[selectedImage]}
             alt="Product"
-            className="w-full h-full object-contain p-8"
+            className="w-full h-full object-contain p-8 pointer-events-none"
+            draggable={false}
           />
           {discountPercent && (
             <Badge className="absolute top-4 left-4 bg-destructive text-destructive-foreground">
@@ -153,7 +168,7 @@ export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailPro
               />
             ))}
           </div>
-        </div>
+        </motion.div>
 
         <div className="px-4 py-5 space-y-6">
           {/* Title, Price & Key Info */}
@@ -368,9 +383,7 @@ export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailPro
                       name={p.name}
                       price={p.price}
                       originalPrice={p.oldPrice}
-                      rating={p.rating}
-                      reviewCount={p.reviewCount ?? p.reviews}
-                      imageUrl={p.imageUrl ?? p.image ?? ""}
+                      images={p.images ?? (p.image ? [p.image] : [])}
                       badge={p.badge}
                     />
                   </CarouselItem>
@@ -390,7 +403,7 @@ export function ProductDetail({ product, onBack, onAddToCart }: ProductDetailPro
             id: product.id,
             name: product.name,
             price: product.price,
-            imageUrl: imageList[0],
+            images: imageList,
           })}
         >
           <ShoppingCart className="h-5 w-5 mr-2" />

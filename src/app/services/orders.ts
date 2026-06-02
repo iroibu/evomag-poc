@@ -3,7 +3,7 @@ import { type CartItemType } from "../components/CartScreen";
 export interface OrderProduct {
   id: string;
   name: string;
-  imageUrl: string;
+  images: string[];
   paidPrice: number;
   quantity: number;
 }
@@ -51,7 +51,7 @@ export function saveOrder(cartItems: CartItemType[], total: number): Order {
     products: cartItems.map((item) => ({
       id: item.id,
       name: item.name,
-      imageUrl: item.imageUrl,
+      images: item.images,
       paidPrice: item.price,
       quantity: item.quantity,
     })),

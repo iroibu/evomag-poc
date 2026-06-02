@@ -291,7 +291,7 @@ export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
                 {firstProduct && (
                   <div className="flex items-center gap-4">
                     <div className="w-16 h-16 bg-[#F5F5F7] rounded-xl p-2 shrink-0">
-                      <img src={firstProduct.imageUrl} className="w-full h-full object-contain mix-blend-multiply" alt={firstProduct.name} />
+                      <img src={firstProduct.images?.[0] ?? ""} className="w-full h-full object-contain mix-blend-multiply" alt={firstProduct.name} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-sm text-[#111111] line-clamp-1">

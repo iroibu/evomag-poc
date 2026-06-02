@@ -158,11 +158,11 @@ export function OrderDetailScreen({ order, onBack, onProductClick }: OrderDetail
             {order.products.map((product) => (
               <button
                 key={product.id}
-                onClick={() => onProductClick?.({ id: product.id, name: product.name, imageUrl: product.imageUrl, price: product.paidPrice })}
+                onClick={() => onProductClick?.({ id: product.id, name: product.name, images: product.images, price: product.paidPrice })}
                 className="w-full flex items-center gap-3 text-left hover:bg-gray-50 rounded-lg p-1.5 -mx-1.5 transition-colors"
               >
                 <div className="w-14 h-14 bg-gray-100 rounded-lg p-1.5 shrink-0">
-                  <img src={product.imageUrl} alt={product.name} className="w-full h-full object-contain" />
+                  <img src={product.images?.[0] ?? ""} alt={product.name} className="w-full h-full object-contain" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 line-clamp-2 leading-snug">{product.name}</p>

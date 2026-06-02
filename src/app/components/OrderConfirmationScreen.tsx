@@ -60,7 +60,7 @@ export function OrderConfirmationScreen({ order, onGoHome, onViewOrder }: OrderC
             {order.products.map((product) => (
               <div key={product.id} className="flex items-center gap-3">
                 <img
-                  src={product.imageUrl}
+                  src={product.images?.[0] ?? ""}
                   alt={product.name}
                   className="w-12 h-12 rounded-lg object-cover border border-gray-100 shrink-0"
                 />

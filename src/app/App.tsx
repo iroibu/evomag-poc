@@ -113,6 +113,10 @@ export default function App() {
     return <WelcomeScreen onEnter={() => setHasSeenWelcome(true)} />;
   }
 
+  if (selectedProduct) {
+    return <ProductDetail product={selectedProduct} onBack={() => setSelectedProduct(null)} onAddToCart={handleAddToCart} />;
+  }
+
   if (showNotifications) {
     return (
       <div className="h-screen flex flex-col bg-background max-w-md mx-auto overflow-hidden">
@@ -181,10 +185,6 @@ export default function App() {
         />
       </div>
     );
-  }
-
-  if (selectedProduct) {
-    return <ProductDetail product={selectedProduct} onBack={() => setSelectedProduct(null)} onAddToCart={handleAddToCart} />;
   }
 
   return (

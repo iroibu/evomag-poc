@@ -13,7 +13,7 @@ seedOrder(
   shuffled.slice(0, 1).map((p: any) => ({
     id: String(p.id),
     name: p.name,
-    imageUrl: p.imageUrl,
+    images: Array.isArray(p.images) ? p.images : (p.imageUrl ? [p.imageUrl] : []),
     paidPrice: p.price,
     quantity: 1,
   })),

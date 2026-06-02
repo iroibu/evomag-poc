@@ -224,7 +224,7 @@ export function AISearchBar({
                       className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-muted transition-colors text-left"
                     >
                       <img
-                        src={product.imageUrl}
+                        src={product.images?.[0] ?? ""}
                         alt={product.name}
                         className="w-14 h-14 object-contain rounded-xl bg-muted shrink-0"
                       />

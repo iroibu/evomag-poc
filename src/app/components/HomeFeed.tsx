@@ -221,15 +221,8 @@ interface HomeFeedProps {
   onSeeAllClick?: (title: string, products: any[]) => void;
 }
 
-const getProductsForCategory = (categoryName: string) => {
-  // A helper function to generate realistic dummy products based on the category name
-  const catPrefix = categoryName.substring(0, 3).toLowerCase();
-  return [
-    { id: `dyn-${catPrefix}-1`, name: `Produs Premium ${categoryName} - Model de top, performanță garantată`, price: 2499, oldPrice: 2999, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80", rating: 4.9, reviews: 120, isNew: true },
-    { id: `dyn-${catPrefix}-2`, name: `Ofertă Specială: ${categoryName} Standard Edition`, price: 899, oldPrice: 1199, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80", rating: 4.5, reviews: 45, discount: "-25%" },
-    { id: `dyn-${catPrefix}-3`, name: `Accesorii compatibile pentru ${categoryName}`, price: 149, oldPrice: 199, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80", rating: 4.7, reviews: 89 },
-    { id: `dyn-${catPrefix}-4`, name: `${categoryName} Pro Max 2026, Capacitate Extinsă`, price: 3499, oldPrice: 3999, image: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=400&q=80", rating: 4.8, reviews: 210, badge: "Recomandat" }
-  ];
+const getProductsForCategory = (category: string) => {
+  return products.filter(p => (p.category && p.category.toLowerCase().includes(category)));
 };
 
 export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick }: HomeFeedProps) {
@@ -305,7 +298,7 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
           {categoriesWithIcons.map((cat) => {
             const Icon = cat.icon;
             return (
-              <div key={cat.id} className="flex flex-col items-center gap-2 shrink-0 snap-start w-[88px] cursor-pointer" onClick={() => onSeeAllClick?.(cat.name, getProductsForCategory(cat.name))}>
+              <div key={cat.id} className="flex flex-col items-center gap-2 shrink-0 snap-start w-[88px] cursor-pointer" onClick={() => onSeeAllClick?.(cat.name, getProductsForCategory(cat.id))}>
                 <div className={`w-14 h-14 ${cat.bg} ${cat.border} rounded-full flex items-center justify-center shadow-sm transition-transform active:scale-95`}>
                   <Icon className={`h-6 w-6 ${cat.color}`} strokeWidth={1.5} />
                 </div>
@@ -474,9 +467,7 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
                   name={product.name}
                   price={product.price}
                   originalPrice={product.originalPrice ?? product.oldPrice}
-                  imageUrl={product.imageUrl ?? product.image ?? ""}
-                  rating={product.rating}
-                  reviewCount={product.reviewCount ?? product.reviews}
+                  images={product.images ?? (product.image ? [product.image] : [])}
                   badge={product.badge}
                   onAddToCart={() => onAddToCart?.(product)}
                 />

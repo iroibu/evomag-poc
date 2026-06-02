@@ -1,5 +1,6 @@
 import { Info, ShoppingCart, Star } from "lucide-react";
 import React, { useState } from "react";
+import reviewsData from "../../data/reviews.json";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 interface ProductCardProps {
@@ -7,10 +8,7 @@ interface ProductCardProps {
   name: string;
   price: number;
   originalPrice?: number;
-  rating?: number;
-  reviewCount?: number;
-
-  imageUrl: string;
+  images: string[];
   badge?: string | React.ReactNode;
   aiReason?: string;
   stockPercent?: number;
@@ -19,18 +17,23 @@ interface ProductCardProps {
 }
 
 export function ProductCard({
+  id,
   name,
   price,
   originalPrice,
-  rating,
-  reviewCount,
-  imageUrl,
+  images,
   badge,
   aiReason,
   stockPercent,
   onAddToCart,
 }: ProductCardProps) {
   const [tooltipOpen, setTooltipOpen] = useState(false);
+
+  const productReviews = reviewsData.filter((r) => r.productId === String(id));
+  const reviewCount = productReviews.length;
+  const rating = reviewCount > 0
+    ? Math.round((productReviews.reduce((sum, r) => sum + r.rating, 0) / reviewCount) * 10) / 10
+    : null;
 
   return (
     <div className="relative bg-white rounded-2xl border border-red-100 hover:border-[#E31E24] shadow-sm hover:shadow-md cursor-pointer group transition-all duration-300 h-full flex flex-col">
@@ -73,7 +76,7 @@ export function ProductCard({
       <div className="h-[140px] p-4 flex items-center justify-center bg-white rounded-t-2xl relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-red-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         <img
-          src={imageUrl}
+          src={images[0]}
           alt={name}
           className="max-h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-110 relative z-10"
           draggable={false}
@@ -84,13 +87,13 @@ export function ProductCard({
         <h3 className="text-xs font-semibold line-clamp-2 mb-1.5 text-gray-800 leading-snug h-8 group-hover:text-[#E31E24] transition-colors">
           {name}
         </h3>
-        {(rating !== undefined || reviewCount !== undefined) && (
+        {(rating !== null || reviewCount > 0) && (
           <div className="flex items-center gap-1 mb-2">
             <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-            {rating !== undefined && (
+            {rating !== null && (
               <span className="text-[10px] font-medium text-gray-700">{rating}</span>
             )}
-            {reviewCount !== undefined && (
+            {reviewCount > 0 && (
               <span className="text-[10px] text-gray-400">({reviewCount})</span>
             )}
           </div>

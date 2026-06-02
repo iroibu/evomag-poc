@@ -19,7 +19,7 @@ export interface CatalogProduct {
   name: string;
   price: number;
   originalPrice?: number;
-  imageUrl: string;
+  images: string[];
   rating: number;
   reviewCount: number;
   badge?: string;
@@ -32,7 +32,7 @@ export const PRODUCT_CATALOG: CatalogProduct[] = products.map((p: any) => ({
   originalPrice: p.oldPrice,
   rating: p.rating ?? 0,
   reviewCount: p.reviews ?? 0,
-  imageUrl: p.image ?? p.imageUrl ?? (Array.isArray(p.images) ? p.images[0] : ""),
+  images: Array.isArray(p.images) ? p.images : (p.imageUrl ? [p.imageUrl] : p.image ? [p.image] : []),
   badge: p.discount,
 }));
 

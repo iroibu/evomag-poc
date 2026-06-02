@@ -131,7 +131,7 @@ export function AIAssistant() {
                       className="p-3 flex items-center gap-3 border-0 shadow-sm"
                     >
                       <img
-                        src={product.imageUrl}
+                        src={product.images?.[0] ?? ""}
                         alt={product.name}
                         className="w-16 h-16 object-contain rounded-lg bg-muted"
                       />

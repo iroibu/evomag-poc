@@ -1,74 +1,544 @@
 [
-  { "id": "t1",  "name": "PlayStation 5 Console Slim",                    "price": 2499, "oldPrice": 2699, "badge": "Ofertă",    "category": "gaming",      "brand": "Sony",       "imageUrl": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=400&q=80",
-    "reviewSummary": "Cumpărătorii laudă **performanța excelentă** și **timpii de încărcare aproape zero**. Design-ul compact și funcționarea silențioasă sunt foarte apreciate. Unii menționează că jocurile exclusive sunt deocamdată puține." },
-  { "id": "t2",  "name": "iPad Pro 12.9\" M2 256GB Space Gray",           "price": 6499, "oldPrice": 6999, "badge": "Ofertă",    "category": "phones",      "brand": "Apple",      "imageUrl": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&q=80",
-    "reviewSummary": "Utilizatorii apreciază **viteza procesorului M2** și **ecranul Liquid Retina XDR superb**. Excelent pentru design și editare foto, iar bateria ține o zi întreagă. Prețul ridicat al accesoriilor este principalul minus menționat." },
-  { "id": "t3",  "name": "Logitech MX Master 3S Wireless Mouse",          "price": 499,  "oldPrice": 649,  "badge": "Ofertă",    "category": "gaming",      "brand": "Logitech",   "imageUrl": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&q=80",
-    "reviewSummary": "Cumpărătorii sunt entuziasmați de **rotița MagSpeed revoluționară** și **precizia senzorului**. Mouse-ul ergonomic este ideal pentru ore lungi de lucru, iar bateria ce ține luni de zile și conexiunea Bluetooth stabilă sunt puncte forte." },
-  { "id": "t4",  "name": "iPhone 15 Pro 128GB Natural Titanium",          "price": 5299, "oldPrice": 5799, "badge": "-9%",       "category": "phones",      "brand": "Apple",      "imageUrl": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400&q=80",
-    "reviewSummary": "Utilizatorii apreciază **camera de 48MP** și **performanța fulgerătoare a procesorului A17 Pro**. Design-ul din titan și trecerea la USB-C sunt very apreciate. Autonomia bateriei este ușor sub așteptări față de concurență." },
-  { "id": "t5",  "name": "Samsung Galaxy S24 256GB Titanium Black",       "price": 3799, "oldPrice": 4299, "badge": "-12%",      "category": "phones",      "brand": "Samsung",    "imageUrl": "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=400&q=80",
-    "reviewSummary": "Cumpărătorii laudă **procesorul Snapdragon 8 Gen 3 fulgerător** și **camera excelentă în orice condiții**. Ecranul AMOLED și One UI 6.1 bine optimizat sunt apreciate. Zoom-ul 3× și autonomia solidă completează pachetul." },
-  { "id": "t6",  "name": "Xiaomi 14 Pro 512GB Black",                     "price": 4199, "oldPrice": 4699, "badge": "Nou",       "category": "phones",      "brand": "Xiaomi",     "imageUrl": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80",
-    "reviewSummary": "Utilizatorii sunt impresionați de **camera Leica cu rezultate profesionale** și **încărcarea ultra-rapidă de 120W**. Ecranul fluid 120Hz și noul HyperOS sunt apreciate. Telefonul excelează în special la fotografii în lumină slabă." },
-  { "id": "t7",  "name": "Apple MacBook Air M3 13\" 16GB 512GB",          "price": 7299, "oldPrice": 7999, "badge": "Ofertă",    "category": "laptops",     "brand": "Apple",      "imageUrl": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80",
-    "reviewSummary": "Cumpărătorii sunt entuziasmați de **autonomia de 18 ore** și **funcționarea complet silențioasă**. Build quality-ul de excepție și performanța M3 sunt puncte forte. Numărul limitat de porturi Thunderbolt este singurul minus menționat." },
-  { "id": "t8",  "name": "Lenovo ThinkPad X1 Carbon Gen 12 i7 32GB",     "price": 9499,                   "badge": "Premium",   "category": "laptops",     "brand": "Lenovo",     "imageUrl": "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400&q=80",
-    "reviewSummary": "Utilizatorii laudă **tastatura legendară ThinkPad** și **durabilitatea remarcabilă**. Autonomia excelentă și performanța Intel Ultra 7 cu 32GB RAM fac din acesta cel mai bun laptop de business testat." },
-  { "id": "t9",  "name": "ASUS ZenBook 14 OLED Ryzen 7 16GB 512GB",      "price": 4299, "oldPrice": 4999, "badge": "-14%",      "category": "laptops",     "brand": "ASUS",       "imageUrl": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=80",
-    "reviewSummary": "Cumpărătorii apreciază **ecranul OLED spectaculos** cu culori vii și negru perfect. Raportul calitate-preț și gestionarea multitasking-ului de Ryzen 7 sunt puncte forte. Poate deveni ușor cald la sarcini intense." },
-  { "id": "t10", "name": "Dell XPS 15 Intel i7 32GB RTX 4060",           "price": 8199, "oldPrice": 8999, "badge": "Ofertă",    "category": "laptops",     "brand": "Dell",       "imageUrl": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400&q=80",
-    "reviewSummary": "Utilizatorii sunt impresionați de **ecranul OLED 4K superb** și **performanța pentru content creation**. Construcția premium și combinația de 32GB RAM cu SSD rapid fac din acesta alegerea ideală pentru profesioniști." },
-  { "id": "t11", "name": "MSI Katana 15 i7 RTX 4070 32GB",               "price": 5899, "oldPrice": 6499, "badge": "-9%",       "category": "laptops",     "brand": "MSI",        "imageUrl": "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&q=80",
-    "reviewSummary": "Cumpărătorii apreciază **performanța RTX 4070 la un preț accesibil** și **ecranul fluid de 144Hz**. Jocurile moderne rulează excelent la setări maxime. Laptopul se poate încălzi ușor la sarcini maxime, ceea ce este de așteptat." },
-  { "id": "t12", "name": "Samsung 65\" Neo QLED 8K QN800D",              "price": 11999,"oldPrice":13999, "badge": "-14%",      "category": "tv",          "brand": "Samsung",    "imageUrl": "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=400&q=80",
-    "reviewSummary": "Utilizatorii descriu imaginea 8K Neo QLED ca **o experiență cu totul diferită**. Upscaling-ul Samsung compensează lipsa conținutului nativ 8K. Tizen OS fluid și calitatea imaginii justifică pe deplin investiția." },
-  { "id": "t13", "name": "LG OLED evo C4 55\" 4K 120Hz",                 "price": 7499, "oldPrice": 8999, "badge": "Ofertă",    "category": "tv",          "brand": "LG",         "imageUrl": "https://images.unsplash.com/photo-1567690187548-f07b1d7bf5a9?w=400&q=80",
-    "reviewSummary": "Cumpărătorii laudă **negrul absolut și culorile OLED** inegalabile. Perfect pentru gaming cu PS5 datorită 120Hz și HDMI 2.1. webOS este apreciat ca cel mai bun sistem smart TV de pe piață, intuitiv și rapid." },
-  { "id": "t14", "name": "Sony Bravia XR A95L 55\" QD-OLED",             "price": 9999, "oldPrice":11499, "badge": "-13%",      "category": "tv",          "brand": "Sony",       "imageUrl": "https://images.unsplash.com/photo-1601944177325-f8867652837f?w=400&q=80",
-    "reviewSummary": "Utilizatorii sunt fascinați de **imaginea fantastică QD-OLED** cu culori cuantice și negru perfect. Google TV și procesorul XR Cognitive sunt puncte forte. Dolby Atmos sună incredibil în combinație cu un soundbar." },
-  { "id": "t15", "name": "ASUS ROG Strix B650E-F AM5 ATX Motherboard",   "price": 1499, "oldPrice": 1799, "badge": "Ofertă",    "category": "pc",          "brand": "ASUS ROG",   "imageUrl": "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400&q=80",
-    "reviewSummary": "Cumpărătorii apreciază **BIOS-ul ASUS**, cel mai bun de pe piață, și **overclocking-ul stabil al DDR5**. PCIe 5.0 pentru SSD și GPU oferă viteze maxime. Montajul ușor și suportul tehnic competent sunt puncte forte." },
-  { "id": "t16", "name": "AMD Ryzen 9 7950X 16-Core Processor",          "price": 2799, "oldPrice": 3299, "badge": "-15%",      "category": "pc",          "brand": "AMD",        "imageUrl": "https://images.unsplash.com/photo-1555617117-08d9c2b0b5ed?w=400&q=80",
-    "reviewSummary": "Utilizatorii sunt impresionați de **performanța monstruoasă la randare și compilare**. Cele 16 nuclee și 32 fire fac multitasking-ul extrem o joacă, iar boost-ul consistent la 5.7GHz este un avantaj unic față de concurență." },
-  { "id": "t17", "name": "Corsair Vengeance 32GB DDR5-6000 Kit",         "price": 649,  "oldPrice": 799,  "badge": "Ofertă",    "category": "pc",          "brand": "Corsair",    "imageUrl": "https://images.unsplash.com/photo-1562976540-1502c2145186?w=400&q=80",
-    "reviewSummary": "Cumpărătorii raportează **câștiguri de performanță notabile față de DDR4**. Stabilitatea EXPO și latențele CL30 excelente sunt apreciate. RGB-ul arată spectaculos în orice carcasă, iar memoriile sunt fiabile în timp." },
-  { "id": "t18", "name": "NVIDIA GeForce RTX 4080 Super 16GB",           "price": 5299, "oldPrice": 5999, "badge": "-12%",      "category": "pc",          "brand": "NVIDIA",     "imageUrl": "https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=400&q=80",
-    "reviewSummary": "Utilizatorii laudă **performanța absolută la 4K** și **DLSS 3.5 cu Frame Generation**. Placa grafică ideală pentru ray tracing și gaming la rezoluție maximă. Consumul de 320W este singurul dezavantaj menționat." },
-  { "id": "t19", "name": "Razer BlackWidow V4 Pro Mechanical Keyboard",  "price": 899,  "oldPrice": 1099, "badge": "-18%",      "category": "gaming",      "brand": "Razer",      "imageUrl": "https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=400&q=80",
-    "reviewSummary": "Cumpărătorii apreciază **switch-urile Yellow silențioase și precise** și **conexiunea wireless fără lag**. RGB-ul Chroma este spectaculos, iar bateria de 4000mAh ține zile întregi fără RGB. Construcție solidă, fără compromisuri." },
-  { "id": "t20", "name": "Corsair HS80 RGB Wireless Gaming Headset",     "price": 649,  "oldPrice": 799,  "badge": "Ofertă",    "category": "gaming",      "brand": "Corsair",    "imageUrl": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80",
-    "reviewSummary": "Utilizatorii sunt încântați de **autonomia uluitoare de 65 ore** și **confortul excelent pentru sesiuni lungi**. Microfonul retractabil captează vocea clar fără zgomot de fundal, iar Dolby Atmos face o diferență uriașă." },
-  { "id": "t21", "name": "Google Nest Hub (2nd Gen) Smart Display",      "price": 499,  "oldPrice": 599,  "badge": "-17%",      "category": "smarthome",   "brand": "Google",     "imageUrl": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80",
-    "reviewSummary": "Cumpărătorii apreciază **utilitatea în bucătărie** și **Google Assistant mereu la îndemână**. Controlul dispozitivelor smart home este simplu și rapid. Unii utilizatori consideră că ecranul ar putea fi mai luminos." },
-  { "id": "t22", "name": "Philips Hue Starter Kit E27 White & Color",    "price": 599,  "oldPrice": 749,  "badge": "Ofertă",    "category": "smarthome",   "brand": "Philips",    "imageUrl": "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&q=80",
-    "reviewSummary": "Utilizatorii sunt impresionați de **versatilitatea becurilor** și **aplicația Hue care funcționează impecabil**. Kit-ul este ideal pentru începători în smart home, iar integrarea cu Apple HomeKit oferă automatizări perfecte." },
-  { "id": "t23", "name": "Xiaomi Smart Air Purifier 4 Pro",              "price": 899,  "oldPrice": 1099, "badge": "-18%",      "category": "smarthome",   "brand": "Xiaomi",     "imageUrl": "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&q=80",
-    "reviewSummary": "Cumpărătorii raportează **îmbunătățiri vizibile ale calității aerului** cu senzorul PM2.5 precis. Funcționează silențios, iar Mi Home App oferă statistici în timp real. Recomandat în special persoanelor cu alergii." },
-  { "id": "t24", "name": "TP-Link Deco XE75 WiFi 6E Mesh System",       "price": 1299, "oldPrice": 1599, "badge": "Ofertă",    "category": "smarthome",   "brand": "TP-Link",    "imageUrl": "https://images.unsplash.com/photo-1606904825846-647eb07f5be2?w=400&q=80",
-    "reviewSummary": "Utilizatorii laudă **acoperirea perfectă a casei fără zone moarte** și **vitezele incredibile Wi-Fi 6E**. Configurarea prin aplicație este ușoară chiar și pe 3 etaje, iar HomeCare oferă protecție excelentă de securitate." },
-  { "id": "t25", "name": "Apple Watch Series 9 GPS 45mm",                   "price": 1899, "oldPrice": 2299, "badge": "-17%",    "category": "smartwatch",   "brand": "Apple",    "imageUrl": "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=400&q=80",
-    "reviewSummary": "Cumpărătorii apreciază **senzorii de sănătate precisi** (ECG și SpO2) care pot detecta probleme în timp util. Ecranul Always-On și integrarea perfectă cu iPhone sunt puncte forte. Autonomia de 18 ore este singurul compromis." },
-  { "id": "a1",  "name": "Mașină de spălat rufe Heinner HWM-V714T+++, 7 kg, 1400 RPM", "price": 1099, "oldPrice": 1499, "badge": "Nou",   "category": "appliances", "brand": "Heinner", "heroBannerId": "h1", "rating": 4.8, "reviews": 152, "imageUrl": "https://images.unsplash.com/photo-1626806787426-5910811b6325?w=400&q=80",
-    "reviewSummary": "Utilizatorii apreciază **funcționarea silențioasă** și **eficiența energetică clasa A+++**. Spală impecabil cu programe variate, iar afișajul LCD este clar și ușor de utilizat. Solidă și fiabilă pe termen lung." },
-  { "id": "a2",  "name": "Uscător de rufe Heinner HCD-80B, 8 kg, Condensare",           "price": 1299, "oldPrice": 1799, "badge": "-28%",  "category": "appliances", "brand": "Heinner", "rating": 4.8, "reviews": 412, "imageUrl": "https://images.unsplash.com/photo-1582735689146-2815e98dc53e?w=400&q=80",
-    "reviewSummary": "Cumpărătorii laudă **consumul redus al pompei de căldură** față de uscătoarele cu rezistențe. Rufele ies perfect uscate și moi, iar programele variate sunt bine gândite pentru diferite materiale. Design modern și funcționare silențioasă." },
-  { "id": "a3",  "name": "Mașină de spălat vase Heinner HDW-FS6062, 12 Seturi",         "price": 999,  "oldPrice": 1299, "badge": "-23%",  "category": "appliances", "brand": "Heinner", "rating": 4.6, "reviews": 89,  "imageUrl": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&q=80",
-    "reviewSummary": "Utilizatorii sunt mulțumiți de **consumul remarcabil de mic al apei** și **vasele care ies strălucitoare**. Programul rapid de 30 minute este apreciat pentru uz zilnic. Raport calitate-preț excelent cu instalare simplă." },
-  { "id": "tv1", "name": "Televizor Samsung Neo QLED 65QN90C, 163 cm, Smart", "price": 4999, "oldPrice": 6499, "badge": "-23%",  "category": "tv",          "brand": "Samsung", "rating": 4.8, "reviews": 45,  "imageUrl": "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=400&q=80",
-    "reviewSummary": "Cumpărătorii sunt impresionați de **imaginea 4K HDR spectaculoasă** și **Gaming Mode-ul cu 120Hz și VRR**. Tizen OS este fluid, iar sunetul Dolby Atmos de 60W funcționează bine fără soundbar. Excelent pentru gaming și cinema." },
-  { "id": "tv2", "name": "Televizor LG OLED 55C3, 139 cm, Smart",             "price": 5299, "oldPrice": 6999, "badge": "-24%",  "category": "tv",          "brand": "LG",      "rating": 4.9, "reviews": 112, "imageUrl": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&q=80",
-    "reviewSummary": "Utilizatorii descriu LG OLED C3 ca **cel mai bun TV disponibil**, cu negru perfect și culori vii inegalabile față de LED. webOS este intuitiv și actualizat constant, iar procesorul α9 Gen6 face upscaling impresionant." },
-  { "id": "tv3", "name": "Televizor TCL Mini LED 55C845, 139 cm",             "price": 3499, "oldPrice": 4299, "badge": "-18%",  "category": "tv",          "brand": "TCL",     "heroBannerId": "h2", "rating": 4.7, "reviews": 32,  "imageUrl": "https://images.unsplash.com/photo-1601944179066-29786cb9d32a?w=400&q=80",
-    "reviewSummary": "Cumpărătorii apreciază **raportul calitate-preț imbatabil** și **experiența de gaming cu 144Hz Mini LED**. Google TV cu IMAX Enhanced face filmele să pară vizionate la cinema. O revelație la prețul său." },
-  { "id": "lp1", "name": "Laptop Lenovo Legion Pro 5, AMD Ryzen 7, RTX 4060", "price": 5499, "oldPrice": 6199, "badge": "-10%",  "category": "laptops",     "brand": "Lenovo",  "heroBannerId": "h3", "rating": 4.9, "reviews": 56,  "imageUrl": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400&q=80",
-    "reviewSummary": "Utilizatorii laudă **performanța completă pentru gaming** cu RTX 4060 și Ryzen 7 la setări maxime. Tastatura mecanică TrueStrike și ecranul fluid de 165Hz sunt puncte forte. Ventilatoarele pot fi zgomotoase la turații maxime." },
-  { "id": "lp2", "name": "Laptop Lenovo IdeaPad Slim 3, Intel Core i5",       "price": 1899, "oldPrice": 2199, "badge": "-10%",  "category": "laptops",     "brand": "Lenovo",  "heroBannerId": "h3", "rating": 4.5, "reviews": 201, "imageUrl": "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=400&q=80",
-    "reviewSummary": "Cumpărătorii apreciază **raportul calitate-preț excelent** și **portabilitatea** ideală pentru studenți. Core i5 cu SSD face Windows 11 rapid și plăcut. Nu este destinat gaming-ului, dar pentru productivitate zilnică este ideal." },
-  { "id": "lp3", "name": "Laptop Lenovo ThinkPad E14 Gen 5",                  "price": 3599, "oldPrice": 3999, "badge": "-10%",  "category": "laptops",     "brand": "Lenovo",  "heroBannerId": "h3", "rating": 4.8, "reviews": 44,  "imageUrl": "https://images.unsplash.com/photo-1611078489935-0cb964de46d6?w=400&q=80",
-    "reviewSummary": "Utilizatorii apreciază **tastatura confortabilă** și **bateria care ține toată ziua de lucru**. Build quality-ul tipic ThinkPad și Thunderbolt 4 pentru docking fac din acesta alegerea ideală pentru lucrul remote și la birou." },
-  { "id": "d1", "name": "iPhone 15 Pro Max 256GB Natural Titanium",        "price": 6799, "originalPrice": 7299, "badge": "-7%", "category": "phones",      "brand": "Apple",  "imageUrl": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400&q=80",
-    "reviewSummary": "Cumpărătorii sunt entuziasmați de **camera telephoto 5×** și **design-ul premium din titan**. Ecranul de 6.7\" și procesorul A17 Pro sunt impresionante. Greutatea de 221g este singurul compromis menționat." },
-  { "id": "d2", "name": "Samsung Galaxy S24 Ultra 512GB Titanium Black",   "price": 5299, "originalPrice": 6299, "badge": "-16%", "category": "phones",     "brand": "Samsung", "imageUrl": "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=400&q=80",
-    "reviewSummary": "Utilizatorii laudă **camera fenomenală de 200MP** cu zoom 10× clar și **S Pen-ul integrat**. Bateria de 5000mAh și completitudinea funcționalităților fac din acesta cel mai complet smartphone Android. Galaxy AI adaugă funcționalități utile." }
+  {
+    "id": "t1",
+    "name": "PlayStation 5 Console Slim",
+    "price": 2499,
+    "oldPrice": 2699,
+    "badge": "Ofertă",
+    "category": "gaming",
+    "brand": "Sony",
+    "reviewSummary": "Cumpărătorii laudă **performanța excelentă** și **timpii de încărcare aproape zero**. Design-ul compact și funcționarea silențioasă sunt foarte apreciate. Unii menționează că jocurile exclusive sunt deocamdată puține.",
+    "images": [
+      "https://i5.walmartimages.com/seo/Sony-PlayStation-5-PS5-Digital-Console-Slim_330f0b1b-c9b6-4d17-8875-f35fea51bdfd.587fde46f23ab38eb3197552e46f5305.jpeg",
+      "https://i5.walmartimages.com/seo/Sony-PlayStation-5-PS5-Disc-Console-Slim_20785f28-4770-431e-a43f-626f79505c31.5804d76023f90d099f6d3ecd476948eb.jpeg",
+      "https://m.media-amazon.com/images/I/51fM0CKG+HL.jpg"
+    ]
+  },
+  {
+    "id": "t2",
+    "name": "iPad Pro 12.9\" M2 256GB Space Gray",
+    "price": 6499,
+    "oldPrice": 6999,
+    "badge": "Ofertă",
+    "category": "phones",
+    "brand": "Apple",
+    "reviewSummary": "Utilizatorii apreciază **viteza procesorului M2** și **ecranul Liquid Retina XDR superb**. Excelent pentru design și editare foto, iar bateria ține o zi întreagă. Prețul ridicat al accesoriilor este principalul minus menționat.",
+    "images": [
+      "https://i5.walmartimages.com/seo/Restored-2021-Apple-12-9-in-iPad-pro-Wi-Fi-256-GB-Space-Gray-5th-Generation-Refurbished_fc75a562-c0c2-468b-9e74-3e49d9aa1b85.ba1872fcf55df8fcb81e8e4a7788a3ef.jpeg?odnHeight=576&odnWidth=576&odnBg=FFFFFF",
+      "https://i5.walmartimages.com/seo/Restored-2017-Apple-12-9-in-iPad-pro-Wi-Fi-Cellular-256-GB-Space-Gray-2nd-Generation-Refurbished_bd9d3fa8-cd8d-480e-9697-a8f05585622d.8d5663f8528a7f119cb8722d08eca586.jpeg"
+    ]
+  },
+  {
+    "id": "t3",
+    "name": "Logitech MX Master 3S Wireless Mouse",
+    "price": 499,
+    "oldPrice": 649,
+    "badge": "Ofertă",
+    "category": "gaming",
+    "brand": "Logitech",
+    "reviewSummary": "Cumpărătorii sunt entuziasmați de **rotița MagSpeed revoluționară** și **precizia senzorului**. Mouse-ul ergonomic este ideal pentru ore lungi de lucru, iar bateria ce ține luni de zile și conexiunea Bluetooth stabilă sunt puncte forte.",
+    "images": [
+      "https://m.media-amazon.com/images/I/61TU7cMHepL.jpg",
+      "https://m.media-amazon.com/images/I/61+OT7FPABL._AC_SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/61v1eEAWXYL._AC_.jpg"
+    ]
+  },
+  {
+    "id": "t4",
+    "name": "iPhone 15 Pro 128GB Natural Titanium",
+    "price": 5299,
+    "oldPrice": 5799,
+    "badge": "-9%",
+    "category": "phones",
+    "brand": "Apple",
+    "reviewSummary": "Utilizatorii apreciază **camera de 48MP** și **performanța fulgerătoare a procesorului A17 Pro**. Design-ul din titan și trecerea la USB-C sunt very apreciate. Autonomia bateriei este ușor sub așteptări față de concurență.",
+    "images": [
+      "https://i5.walmartimages.com/seo/Verizon-Apple-iPhone-15-Pro-128GB-Natural-Titanium_79baf43f-cbc5-44b3-b066-5b7c88b6dfec.77e2bd5aadd90f19f91b7846d14c2b0e.jpeg",
+      "https://i5.walmartimages.com/seo/Restored-Apple-iPhone-15-Pro-128GB-Unlocked-Natural-Titanium_6f100ee4-49ec-4c58-b1b9-59005943ae5e.f53e538c0643e0d825f864c7f20d83c7.jpeg?odnHeight=640&odnWidth=640&odnBg=FFFFFF",
+      "https://m.media-amazon.com/images/I/71Yp3z87X4L._AC_.jpg"
+    ]
+  },
+  {
+    "id": "t5",
+    "name": "Samsung Galaxy S24 256GB Titanium Black",
+    "price": 3799,
+    "oldPrice": 4299,
+    "badge": "-12%",
+    "category": "phones",
+    "brand": "Samsung",
+    "reviewSummary": "Cumpărătorii laudă **procesorul Snapdragon 8 Gen 3 fulgerător** și **camera excelentă în orice condiții**. Ecranul AMOLED și One UI 6.1 bine optimizat sunt apreciate. Zoom-ul 3× și autonomia solidă completează pachetul.",
+    "images": [
+      "https://m.media-amazon.com/images/I/61VLy48f5VL._AC_.jpg",
+      "https://m.media-amazon.com/images/I/717Q2swzhBL._SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/71lD7eGdW-L._AC_.jpg"
+    ]
+  },
+  {
+    "id": "t6",
+    "name": "Xiaomi 14 Pro 512GB Black",
+    "price": 4199,
+    "oldPrice": 4699,
+    "badge": "Nou",
+    "category": "phones",
+    "brand": "Xiaomi",
+    "reviewSummary": "Utilizatorii sunt impresionați de **camera Leica cu rezultate profesionale** și **încărcarea ultra-rapidă de 120W**. Ecranul fluid 120Hz și noul HyperOS sunt apreciate. Telefonul excelează în special la fotografii în lumină slabă.",
+    "images": [
+      "https://m.media-amazon.com/images/I/61CIyDW1w6L._AC_.jpg",
+      "https://m.media-amazon.com/images/I/617yVE1WoQL._AC_.jpg",
+      "https://m.media-amazon.com/images/I/81jOiLX0ViL._AC_.jpg"
+    ]
+  },
+  {
+    "id": "t7",
+    "name": "Apple MacBook Air M3 13\" 16GB 512GB",
+    "price": 7299,
+    "oldPrice": 7999,
+    "badge": "Ofertă",
+    "category": "laptops",
+    "brand": "Apple",
+    "reviewSummary": "Cumpărătorii sunt entuziasmați de **autonomia de 18 ore** și **funcționarea complet silențioasă**. Build quality-ul de excepție și performanța M3 sunt puncte forte. Numărul limitat de porturi Thunderbolt este singurul minus menționat.",
+    "images": [
+      "https://m.media-amazon.com/images/I/71-D1xCuVwL.jpg",
+      "https://m.media-amazon.com/images/I/81ByVEhMG3L.png"
+    ]
+  },
+  {
+    "id": "t8",
+    "name": "Lenovo ThinkPad X1 Carbon Gen 12 i7 32GB",
+    "price": 9499,
+    "badge": "Premium",
+    "category": "laptops",
+    "brand": "Lenovo",
+    "reviewSummary": "Utilizatorii laudă **tastatura legendară ThinkPad** și **durabilitatea remarcabilă**. Autonomia excelentă și performanța Intel Ultra 7 cu 32GB RAM fac din acesta cel mai bun laptop de business testat.",
+    "images": [
+      "https://m.media-amazon.com/images/I/61GSvJjxBuL.jpg",
+      "https://m.media-amazon.com/images/I/71cLIB3+vWL.jpg"
+    ]
+  },
+  {
+    "id": "t9",
+    "name": "ASUS ZenBook 14 OLED Ryzen 7 16GB 512GB",
+    "price": 4299,
+    "oldPrice": 4999,
+    "badge": "-14%",
+    "category": "laptops",
+    "brand": "ASUS",
+    "reviewSummary": "Cumpărătorii apreciază **ecranul OLED spectaculos** cu culori vii și negru perfect. Raportul calitate-preț și gestionarea multitasking-ului de Ryzen 7 sunt puncte forte. Poate deveni ușor cald la sarcini intense.",
+    "images": [
+      "https://m.media-amazon.com/images/I/8107qOojatL._AC_.jpg",
+      "https://m.media-amazon.com/images/I/71CADXfowNL._AC_SL1500_.jpg"
+    ]
+  },
+  {
+    "id": "t10",
+    "name": "Dell XPS 15 Intel i7 32GB RTX 4060",
+    "price": 8199,
+    "oldPrice": 8999,
+    "badge": "Ofertă",
+    "category": "laptops",
+    "brand": "Dell",
+    "reviewSummary": "Utilizatorii sunt impresionați de **ecranul OLED 4K superb** și **performanța pentru content creation**. Construcția premium și combinația de 32GB RAM cu SSD rapid fac din acesta alegerea ideală pentru profesioniști.",
+    "images": [
+      "https://m.media-amazon.com/images/I/716T+1iVYqL._AC_SL1386_.jpg",
+      "https://m.media-amazon.com/images/I/81h2i6YJodL._AC_SL1500_.jpg"
+    ]
+  },
+  {
+    "id": "t11",
+    "name": "MSI Katana 15 i7 RTX 4070 32GB",
+    "price": 5899,
+    "oldPrice": 6499,
+    "badge": "-9%",
+    "category": "laptops",
+    "brand": "MSI",
+    "reviewSummary": "Cumpărătorii apreciază **performanța RTX 4070 la un preț accesibil** și **ecranul fluid de 144Hz**. Jocurile moderne rulează excelent la setări maxime. Laptopul se poate încălzi ușor la sarcini maxime, ceea ce este de așteptat.",
+    "images": [
+      "https://i5.walmartimages.com/seo/MSI-Katana-Gaming-Laptop-15-6-IPS-Display-Intel-Core-i7-12650H-NVIDIA-GeForce-RTX-4070-32GB-DDR5-RAM-1TB-SSD-Wi-Fi-6-Bluetooth-4-Zone-RGB-Backlight-K_a79b843b-b31b-411b-83ba-e3cf3820a347.f4aa942158e846616f65ea84468c3404.jpeg",
+      "https://m.media-amazon.com/images/I/81-3FfpcwML._AC_.jpg",
+      "https://m.media-amazon.com/images/I/81vnNsRDo6L._AC_.jpg"
+    ]
+  },
+  {
+    "id": "t12",
+    "name": "Samsung 65\" Neo QLED 8K QN800D",
+    "price": 11999,
+    "oldPrice": 13999,
+    "badge": "-14%",
+    "category": "tv",
+    "brand": "Samsung",
+    "reviewSummary": "Utilizatorii descriu imaginea 8K Neo QLED ca **o experiență cu totul diferită**. Upscaling-ul Samsung compensează lipsa conținutului nativ 8K. Tizen OS fluid și calitatea imaginii justifică pe deplin investiția.",
+    "images": [
+      "https://i5.walmartimages.com/seo/SAMSUNG-65-Class-QN800D-Neo-QLED-8K-Smart-TV-QN65QN800DFXZA-2024_cf86930d-0946-42c3-80b9-d121c6c57efb.ac87267be8616be821745ba2cd55bd1f.jpeg?odnHeight=640&odnWidth=640&odnBg=FFFFFF",
+      "https://m.media-amazon.com/images/I/71L6YdiNyLL._AC_SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/911VU0BzjWL._AC_.jpg"
+    ]
+  },
+  {
+    "id": "t13",
+    "name": "LG OLED evo C4 55\" 4K 120Hz",
+    "price": 7499,
+    "oldPrice": 8999,
+    "badge": "Ofertă",
+    "category": "tv",
+    "brand": "LG",
+    "reviewSummary": "Cumpărătorii laudă **negrul absolut și culorile OLED** inegalabile. Perfect pentru gaming cu PS5 datorită 120Hz și HDMI 2.1. webOS este apreciat ca cel mai bun sistem smart TV de pe piață, intuitiv și rapid.",
+    "images": [
+      "https://m.media-amazon.com/images/I/81anuLrNUOL._AC_SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/71O7wgely5L._AC_.jpg",
+      "https://i5.walmartimages.com/seo/LG-55-Class-4K-UHD-OLED-Web-OS-Smart-TV-with-Dolby-Vision-C4-Series-OLED55C4PUA_76d44f1c-89bd-41ab-ae13-8c78567b1268.12843cefdedbfe37c00fbc653f73946a.jpeg"
+    ]
+  },
+  {
+    "id": "t14",
+    "name": "Sony Bravia XR A95L 55\" QD-OLED",
+    "price": 9999,
+    "oldPrice": 11499,
+    "badge": "-13%",
+    "category": "tv",
+    "brand": "Sony",
+    "reviewSummary": "Utilizatorii sunt fascinați de **imaginea fantastică QD-OLED** cu culori cuantice și negru perfect. Google TV și procesorul XR Cognitive sunt puncte forte. Dolby Atmos sună incredibil în combinație cu un soundbar.",
+    "images": [
+      "https://m.media-amazon.com/images/I/91FLVbv6qhL._AC_SL1500_.jpg",
+      "https://m.media-amazon.com/images/S/aplus-media-library-service-media/03ef98d0-1c8b-4c9b-85e3-78548e2af4ba.__CR0,0,1464,600_PT0_SX1464_V1___.jpg"
+    ]
+  },
+  {
+    "id": "t15",
+    "name": "ASUS ROG Strix B650E-F AM5 ATX Motherboard",
+    "price": 1499,
+    "oldPrice": 1799,
+    "badge": "Ofertă",
+    "category": "pc",
+    "brand": "ASUS ROG",
+    "reviewSummary": "Cumpărătorii apreciază **BIOS-ul ASUS**, cel mai bun de pe piață, și **overclocking-ul stabil al DDR5**. PCIe 5.0 pentru SSD și GPU oferă viteze maxime. Montajul ușor și suportul tehnic competent sunt puncte forte.",
+    "images": [
+      "https://m.media-amazon.com/images/I/814z1MeUZyL._AC_.jpg",
+      "https://m.media-amazon.com/images/I/81tBiDJ-eSL._AC_.jpg",
+      "https://m.media-amazon.com/images/I/81CSuO8PGlL._AC_.jpg"
+    ]
+  },
+  {
+    "id": "t16",
+    "name": "AMD Ryzen 9 7950X 16-Core Processor",
+    "price": 2799,
+    "oldPrice": 3299,
+    "badge": "-15%",
+    "category": "pc",
+    "brand": "AMD",
+    "reviewSummary": "Utilizatorii sunt impresionați de **performanța monstruoasă la randare și compilare**. Cele 16 nuclee și 32 fire fac multitasking-ul extrem o joacă, iar boost-ul consistent la 5.7GHz este un avantaj unic față de concurență.",
+    "images": [
+      "https://i5.walmartimages.com/asr/21f86821-5877-4dfb-9299-f17450e4f5ed.db244c19a907d0158ac9e584bd0abb3d.png",
+      "https://m.media-amazon.com/images/I/5116zdA9uyL.jpg",
+      "https://m.media-amazon.com/images/I/61dukbEGziL._AC_.jpg"
+    ]
+  },
+  {
+    "id": "t17",
+    "name": "Corsair Vengeance 32GB DDR5-6000 Kit",
+    "price": 649,
+    "oldPrice": 799,
+    "badge": "Ofertă",
+    "category": "pc",
+    "brand": "Corsair",
+    "reviewSummary": "Cumpărătorii raportează **câștiguri de performanță notabile față de DDR4**. Stabilitatea EXPO și latențele CL30 excelente sunt apreciate. RGB-ul arată spectaculos în orice carcasă, iar memoriile sunt fiabile în timp.",
+    "images": [
+      "https://m.media-amazon.com/images/I/61Lo0Ab5tFL._AC_SL1500_.jpg",
+      "https://i5.walmartimages.com/seo/CORSAIR-Vengeance-RGB-32GB-2-x-16GB-288-Pin-PC-RAM-DDR5-6000-PC5-48000-XMP-3-0-AMD-EXPO-Desktop-Memory-Model-CMH32GX5M2B6000Z30K_e9257168-2432-4044-b05c-e80500818b73.f57619a6d3fa2d97b0c78f1862fc1bb9.jpeg",
+      "https://m.media-amazon.com/images/I/71m9-93iPBL._AC_.jpg"
+    ]
+  },
+  {
+    "id": "t18",
+    "name": "NVIDIA GeForce RTX 4080 Super 16GB",
+    "price": 5299,
+    "oldPrice": 5999,
+    "badge": "-12%",
+    "category": "pc",
+    "brand": "NVIDIA",
+    "reviewSummary": "Utilizatorii laudă **performanța absolută la 4K** și **DLSS 3.5 cu Frame Generation**. Placa grafică ideală pentru ray tracing și gaming la rezoluție maximă. Consumul de 320W este singurul dezavantaj menționat.",
+    "images": [
+      "https://m.media-amazon.com/images/I/81g+jlolvmL._AC_.jpg",
+      "https://m.media-amazon.com/images/I/71t-nA5UvHL.jpg",
+      "https://m.media-amazon.com/images/I/81rCZZvkIVL._AC_SL1500_.jpg"
+    ]
+  },
+  {
+    "id": "t19",
+    "name": "Razer BlackWidow V4 Pro Mechanical Keyboard",
+    "price": 899,
+    "oldPrice": 1099,
+    "badge": "-18%",
+    "category": "gaming",
+    "brand": "Razer",
+    "reviewSummary": "Cumpărătorii apreciază **switch-urile Yellow silențioase și precise** și **conexiunea wireless fără lag**. RGB-ul Chroma este spectaculos, iar bateria de 4000mAh ține zile întregi fără RGB. Construcție solidă, fără compromisuri.",
+    "images": [
+      "https://m.media-amazon.com/images/I/81L4FpeS3VL._AC_SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/815XJdl7fXL.jpg",
+      "https://m.media-amazon.com/images/S/aplus-media-library-service-media/20aa7b88-ee3d-4742-aa61-c271e21bc07b.__CR0,0,1464,600_PT0_SX1464_V1___.jpg"
+    ]
+  },
+  {
+    "id": "t20",
+    "name": "Corsair HS80 RGB Wireless Gaming Headset",
+    "price": 649,
+    "oldPrice": 799,
+    "badge": "Ofertă",
+    "category": "gaming",
+    "brand": "Corsair",
+    "reviewSummary": "Utilizatorii sunt încântați de **autonomia uluitoare de 65 ore** și **confortul excelent pentru sesiuni lungi**. Microfonul retractabil captează vocea clar fără zgomot de fundal, iar Dolby Atmos face o diferență uriașă.",
+    "images": [
+      "https://m.media-amazon.com/images/I/71duO7lVMnL._AC_.jpg",
+      "https://m.media-amazon.com/images/I/71xK0oPvBLL._AC_.jpg",
+      "https://m.media-amazon.com/images/I/81QbgmvTOuL._AC_.jpg"
+    ]
+  },
+  {
+    "id": "t21",
+    "name": "Google Nest Hub (2nd Gen) Smart Display",
+    "price": 499,
+    "oldPrice": 599,
+    "badge": "-17%",
+    "category": "smarthome",
+    "brand": "Google",
+    "reviewSummary": "Cumpărătorii apreciază **utilitatea în bucătărie** și **Google Assistant mereu la îndemână**. Controlul dispozitivelor smart home este simplu și rapid. Unii utilizatori consideră că ecranul ar putea fi mai luminos.",
+    "images": [
+      "https://m.media-amazon.com/images/I/51tx4G8JuXL.jpg",
+      "https://m.media-amazon.com/images/I/61B-5nCkIbL.jpg"
+    ]
+  },
+  {
+    "id": "t22",
+    "name": "Philips Hue Starter Kit E27 White & Color",
+    "price": 599,
+    "oldPrice": 749,
+    "badge": "Ofertă",
+    "category": "smarthome",
+    "brand": "Philips",
+    "reviewSummary": "Utilizatorii sunt impresionați de **versatilitatea becurilor** și **aplicația Hue care funcționează impecabil**. Kit-ul este ideal pentru începători în smart home, iar integrarea cu Apple HomeKit oferă automatizări perfecte.",
+    "images": [
+      "https://m.media-amazon.com/images/I/710JY99wNJL._AC_.jpg",
+      "https://m.media-amazon.com/images/I/61Iwk7BXwmL._AC_SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/71yjeoHQqwL._AC_.jpg"
+    ]
+  },
+  {
+    "id": "t23",
+    "name": "Xiaomi Smart Air Purifier 4 Pro",
+    "price": 899,
+    "oldPrice": 1099,
+    "badge": "-18%",
+    "category": "smarthome",
+    "brand": "Xiaomi",
+    "reviewSummary": "Cumpărătorii raportează **îmbunătățiri vizibile ale calității aerului** cu senzorul PM2.5 precis. Funcționează silențios, iar Mi Home App oferă statistici în timp real. Recomandat în special persoanelor cu alergii.",
+    "images": [
+      "https://m.media-amazon.com/images/I/514yyRdj1vL.jpg",
+      "https://m.media-amazon.com/images/I/61IqSuQvFCL.jpg"
+    ]
+  },
+  {
+    "id": "t24",
+    "name": "TP-Link Deco XE75 WiFi 6E Mesh System",
+    "price": 1299,
+    "oldPrice": 1599,
+    "badge": "Ofertă",
+    "category": "smarthome",
+    "brand": "TP-Link",
+    "reviewSummary": "Utilizatorii laudă **acoperirea perfectă a casei fără zone moarte** și **vitezele incredibile Wi-Fi 6E**. Configurarea prin aplicație este ușoară chiar și pe 3 etaje, iar HomeCare oferă protecție excelentă de securitate.",
+    "images": [
+      "https://m.media-amazon.com/images/I/61UmDYxwd4L._AC_SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/61UmDYxwd4L.jpg",
+      "https://m.media-amazon.com/images/I/51oJ9GjSFRL._AC_SL1321_.jpg"
+    ]
+  },
+  {
+    "id": "t25",
+    "name": "Apple Watch Series 9 GPS 45mm",
+    "price": 1899,
+    "oldPrice": 2299,
+    "badge": "-17%",
+    "category": "smartwatch",
+    "brand": "Apple",
+    "reviewSummary": "Cumpărătorii apreciază **senzorii de sănătate precisi** (ECG și SpO2) care pot detecta probleme în timp util. Ecranul Always-On și integrarea perfectă cu iPhone sunt puncte forte. Autonomia de 18 ore este singurul compromis.",
+    "images": [
+      "https://i5.walmartimages.com/seo/Apple-Watch-Series-9-With-Blood-Oxygen-GPS-45mm-Midnight-Aluminum-Case-with-Midnight-Sport-Loop_eba09acb-25c2-46d0-b1ec-8f13dff85685.ae56c72f9bf6145a5ba6aa127eeb0845.jpeg",
+      "https://i5.walmartimages.com/seo/Apple-Watch-Series-9-GPS-45mm-Smartwatch-Silver-Aluminum-Case-Winter-Blue-Sport-Loop-Fitness-Tracker-ECG-Apps-Always-On-Retina-Display-Water-Resistan_5c170f69-fbfa-489f-a5c7-bead7c170cb0.d75ad2b4369e568dc4b49b4388aa3c03.jpeg",
+      "https://m.media-amazon.com/images/G/01/apple/Apple_Watch_S9_Product_Page_Without_Blood_Oxygen_L__en-US_02._CB583170735_.jpg"
+    ]
+  },
+  {
+    "id": "a1",
+    "name": "Mașină de spălat rufe Heinner HWM-V714T+++, 7 kg, 1400 RPM",
+    "price": 1099,
+    "oldPrice": 1499,
+    "badge": "Nou",
+    "category": "appliances",
+    "brand": "Heinner",
+    "heroBannerId": "h1",
+    "rating": 4.8,
+    "reviews": 152,
+    "reviewSummary": "Utilizatorii apreciază **funcționarea silențioasă** și **eficiența energetică clasa A+++**. Spală impecabil cu programe variate, iar afișajul LCD este clar și ușor de utilizat. Solidă și fiabilă pe termen lung.",
+    "images": [
+      "https://images.unsplash.com/photo-1626806787426-5910811b6325?w=400&q=80"
+    ]
+  },
+  {
+    "id": "a2",
+    "name": "Uscător de rufe Heinner HCD-80B, 8 kg, Condensare",
+    "price": 1299,
+    "oldPrice": 1799,
+    "badge": "-28%",
+    "category": "appliances",
+    "brand": "Heinner",
+    "rating": 4.8,
+    "reviews": 412,
+    "reviewSummary": "Cumpărătorii laudă **consumul redus al pompei de căldură** față de uscătoarele cu rezistențe. Rufele ies perfect uscate și moi, iar programele variate sunt bine gândite pentru diferite materiale. Design modern și funcționare silențioasă.",
+    "images": [
+      "https://s13emagst.akamaized.net/products/4487/4486379/images/res_55aac02c0989d615f6b43a1a6c5b9504.jpg"
+    ]
+  },
+  {
+    "id": "a3",
+    "name": "Mașină de spălat vase Heinner HDW-FS6062, 12 Seturi",
+    "price": 999,
+    "oldPrice": 1299,
+    "badge": "-23%",
+    "category": "appliances",
+    "brand": "Heinner",
+    "rating": 4.6,
+    "reviews": 89,
+    "reviewSummary": "Utilizatorii sunt mulțumiți de **consumul remarcabil de mic al apei** și **vasele care ies strălucitoare**. Programul rapid de 30 minute este apreciat pentru uz zilnic. Raport calitate-preț excelent cu instalare simplă.",
+    "images": [
+      "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400&q=80"
+    ]
+  },
+  {
+    "id": "tv1",
+    "name": "Televizor Samsung Neo QLED 65QN90C, 163 cm, Smart",
+    "price": 4999,
+    "oldPrice": 6499,
+    "badge": "-23%",
+    "category": "tv",
+    "brand": "Samsung",
+    "rating": 4.8,
+    "reviews": 45,
+    "reviewSummary": "Cumpărătorii sunt impresionați de **imaginea 4K HDR spectaculoasă** și **Gaming Mode-ul cu 120Hz și VRR**. Tizen OS este fluid, iar sunetul Dolby Atmos de 60W funcționează bine fără soundbar. Excelent pentru gaming și cinema.",
+    "images": ["https://m.media-amazon.com/images/I/91ZrrxlC+BL._AC_.jpg"]
+  },
+  {
+    "id": "tv2",
+    "name": "Televizor LG OLED 55C3, 139 cm, Smart",
+    "price": 5299,
+    "oldPrice": 6999,
+    "badge": "-24%",
+    "category": "tv",
+    "brand": "LG",
+    "rating": 4.9,
+    "reviews": 112,
+    "reviewSummary": "Utilizatorii descriu LG OLED C3 ca **cel mai bun TV disponibil**, cu negru perfect și culori vii inegalabile față de LED. webOS este intuitiv și actualizat constant, iar procesorul α9 Gen6 face upscaling impresionant.",
+    "images": [
+      "https://m.media-amazon.com/images/I/71xxKVDGyhL._AC_.jpg",
+      "https://m.media-amazon.com/images/I/71i9R0xKxrL._SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/61GASUuG8TL._AC_.jpg"
+    ]
+  },
+  {
+    "id": "tv3",
+    "name": "Televizor TCL Mini LED 55C845, 139 cm",
+    "price": 3499,
+    "oldPrice": 4299,
+    "badge": "-18%",
+    "category": "tv",
+    "brand": "TCL",
+    "heroBannerId": "h2",
+    "rating": 4.7,
+    "reviews": 32,
+    "reviewSummary": "Cumpărătorii apreciază **raportul calitate-preț imbatabil** și **experiența de gaming cu 144Hz Mini LED**. Google TV cu IMAX Enhanced face filmele să pară vizionate la cinema. O revelație la prețul său.",
+    "images": [
+      "https://www.flanco.ro/media/catalog/product/cache/e53d4628cd85067723e6ea040af871ec/5/5/55v6b_3.jpg",
+      "https://m.media-amazon.com/images/I/71lptXjPprL.jpg"
+    ]
+  },
+  {
+    "id": "lp1",
+    "name": "Laptop Lenovo Legion Pro 5, AMD Ryzen 7, RTX 4060",
+    "price": 5499,
+    "oldPrice": 6199,
+    "badge": "-10%",
+    "category": "laptops",
+    "brand": "Lenovo",
+    "heroBannerId": "h3",
+    "rating": 4.9,
+    "reviews": 56,
+    "reviewSummary": "Utilizatorii laudă **performanța completă pentru gaming** cu RTX 4060 și Ryzen 7 la setări maxime. Tastatura mecanică TrueStrike și ecranul fluid de 165Hz sunt puncte forte. Ventilatoarele pot fi zgomotoase la turații maxime.",
+    "images": [
+      "https://i5.walmartimages.com/seo/Lenovo-Legion-5-Gaming-Laptop-15-6-165Hz-WQHD-AMD-Ryzen-7-7735HS-16GB-RAM-512GB-SSD-NVIDIA-GeForce-RTX-4060-Windows-11-Home_f811f2c8-807b-48f5-9331-c86cd6556203.5213eb3e1fd9cff07da3d798d12d7146.png?odnHeight=424&odnWidth=424&odnBg=FFFFFF",
+      "https://m.media-amazon.com/images/I/61SAVk2BzpL._SL1080_.jpg",
+      "https://i5.walmartimages.com/seo/Lenovo-LEGION-5-Pro-16-Gaming-Laptop-AMD-Ryzen-7-7745HX-GeForce-RTX-4070-32GB-RAM-Onyx-Grey_31c0be7d-1fa4-490b-b5d7-38e094108f60.000916821d57d0be54c963f37d8e9ac9.jpeg"
+    ]
+  },
+  {
+    "id": "lp2",
+    "name": "Laptop Lenovo IdeaPad Slim 3, Intel Core i5",
+    "price": 1899,
+    "oldPrice": 2199,
+    "badge": "-10%",
+    "category": "laptops",
+    "brand": "Lenovo",
+    "heroBannerId": "h3",
+    "rating": 4.5,
+    "reviews": 201,
+    "reviewSummary": "Cumpărătorii apreciază **raportul calitate-preț excelent** și **portabilitatea** ideală pentru studenți. Core i5 cu SSD face Windows 11 rapid și plăcut. Nu este destinat gaming-ului, dar pentru productivitate zilnică este ideal.",
+    "images": [
+      "https://m.media-amazon.com/images/I/71xsgt5zAtL._AC_.jpg",
+      "https://i5.walmartimages.com/seo/Lenovo-IdeaPad-3i-14-FHD-Laptop-Intel-Core-i5-1135G7-8GB-256GB-SSD-Windows-11-Platinum-Grey-81X700FVUS_70701446-e63a-4490-a792-f7fdd3f7df00.8ede4ef5dbddddbc3d98b5a7383c53a0.jpeg",
+      "https://m.media-amazon.com/images/I/71GMrh8UFOL._AC_.jpg"
+    ]
+  },
+  {
+    "id": "lp3",
+    "name": "Laptop Lenovo ThinkPad E14 Gen 5",
+    "price": 3599,
+    "oldPrice": 3999,
+    "badge": "-10%",
+    "category": "laptops",
+    "brand": "Lenovo",
+    "heroBannerId": "h3",
+    "rating": 4.8,
+    "reviews": 44,
+    "reviewSummary": "Utilizatorii apreciază **tastatura confortabilă** și **bateria care ține toată ziua de lucru**. Build quality-ul tipic ThinkPad și Thunderbolt 4 pentru docking fac din acesta alegerea ideală pentru lucrul remote și la birou.",
+    "images": [
+      "https://m.media-amazon.com/images/I/61iLNAKX0SL._AC_.jpg",
+      "https://m.media-amazon.com/images/I/41HoUoM+OtL._AC_.jpg"
+    ]
+  },
+  {
+    "id": "d1",
+    "name": "iPhone 15 Pro Max 256GB Natural Titanium",
+    "price": 6799,
+    "originalPrice": 7299,
+    "badge": "-7%",
+    "category": "phones",
+    "brand": "Apple",
+    "reviewSummary": "Cumpărătorii sunt entuziasmați de **camera telephoto 5×** și **design-ul premium din titan**. Ecranul de 6.7\" și procesorul A17 Pro sunt impresionante. Greutatea de 221g este singurul compromis menționat.",
+    "images": [
+      "https://i5.walmartimages.com/seo/Verizon-iPhone-15-Pro-Max-256GB-Natural-Titanium_43b58742-b6ad-491a-a795-e6c2eb6bcc6f.d6fa026332e1941b129f607c592844ab.jpeg",
+      "https://i5.walmartimages.com/seo/Restored-Apple-iPhone-15-Pro-Max-256GB-AT-T-Natural-Titanium-MU683LL-A-Excellent-Condition_2247697f-84fd-4a04-a0e0-1b3083e6040c.32b9015e2815fff90b2a39e1ad6cfc41.jpeg",
+      "https://m.media-amazon.com/images/I/815eN0AS-CL._AC_SL1500_.jpg"
+    ]
+  },
+  {
+    "id": "d2",
+    "name": "Samsung Galaxy S24 Ultra 512GB Titanium Black",
+    "price": 5299,
+    "originalPrice": 6299,
+    "badge": "-16%",
+    "category": "phones",
+    "brand": "Samsung",
+    "reviewSummary": "Utilizatorii laudă **camera fenomenală de 200MP** cu zoom 10× clar și **S Pen-ul integrat**. Bateria de 5000mAh și completitudinea funcționalităților fac din acesta cel mai complet smartphone Android. Galaxy AI adaugă funcționalități utile.",
+    "images": [
+      "https://m.media-amazon.com/images/I/61uEEazyIfL._AC_.jpg",
+      "https://m.media-amazon.com/images/I/71lD7eGdW-L._AC_.jpg",
+      "https://m.media-amazon.com/images/I/71uqj6BKnRL._AC_.jpg"
+    ]
+  }
 ]

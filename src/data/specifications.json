@@ -10,7 +10,10 @@
       { "label": "Frame rate", "value": "Până la 120 fps" },
       { "label": "Ray Tracing", "value": "Da" },
       { "label": "Sunet", "value": "Tempest 3D Audio" },
-      { "label": "Conectivitate", "value": "Wi-Fi 6, Bluetooth 5.1, USB-A, USB-C" },
+      {
+        "label": "Conectivitate",
+        "value": "Wi-Fi 6, Bluetooth 5.1, USB-A, USB-C"
+      },
       { "label": "Dimensiuni", "value": "358 x 96 x 216 mm" },
       { "label": "Greutate", "value": "3.2 kg" }
     ]
@@ -25,7 +28,10 @@
       { "label": "Cameră față", "value": "12 MP TrueDepth" },
       { "label": "Cameră spate", "value": "12 MP + 10 MP" },
       { "label": "Baterie", "value": "40.88 Wh (10 ore autonomie)" },
-      { "label": "Conectivitate", "value": "Wi-Fi 6E, Bluetooth 5.3, USB-C (Thunderbolt 4)" },
+      {
+        "label": "Conectivitate",
+        "value": "Wi-Fi 6E, Bluetooth 5.3, USB-C (Thunderbolt 4)"
+      },
       { "label": "Sistem de operare", "value": "iPadOS 17" },
       { "label": "Culoare", "value": "Space Gray" },
       { "label": "Greutate", "value": "682 g" }
@@ -40,7 +46,10 @@
       { "label": "Număr butoane", "value": "7" },
       { "label": "Rotiță scroll", "value": "MagSpeed electromagnetic" },
       { "label": "Baterie", "value": "Reîncărcabilă, 70 zile autonomie" },
-      { "label": "Compatibilitate", "value": "Windows, macOS, Linux, ChromeOS, iPadOS" },
+      {
+        "label": "Compatibilitate",
+        "value": "Windows, macOS, Linux, ChromeOS, iPadOS"
+      },
       { "label": "Dimensiuni", "value": "124.9 x 84.3 x 51 mm" },
       { "label": "Greutate", "value": "141 g" }
     ]
@@ -48,16 +57,25 @@
   {
     "productId": "t4",
     "specs": [
-      { "label": "Display", "value": "6.1\" Super Retina XDR, 2556×1179 px, 460 ppi" },
+      {
+        "label": "Display",
+        "value": "6.1\" Super Retina XDR, 2556×1179 px, 460 ppi"
+      },
       { "label": "Procesor", "value": "Apple A17 Pro" },
       { "label": "RAM", "value": "8 GB" },
       { "label": "Stocare", "value": "128 GB" },
       { "label": "Cameră principală", "value": "48 MP (f/1.78)" },
-      { "label": "Camere secundare", "value": "12 MP ultrawide + 12 MP 3× telephoto" },
+      {
+        "label": "Camere secundare",
+        "value": "12 MP ultrawide + 12 MP 3× telephoto"
+      },
       { "label": "Cameră față", "value": "12 MP TrueDepth" },
       { "label": "Baterie", "value": "3274 mAh" },
       { "label": "Sistem de operare", "value": "iOS 17" },
-      { "label": "Conectivitate", "value": "5G, Wi-Fi 6E, Bluetooth 5.3, USB-C (USB 3)" },
+      {
+        "label": "Conectivitate",
+        "value": "5G, Wi-Fi 6E, Bluetooth 5.3, USB-C (USB 3)"
+      },
       { "label": "Culoare", "value": "Natural Titanium" },
       { "label": "Greutate", "value": "187 g" }
     ]
@@ -65,16 +83,25 @@
   {
     "productId": "t5",
     "specs": [
-      { "label": "Display", "value": "6.2\" Dynamic AMOLED 2X, 2340×1080 px, 120 Hz" },
+      {
+        "label": "Display",
+        "value": "6.2\" Dynamic AMOLED 2X, 2340×1080 px, 120 Hz"
+      },
       { "label": "Procesor", "value": "Snapdragon 8 Gen 3" },
       { "label": "RAM", "value": "12 GB" },
       { "label": "Stocare", "value": "256 GB" },
       { "label": "Cameră principală", "value": "50 MP (f/1.8)" },
-      { "label": "Camere secundare", "value": "12 MP ultrawide + 10 MP telephoto 3×" },
+      {
+        "label": "Camere secundare",
+        "value": "12 MP ultrawide + 10 MP telephoto 3×"
+      },
       { "label": "Cameră față", "value": "12 MP" },
       { "label": "Baterie", "value": "4000 mAh, 25W încărcare" },
       { "label": "Sistem de operare", "value": "Android 14, One UI 6.1" },
-      { "label": "Conectivitate", "value": "5G, Wi-Fi 6E, Bluetooth 5.3, USB-C" },
+      {
+        "label": "Conectivitate",
+        "value": "5G, Wi-Fi 6E, Bluetooth 5.3, USB-C"
+      },
       { "label": "Culoare", "value": "Titanium Black" },
       { "label": "Greutate", "value": "167 g" }
     ]
@@ -82,16 +109,25 @@
   {
     "productId": "t6",
     "specs": [
-      { "label": "Display", "value": "6.73\" LTPO AMOLED, 3200×1440 px, 1-120 Hz" },
+      {
+        "label": "Display",
+        "value": "6.73\" LTPO AMOLED, 3200×1440 px, 1-120 Hz"
+      },
       { "label": "Procesor", "value": "Snapdragon 8 Gen 3" },
       { "label": "RAM", "value": "16 GB" },
       { "label": "Stocare", "value": "512 GB" },
       { "label": "Cameră principală", "value": "50 MP Leica (f/1.42)" },
-      { "label": "Camere secundare", "value": "50 MP ultrawide + 50 MP telephoto 5×" },
+      {
+        "label": "Camere secundare",
+        "value": "50 MP ultrawide + 50 MP telephoto 5×"
+      },
       { "label": "Cameră față", "value": "32 MP" },
       { "label": "Baterie", "value": "4880 mAh, 120W încărcare" },
       { "label": "Sistem de operare", "value": "Android 14, HyperOS" },
-      { "label": "Conectivitate", "value": "5G, Wi-Fi 7, Bluetooth 5.4, USB-C" },
+      {
+        "label": "Conectivitate",
+        "value": "5G, Wi-Fi 7, Bluetooth 5.4, USB-C"
+      },
       { "label": "Culoare", "value": "Black" },
       { "label": "Greutate", "value": "223 g" }
     ]
@@ -99,14 +135,20 @@
   {
     "productId": "t7",
     "specs": [
-      { "label": "Display", "value": "13.6\" Liquid Retina, 2560×1664 px, 224 ppi" },
+      {
+        "label": "Display",
+        "value": "13.6\" Liquid Retina, 2560×1664 px, 224 ppi"
+      },
       { "label": "Procesor", "value": "Apple M3" },
       { "label": "CPU", "value": "8 nuclee (4 performanță + 4 eficiență)" },
       { "label": "GPU", "value": "10 nuclee" },
       { "label": "RAM", "value": "16 GB RAM unificat" },
       { "label": "Stocare", "value": "512 GB SSD" },
       { "label": "Baterie", "value": "52.6 Wh, până la 18 ore" },
-      { "label": "Conectivitate", "value": "Wi-Fi 6E, Bluetooth 5.3, 2× Thunderbolt 3, MagSafe 3" },
+      {
+        "label": "Conectivitate",
+        "value": "Wi-Fi 6E, Bluetooth 5.3, 2× Thunderbolt 3, MagSafe 3"
+      },
       { "label": "Sistem de operare", "value": "macOS Sonoma" },
       { "label": "Greutate", "value": "1.24 kg" }
     ]
@@ -120,7 +162,10 @@
       { "label": "Stocare", "value": "1 TB SSD" },
       { "label": "Grafică", "value": "Intel Arc Graphics" },
       { "label": "Baterie", "value": "57 Wh, până la 15 ore" },
-      { "label": "Conectivitate", "value": "Wi-Fi 6E, Bluetooth 5.3, 2× Thunderbolt 4, USB-A, HDMI 2.1" },
+      {
+        "label": "Conectivitate",
+        "value": "Wi-Fi 6E, Bluetooth 5.3, 2× Thunderbolt 4, USB-A, HDMI 2.1"
+      },
       { "label": "Tastatură", "value": "Backlit, TrackPoint" },
       { "label": "Sistem de operare", "value": "Windows 11 Pro" },
       { "label": "Greutate", "value": "1.12 kg" }
@@ -129,13 +174,19 @@
   {
     "productId": "t9",
     "specs": [
-      { "label": "Display", "value": "14\" OLED, 2880×1800 px, 120 Hz, 550 nits" },
+      {
+        "label": "Display",
+        "value": "14\" OLED, 2880×1800 px, 120 Hz, 550 nits"
+      },
       { "label": "Procesor", "value": "AMD Ryzen 7 7745HX" },
       { "label": "RAM", "value": "16 GB LPDDR5" },
       { "label": "Stocare", "value": "512 GB SSD" },
       { "label": "Grafică", "value": "AMD Radeon 780M" },
       { "label": "Baterie", "value": "75 Wh, până la 12 ore" },
-      { "label": "Conectivitate", "value": "Wi-Fi 6E, Bluetooth 5.3, USB-A, USB-C, HDMI 2.1" },
+      {
+        "label": "Conectivitate",
+        "value": "Wi-Fi 6E, Bluetooth 5.3, USB-A, USB-C, HDMI 2.1"
+      },
       { "label": "Sistem de operare", "value": "Windows 11 Home" },
       { "label": "Greutate", "value": "1.39 kg" }
     ]
@@ -143,13 +194,19 @@
   {
     "productId": "t10",
     "specs": [
-      { "label": "Display", "value": "15.6\" OLED, 3456×2160 px, 60 Hz, 400 nits" },
+      {
+        "label": "Display",
+        "value": "15.6\" OLED, 3456×2160 px, 60 Hz, 400 nits"
+      },
       { "label": "Procesor", "value": "Intel Core i7-13700H" },
       { "label": "RAM", "value": "32 GB DDR5" },
       { "label": "Stocare", "value": "1 TB SSD" },
       { "label": "Grafică", "value": "NVIDIA GeForce RTX 4060 8 GB" },
       { "label": "Baterie", "value": "86 Wh, până la 12 ore" },
-      { "label": "Conectivitate", "value": "Wi-Fi 6E, Bluetooth 5.3, Thunderbolt 4, USB-A, HDMI 2.1, SD Card" },
+      {
+        "label": "Conectivitate",
+        "value": "Wi-Fi 6E, Bluetooth 5.3, Thunderbolt 4, USB-A, HDMI 2.1, SD Card"
+      },
       { "label": "Sistem de operare", "value": "Windows 11 Pro" },
       { "label": "Greutate", "value": "1.86 kg" }
     ]
@@ -157,13 +214,19 @@
   {
     "productId": "t11",
     "specs": [
-      { "label": "Display", "value": "15.6\" IPS, 1920×1080 px, 144 Hz, 300 nits" },
+      {
+        "label": "Display",
+        "value": "15.6\" IPS, 1920×1080 px, 144 Hz, 300 nits"
+      },
       { "label": "Procesor", "value": "Intel Core i7-13620H" },
       { "label": "RAM", "value": "32 GB DDR5" },
       { "label": "Stocare", "value": "1 TB NVMe SSD" },
       { "label": "Grafică", "value": "NVIDIA GeForce RTX 4070 8 GB" },
       { "label": "Baterie", "value": "53.5 Wh" },
-      { "label": "Conectivitate", "value": "Wi-Fi 6, Bluetooth 5.3, USB-A, USB-C, HDMI 2.1, RJ45" },
+      {
+        "label": "Conectivitate",
+        "value": "Wi-Fi 6, Bluetooth 5.3, USB-A, USB-C, HDMI 2.1, RJ45"
+      },
       { "label": "Sistem de operare", "value": "Windows 11 Home" },
       { "label": "Greutate", "value": "2.2 kg" }
     ]
@@ -178,7 +241,10 @@
       { "label": "HDR", "value": "Quantum HDR 64x" },
       { "label": "Luminozitate", "value": "4000 nits" },
       { "label": "Sistem Smart TV", "value": "Tizen OS" },
-      { "label": "Conectivitate", "value": "4× HDMI 2.1, 2× USB, Wi-Fi 6, Bluetooth 5.2" },
+      {
+        "label": "Conectivitate",
+        "value": "4× HDMI 2.1, 2× USB, Wi-Fi 6, Bluetooth 5.2"
+      },
       { "label": "Sunet", "value": "60W, Dolby Atmos" },
       { "label": "Consum", "value": "230 W" }
     ]
@@ -193,7 +259,10 @@
       { "label": "HDR", "value": "Dolby Vision, HDR10, HLG" },
       { "label": "Luminozitate", "value": "1500 nits (vârf)" },
       { "label": "Sistem Smart TV", "value": "webOS 24" },
-      { "label": "Conectivitate", "value": "4× HDMI 2.1, 3× USB, Wi-Fi 6, Bluetooth 5.0" },
+      {
+        "label": "Conectivitate",
+        "value": "4× HDMI 2.1, 3× USB, Wi-Fi 6, Bluetooth 5.0"
+      },
       { "label": "Sunet", "value": "60W, Dolby Atmos" },
       { "label": "Consum", "value": "150 W" }
     ]
@@ -209,7 +278,10 @@
       { "label": "Luminozitate", "value": "2000 nits (vârf)" },
       { "label": "Procesor", "value": "Cognitive Processor XR" },
       { "label": "Sistem Smart TV", "value": "Google TV" },
-      { "label": "Conectivitate", "value": "4× HDMI 2.1, 2× USB, Wi-Fi 6, Bluetooth 5.0" },
+      {
+        "label": "Conectivitate",
+        "value": "4× HDMI 2.1, 2× USB, Wi-Fi 6, Bluetooth 5.0"
+      },
       { "label": "Sunet", "value": "60W, Dolby Atmos" }
     ]
   },
@@ -225,7 +297,10 @@
       { "label": "Sloturi M.2", "value": "4× M.2 (1× PCIe 5.0, 3× PCIe 4.0)" },
       { "label": "Conectori SATA", "value": "4× SATA 6Gb/s" },
       { "label": "Rețea", "value": "Intel 2.5G LAN" },
-      { "label": "USB (spate)", "value": "2× USB 3.2 Gen 2×2, 4× USB 3.2 Gen 2, 2× USB 2.0" }
+      {
+        "label": "USB (spate)",
+        "value": "2× USB 3.2 Gen 2×2, 4× USB 3.2 Gen 2, 2× USB 2.0"
+      }
     ]
   },
   {
@@ -280,7 +355,10 @@
       { "label": "Switch-uri", "value": "Razer Yellow (liniare, silențioase)" },
       { "label": "Layout", "value": "Full-size, 104 taste" },
       { "label": "Iluminare", "value": "Razer Chroma RGB per tastă" },
-      { "label": "Conexiune", "value": "USB-C detașabil, Bluetooth 5.0, Wireless 2.4 GHz" },
+      {
+        "label": "Conexiune",
+        "value": "USB-C detașabil, Bluetooth 5.0, Wireless 2.4 GHz"
+      },
       { "label": "Baterie", "value": "4000 mAh (până la 200 ore fără RGB)" },
       { "label": "Memorie internă", "value": "5 profiluri on-board" },
       { "label": "Compatibilitate", "value": "Windows, macOS" },
@@ -294,7 +372,10 @@
       { "label": "Tip", "value": "Cască gaming wireless" },
       { "label": "Difuzoare", "value": "50 mm Neodymium" },
       { "label": "Răspuns frecvență", "value": "20 Hz – 40 KHz" },
-      { "label": "Conexiune", "value": "USB Wireless 2.4 GHz / Bluetooth / 3.5 mm" },
+      {
+        "label": "Conexiune",
+        "value": "USB Wireless 2.4 GHz / Bluetooth / 3.5 mm"
+      },
       { "label": "Baterie", "value": "Reîncărcabilă Li-Po, până la 65 ore" },
       { "label": "Microfon", "value": "Omnidirectional, retractabil" },
       { "label": "Sunet spațial", "value": "Dolby Atmos, DTS Headphone:X" },
@@ -329,7 +410,10 @@
       { "label": "Culori", "value": "16 milioane culori (RGB+W)" },
       { "label": "Conectivitate", "value": "Zigbee (prin Hue Bridge), Wi-Fi" },
       { "label": "Durată de viață", "value": "25000 ore" },
-      { "label": "Compatibilitate", "value": "Amazon Alexa, Google Assistant, Apple HomeKit" },
+      {
+        "label": "Compatibilitate",
+        "value": "Amazon Alexa, Google Assistant, Apple HomeKit"
+      },
       { "label": "Soclu", "value": "E27" }
     ]
   },
@@ -370,10 +454,16 @@
       { "label": "Procesor", "value": "Apple S9 SiP, 64-bit" },
       { "label": "Stocare", "value": "64 GB" },
       { "label": "GPS", "value": "Da (L1, L5)" },
-      { "label": "Senzori sănătate", "value": "Ritm cardiac, SpO2, ECG, temperatură" },
+      {
+        "label": "Senzori sănătate",
+        "value": "Ritm cardiac, SpO2, ECG, temperatură"
+      },
       { "label": "Rezistență la apă", "value": "WR50 (50 m)" },
       { "label": "Baterie", "value": "18 ore (până la 36 ore mod Low Power)" },
-      { "label": "Conectivitate", "value": "GPS, Bluetooth 5.3, Wi-Fi 802.11b/g/n" },
+      {
+        "label": "Conectivitate",
+        "value": "GPS, Bluetooth 5.3, Wi-Fi 802.11b/g/n"
+      },
       { "label": "Sistem de operare", "value": "watchOS 10" },
       { "label": "Compatibilitate", "value": "iPhone XS sau mai nou" },
       { "label": "Carcasă", "value": "Aluminiu" }
@@ -435,7 +525,10 @@
       { "label": "Luminozitate", "value": "2000 nits" },
       { "label": "Procesor", "value": "Neo Quantum Processor 4K" },
       { "label": "Sistem Smart TV", "value": "Tizen OS" },
-      { "label": "Conectivitate", "value": "4× HDMI 2.1, 2× USB, Wi-Fi 5, Bluetooth 5.2" },
+      {
+        "label": "Conectivitate",
+        "value": "4× HDMI 2.1, 2× USB, Wi-Fi 5, Bluetooth 5.2"
+      },
       { "label": "Sunet", "value": "60W, Object Tracking Sound+, Dolby Atmos" }
     ]
   },
@@ -450,7 +543,10 @@
       { "label": "Luminozitate", "value": "1800 nits (vârf)" },
       { "label": "Procesor", "value": "α9 Gen6 AI" },
       { "label": "Sistem Smart TV", "value": "webOS 23" },
-      { "label": "Conectivitate", "value": "4× HDMI 2.1, 3× USB, Wi-Fi 6, Bluetooth 5.0" },
+      {
+        "label": "Conectivitate",
+        "value": "4× HDMI 2.1, 3× USB, Wi-Fi 6, Bluetooth 5.0"
+      },
       { "label": "Sunet", "value": "60W, Dolby Atmos, eARC" }
     ]
   },
@@ -465,21 +561,30 @@
       { "label": "Luminozitate", "value": "1500 nits" },
       { "label": "Procesor", "value": "AiPQ Ultra Processor" },
       { "label": "Sistem Smart TV", "value": "Google TV" },
-      { "label": "Conectivitate", "value": "4× HDMI 2.1, 2× USB, Wi-Fi 6, Bluetooth 5.0" },
+      {
+        "label": "Conectivitate",
+        "value": "4× HDMI 2.1, 2× USB, Wi-Fi 6, Bluetooth 5.0"
+      },
       { "label": "Sunet", "value": "50W, Dolby Atmos" }
     ]
   },
   {
     "productId": "lp1",
     "specs": [
-      { "label": "Display", "value": "16\" IPS, 2560×1600 px, 165 Hz, 500 nits" },
+      {
+        "label": "Display",
+        "value": "16\" IPS, 2560×1600 px, 165 Hz, 500 nits"
+      },
       { "label": "Procesor", "value": "AMD Ryzen 7 7745HX" },
       { "label": "RAM", "value": "32 GB DDR5-4800" },
       { "label": "Stocare", "value": "1 TB NVMe SSD" },
       { "label": "Grafică", "value": "NVIDIA GeForce RTX 4060 8 GB" },
       { "label": "Baterie", "value": "80 Wh, încărcare 230 W" },
       { "label": "Tastatură", "value": "Mecanică TrueStrike RGB" },
-      { "label": "Conectivitate", "value": "Wi-Fi 6E, Bluetooth 5.1, USB-C (Thunderbolt 4), 4× USB-A, HDMI 2.1, RJ45" },
+      {
+        "label": "Conectivitate",
+        "value": "Wi-Fi 6E, Bluetooth 5.1, USB-C (Thunderbolt 4), 4× USB-A, HDMI 2.1, RJ45"
+      },
       { "label": "Sistem de operare", "value": "Windows 11 Home" },
       { "label": "Greutate", "value": "2.4 kg" }
     ]
@@ -493,7 +598,10 @@
       { "label": "Stocare", "value": "512 GB SSD" },
       { "label": "Grafică", "value": "Intel Iris Xe Graphics" },
       { "label": "Baterie", "value": "47 Wh, până la 8 ore" },
-      { "label": "Conectivitate", "value": "Wi-Fi 6, Bluetooth 5.1, 2× USB-A, 1× USB-C, HDMI 1.4" },
+      {
+        "label": "Conectivitate",
+        "value": "Wi-Fi 6, Bluetooth 5.1, 2× USB-A, 1× USB-C, HDMI 1.4"
+      },
       { "label": "Sistem de operare", "value": "Windows 11 Home" },
       { "label": "Greutate", "value": "1.62 kg" }
     ]
@@ -501,13 +609,19 @@
   {
     "productId": "lp3",
     "specs": [
-      { "label": "Display", "value": "14\" IPS, 1920×1200 px, 60 Hz, 300 nits" },
+      {
+        "label": "Display",
+        "value": "14\" IPS, 1920×1200 px, 60 Hz, 300 nits"
+      },
       { "label": "Procesor", "value": "Intel Core i7-1355U" },
       { "label": "RAM", "value": "16 GB DDR4-3200" },
       { "label": "Stocare", "value": "512 GB SSD" },
       { "label": "Grafică", "value": "Intel Iris Xe Graphics" },
       { "label": "Baterie", "value": "57 Wh, până la 12 ore" },
-      { "label": "Conectivitate", "value": "Wi-Fi 6E, Bluetooth 5.1, Thunderbolt 4, 2× USB-A, HDMI 2.0, SD Card" },
+      {
+        "label": "Conectivitate",
+        "value": "Wi-Fi 6E, Bluetooth 5.1, Thunderbolt 4, 2× USB-A, HDMI 2.0, SD Card"
+      },
       { "label": "Sistem de operare", "value": "Windows 11 Pro" },
       { "label": "Greutate", "value": "1.37 kg" }
     ]
@@ -515,16 +629,25 @@
   {
     "productId": "d1",
     "specs": [
-      { "label": "Display", "value": "6.7\" Super Retina XDR, 2796×1290 px, 460 ppi" },
+      {
+        "label": "Display",
+        "value": "6.7\" Super Retina XDR, 2796×1290 px, 460 ppi"
+      },
       { "label": "Procesor", "value": "Apple A17 Pro" },
       { "label": "RAM", "value": "8 GB" },
       { "label": "Stocare", "value": "256 GB" },
       { "label": "Cameră principală", "value": "48 MP (f/1.78)" },
-      { "label": "Camere secundare", "value": "12 MP ultrawide + 12 MP 5× telephoto" },
+      {
+        "label": "Camere secundare",
+        "value": "12 MP ultrawide + 12 MP 5× telephoto"
+      },
       { "label": "Cameră față", "value": "12 MP TrueDepth" },
       { "label": "Baterie", "value": "4422 mAh" },
       { "label": "Sistem de operare", "value": "iOS 17" },
-      { "label": "Conectivitate", "value": "5G, Wi-Fi 6E, Bluetooth 5.3, USB-C (USB 3)" },
+      {
+        "label": "Conectivitate",
+        "value": "5G, Wi-Fi 6E, Bluetooth 5.3, USB-C (USB 3)"
+      },
       { "label": "Culoare", "value": "Natural Titanium" },
       { "label": "Greutate", "value": "221 g" }
     ]
@@ -532,16 +655,25 @@
   {
     "productId": "d2",
     "specs": [
-      { "label": "Display", "value": "6.8\" Dynamic AMOLED 2X, 3088×1440 px, 120 Hz" },
+      {
+        "label": "Display",
+        "value": "6.8\" Dynamic AMOLED 2X, 3088×1440 px, 120 Hz"
+      },
       { "label": "Procesor", "value": "Snapdragon 8 Gen 3" },
       { "label": "RAM", "value": "12 GB" },
       { "label": "Stocare", "value": "512 GB" },
       { "label": "Cameră principală", "value": "200 MP (f/1.7)" },
-      { "label": "Camere secundare", "value": "12 MP ultrawide + 10 MP telephoto 3× + 50 MP telephoto 5×" },
+      {
+        "label": "Camere secundare",
+        "value": "12 MP ultrawide + 10 MP telephoto 3× + 50 MP telephoto 5×"
+      },
       { "label": "Cameră față", "value": "12 MP" },
       { "label": "Baterie", "value": "5000 mAh, 45W încărcare" },
       { "label": "Sistem de operare", "value": "Android 14, One UI 6.1" },
-      { "label": "Conectivitate", "value": "5G, Wi-Fi 6E, Bluetooth 5.3, USB-C (USB 3.2)" },
+      {
+        "label": "Conectivitate",
+        "value": "5G, Wi-Fi 6E, Bluetooth 5.3, USB-C (USB 3.2)"
+      },
       { "label": "Culoare", "value": "Titanium Black" },
       { "label": "Greutate", "value": "232 g" }
     ]

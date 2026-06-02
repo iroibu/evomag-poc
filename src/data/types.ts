@@ -5,7 +5,7 @@ export interface Product {
   oldPrice?: number;
   originalPrice?: number;
   image?: string;
-  imageUrl?: string;
+  images?: string[];
   rating?: number;
   reviews?: number;
   reviewCount?: number;

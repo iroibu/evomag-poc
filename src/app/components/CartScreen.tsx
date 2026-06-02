@@ -58,7 +58,7 @@ export interface CartItemType {
   id: string;
   name: string;
   price: number;
-  imageUrl: string;
+  images: string[];
   quantity: number;
 }
 
@@ -120,7 +120,7 @@ export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onChecko
         {cartItems.map((item) => (
           <div key={item.id} className="flex gap-4 p-3 bg-white rounded-xl shadow-sm border border-gray-100">
             <div className="w-20 h-20 bg-muted/30 rounded-lg p-2 shrink-0">
-              <img src={item.imageUrl} alt={item.name} className="w-full h-full object-contain" />
+              <img src={item.images?.[0] ?? ""} alt={item.name} className="w-full h-full object-contain" />
             </div>
             
             <div className="flex-1 flex flex-col justify-between">
@@ -180,10 +180,8 @@ export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onChecko
                   name={product.name}
                   price={product.price}
                   originalPrice={product.originalPrice ?? product.oldPrice}
-                  imageUrl={product.imageUrl ?? ""}
+                  images={product.images ?? []}
                   badge={product.badge}
-                  rating={product.rating}
-                  reviewCount={product.reviewCount ?? product.reviews}
                   onAddToCart={() => onAddToCart?.(product)}
                 />
               </div>
@@ -203,10 +201,8 @@ export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onChecko
                     name={product.name}
                     price={product.price}
                     originalPrice={product.originalPrice ?? product.oldPrice}
-                    imageUrl={product.imageUrl ?? product.image ?? ""}
+                    images={product.images ?? (product.image ? [product.image] : [])}
                     badge={product.badge}
-                    rating={product.rating}
-                    reviewCount={product.reviewCount ?? product.reviews}
                     onAddToCart={() => onAddToCart?.(product)}
                   />
                 </div>
@@ -221,13 +217,13 @@ export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onChecko
             <SectionHeader title="Cumpara din nou" />
             <ProductScroll>
               {buyAgainProducts.map((product) => (
-                <div key={product.id} className="w-[150px] shrink-0 snap-start" onClick={() => onProductClick?.({ id: product.id, name: product.name, price: product.paidPrice, imageUrl: product.imageUrl })}>
+                <div key={product.id} className="w-[150px] shrink-0 snap-start" onClick={() => onProductClick?.({ id: product.id, name: product.name, price: product.paidPrice, images: product.images })}>
                   <ProductCard
                     id={product.id}
                     name={product.name}
                     price={product.paidPrice}
-                    imageUrl={product.imageUrl}
-                    onAddToCart={() => onAddToCart?.({ id: product.id, name: product.name, price: product.paidPrice, imageUrl: product.imageUrl })}
+                    images={product.images ?? []}
+                    onAddToCart={() => onAddToCart?.({ id: product.id, name: product.name, price: product.paidPrice, images: product.images })}
                   />
                 </div>
               ))}
