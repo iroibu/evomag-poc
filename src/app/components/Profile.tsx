@@ -18,6 +18,7 @@ import {
   Truck,
   Box,
   CheckCircle2,
+  Check,
   Clock,
   Plus,
   ShoppingCart,
@@ -32,7 +33,8 @@ import {
   Tag,
   Activity,
   Search,
-  Trash2
+  Trash2,
+  MessageSquare
 } from "lucide-react";
 import { Card } from "./ui/card";
 import { Avatar } from "./ui/avatar";
@@ -243,71 +245,308 @@ export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
   }
 
   if (activeView === "orders") {
+    const activeOrders = orders.filter(o =>
+      o.deliveryStatus === "pending" || o.deliveryStatus === "processing" || o.deliveryStatus === "shipped"
+    );
+    const recentlyDeliveredOrders = orders.filter(o => o.deliveryStatus === "delivered");
+
+    const inLivrareCount = orders.filter(o => o.deliveryStatus === "shipped").length;
+    const recentlyDeliveredCount = recentlyDeliveredOrders.filter(o =>
+      new Date(o.orderDate) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+    ).length;
+
+    const getStepsDone = (status: Order["deliveryStatus"]) => {
+      if (status === "pending") return 1;
+      if (status === "processing") return 2;
+      if (status === "shipped") return 3;
+      return 4;
+    };
+
+    const formatOrderNumber = (n: number) => `#EM${String(n).padStart(6, "0")}`;
+
+    const formatShortDate = (iso: string) =>
+      new Date(iso).toLocaleDateString("ro-RO", { day: "numeric", month: "short" });
+
+    const getStepDate = (orderDate: string, stepOffset: number) => {
+      const d = new Date(orderDate);
+      d.setDate(d.getDate() + stepOffset);
+      return formatShortDate(d.toISOString());
+    };
+
+    const renderStatusBadge = (status: Order["deliveryStatus"]) => {
+      if (status === "shipped") return (
+        <span className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-green-50 text-green-700 border border-green-100">
+          <Truck className="w-3 h-3" /> În livrare
+        </span>
+      );
+      if (status === "processing" || status === "pending") return (
+        <span className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-orange-50 text-orange-500 border border-orange-100">
+          <Clock className="w-3 h-3" /> În procesare
+        </span>
+      );
+      if (status === "delivered") return (
+        <span className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-green-50 text-green-700 border border-green-100">
+          <Package className="w-3 h-3" /> Livrată
+        </span>
+      );
+      return null;
+    };
+
+    const STEP_LABELS = ["Confirmată", "Pregătită", "La curier", "Livrare estimată"];
+
+    const renderActiveOrderCard = (order: Order) => {
+      const total = orderTotal(order);
+      const stepsDone = getStepsDone(order.deliveryStatus);
+      const displayProducts = order.products.slice(0, 3);
+      const extraCount = order.products.length - 3;
+
+      return (
+        <div key={order.orderNumber} className="bg-white rounded-2xl border border-[#E5E5EA] shadow-sm overflow-hidden mb-3">
+          <div className="flex justify-between items-start px-4 pt-4 pb-3">
+            <div>
+              <p className="font-bold text-sm text-[#111111]">{formatOrderNumber(order.orderNumber)}</p>
+              <p className="text-xs text-[#6B7280]">{formatDate(order.orderDate)}</p>
+            </div>
+            {renderStatusBadge(order.deliveryStatus)}
+          </div>
+
+          <div className="px-4 pb-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              {displayProducts.map((p, i) => (
+                <div key={i} className="w-14 h-14 bg-[#F5F5F7] rounded-xl p-1 shrink-0">
+                  <img src={p.images?.[0] ?? ""} className="w-full h-full object-contain mix-blend-multiply" alt={p.name} />
+                </div>
+              ))}
+              {extraCount > 0 && (
+                <div className="w-10 h-10 rounded-full bg-[#F5F5F7] flex items-center justify-center text-xs font-bold text-[#6B7280]">
+                  +{extraCount}
+                </div>
+              )}
+            </div>
+            <div className="text-right ml-2">
+              <p className="text-xs text-[#6B7280]">{order.products.length} {order.products.length === 1 ? "produs" : "produse"}</p>
+              <p className="font-black text-base text-[#111111]">{total.toLocaleString("ro-RO")} Lei</p>
+            </div>
+          </div>
+
+          {/* Timeline */}
+          <div className="px-4 pb-3">
+            <div className="flex items-center mb-2">
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${stepsDone > 0 ? "bg-[#E31E24]" : "bg-[#E5E5EA]"}`}>
+                {stepsDone > 0 && <Check className="w-3 h-3 text-white" />}
+              </div>
+              <div className={`flex-1 h-0.5 ${stepsDone > 1 ? "bg-[#E31E24]" : "bg-[#E5E5EA]"}`} />
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${stepsDone > 1 ? "bg-[#E31E24]" : "bg-[#E5E5EA]"}`}>
+                {stepsDone > 1 && <Check className="w-3 h-3 text-white" />}
+              </div>
+              <div className={`flex-1 h-0.5 ${stepsDone > 2 ? "bg-[#E31E24]" : "bg-[#E5E5EA]"}`} />
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${stepsDone > 2 ? "bg-[#E31E24]" : "bg-[#E5E5EA]"}`}>
+                {stepsDone > 2 && (stepsDone === 3 ? <Truck className="w-3 h-3 text-white" /> : <Check className="w-3 h-3 text-white" />)}
+              </div>
+              <div className={`flex-1 h-0.5 ${stepsDone > 3 ? "bg-[#E31E24]" : "bg-[#E5E5EA]"}`} />
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${stepsDone > 3 ? "bg-[#E31E24]" : "bg-[#E5E5EA]"}`}>
+                {stepsDone > 3 && <Check className="w-3 h-3 text-white" />}
+              </div>
+            </div>
+            <div className="flex justify-between">
+              {STEP_LABELS.map((label, i) => (
+                <div key={i} className="flex flex-col items-center" style={{ width: "25%" }}>
+                  <p className="text-[9px] font-medium text-[#6B7280] text-center leading-tight">{label}</p>
+                  <p className="text-[9px] text-[#9CA3AF] text-center">{getStepDate(order.orderDate, i)}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {order.deliveryStatus === "shipped" && (
+            <div className="mx-4 mb-3 px-3 py-2.5 bg-red-50 rounded-xl flex items-center gap-3">
+              <Calendar className="w-5 h-5 text-[#E31E24] shrink-0" />
+              <div>
+                <p className="text-xs font-bold text-[#111111]">Ajunge mâine</p>
+                <p className="text-xs text-[#6B7280]">între 14:00 - 18:00</p>
+              </div>
+            </div>
+          )}
+
+          <div className="px-4 pb-4 pt-3 border-t border-[#F5F5F7] flex justify-end">
+            <button
+              onClick={() => setSelectedOrder(order)}
+              className="flex items-center gap-0.5 text-sm font-bold text-[#E31E24]"
+            >
+              Vezi detalii <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      );
+    };
+
+    const renderDeliveredOrderCard = (order: Order) => {
+      const total = orderTotal(order);
+      const firstProduct = order.products[0];
+      return (
+        <div key={order.orderNumber} className="bg-white rounded-2xl border border-[#E5E5EA] shadow-sm overflow-hidden mb-3">
+          <div className="flex justify-between items-start px-4 pt-4 pb-3">
+            <div>
+              <p className="font-bold text-sm text-[#111111]">{formatOrderNumber(order.orderNumber)}</p>
+              <p className="text-xs text-[#6B7280]">{formatDate(order.orderDate)}</p>
+            </div>
+            {renderStatusBadge(order.deliveryStatus)}
+          </div>
+          {firstProduct && (
+            <div className="px-4 pb-3 flex items-center gap-4">
+              <div className="w-20 h-20 bg-[#F5F5F7] rounded-xl p-2 shrink-0">
+                <img src={firstProduct.images?.[0] ?? ""} className="w-full h-full object-contain mix-blend-multiply" alt={firstProduct.name} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-sm text-[#111111] line-clamp-2">{firstProduct.name}</p>
+                <p className="font-black text-base text-[#111111] mt-1">{total.toLocaleString("ro-RO")} Lei</p>
+              </div>
+            </div>
+          )}
+          <div className="px-4 pb-4 pt-3 border-t border-[#F5F5F7] flex justify-end">
+            <button
+              onClick={() => setSelectedOrder(order)}
+              className="flex items-center gap-0.5 text-sm font-bold text-[#E31E24]"
+            >
+              Vezi din nou <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      );
+    };
+
     return (
       <div className="flex flex-col h-full bg-[#F5F5F7]">
-        {renderHeader("Comenzile mele")}
-        
-        {/* Filters */}
-        <div className="bg-white px-4 py-3 border-b border-[#E5E5EA] overflow-x-auto scrollbar-hide flex gap-2">
-          {[
-            { id: "all", label: "Toate" },
-            { id: "in-procesare", label: "În procesare" },
-            { id: "in-livrare", label: "În livrare" },
-            { id: "livrate", label: "Livrate" },
-            { id: "retur", label: "Retururi" }
-          ].map(f => (
-            <button
-              key={f.id}
-              onClick={() => setOrderFilter(f.id as OrderStatus)}
-              className={`px-4 h-8 flex items-center justify-center rounded-full text-[13px] font-bold transition-colors border whitespace-nowrap ${
-                orderFilter === f.id 
-                  ? "bg-[#111111] text-white border-[#111111]" 
-                  : "bg-white text-[#6B7280] border-[#E5E5EA] hover:border-[#111111]"
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
+        {/* Header with Bell */}
+        <header className="shrink-0 flex items-center px-4 py-4 bg-white border-b sticky top-0 z-10 shadow-sm">
+          <button
+            onClick={() => setActiveView("main")}
+            className="p-2 -ml-2 rounded-full hover:bg-muted mr-2 flex items-center justify-center"
+          >
+            <ChevronLeft className="h-6 w-6 text-[#111111]" />
+          </button>
+          <h1 className="text-xl font-bold flex-1 text-[#111111]">Comenzile mele</h1>
+        </header>
 
-        <div className="p-4 space-y-3 overflow-y-auto">
-          {filteredOrders.length > 0 ? filteredOrders.map(order => {
-            const firstProduct = order.products[0];
-            const total = orderTotal(order);
-            const filterStatus = deliveryStatusToFilter(order.deliveryStatus);
-            return (
-              <Card key={order.orderNumber} className="p-4 border border-[#E5E5EA] shadow-sm bg-white rounded-2xl cursor-pointer active:scale-[0.98] transition-transform" onClick={() => setSelectedOrder(order)}>
-                <div className="flex justify-between items-center mb-3">
-                  <span className="text-sm font-bold text-[#6B7280]">Comanda #{order.orderNumber}</span>
-                  <span className={`text-[10px] font-bold px-2 py-1 rounded-md ${
-                    filterStatus === 'in-procesare' ? 'bg-orange-100 text-orange-700' :
-                    filterStatus === 'in-livrare' ? 'bg-blue-100 text-blue-700' :
-                    filterStatus === 'livrate' ? 'bg-[#DDF7E7] text-[#2E9B4F]' :
-                    'bg-gray-100 text-gray-700'
-                  }`}>
-                    {statusLabel(order.deliveryStatus)}
-                  </span>
+        {orders.length === 0 ? (
+          /* ── Empty State ── */
+          <div className="flex-1 overflow-y-auto">
+            <div className="bg-white px-6 pt-8 pb-8 flex flex-col items-center">
+              {/* Illustration */}
+              <div className="w-48 h-48 mb-2">
+                <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  {/* Sparkles */}
+                  <path d="M35 55 L38 48 L41 55 L48 58 L41 61 L38 68 L35 61 L28 58 Z" fill="#DADADA"/>
+                  <path d="M162 42 L165 36 L168 42 L174 45 L168 48 L165 54 L162 48 L156 45 Z" fill="#DADADA"/>
+                  <path d="M172 100 L174 95 L176 100 L181 102 L176 104 L174 109 L172 104 L167 102 Z" fill="#DADADA"/>
+                  <path d="M22 100 L24 96 L26 100 L30 102 L26 104 L24 108 L22 104 L18 102 Z" fill="#DADADA"/>
+                  {/* Heart glow */}
+                  <path d="M100 82 C100 82 78 65 78 53 C78 44 84.5 38 91 38 C95 38 100 43 100 43 C100 43 105 38 109 38 C115.5 38 122 44 122 53 C122 65 100 82 100 82 Z" fill="#FEE2E2"/>
+                  {/* Heart */}
+                  <path d="M100 78 C100 78 80 63 80 52 C80 44 86 39 91.5 39 C95.5 39 100 43.5 100 43.5 C100 43.5 104.5 39 108.5 39 C114 39 120 44 120 52 C120 63 100 78 100 78 Z" fill="#E31E24"/>
+                  {/* Box left flap */}
+                  <path d="M58 106 L100 106 L100 88 L63 88 Z" fill="#EBEBEB" stroke="#CCCCCC" strokeWidth="1.5"/>
+                  {/* Box right flap */}
+                  <path d="M100 106 L142 106 L137 88 L100 88 Z" fill="#F5F5F5" stroke="#CCCCCC" strokeWidth="1.5"/>
+                  {/* Box body */}
+                  <rect x="58" y="106" width="84" height="58" rx="3" fill="white" stroke="#DDDDDD" strokeWidth="1.5"/>
+                  {/* Red left panel */}
+                  <rect x="58" y="106" width="42" height="58" fill="#E31E24" opacity="0.1"/>
+                  {/* Divider */}
+                  <line x1="100" y1="106" x2="100" y2="164" stroke="#DDDDDD" strokeWidth="1.5"/>
+                  {/* evoMAG text */}
+                  <text x="100" y="140" textAnchor="middle" fontFamily="Arial, sans-serif" fontWeight="bold" fontSize="10" fill="#E31E24">evoMAG</text>
+                </svg>
+              </div>
+
+              <h2 className="text-[22px] font-black text-[#111111] text-center leading-tight mb-2">
+                Prima ta comandă<br/>începe aici.
+              </h2>
+              <p className="text-sm text-[#9CA3AF] text-center mb-1">Nu ai plasat încă nicio comandă.</p>
+              <p className="text-sm text-[#9CA3AF] text-center mb-6">
+                Descoperă produse recomandate și{" "}
+                <span className="font-bold text-[#E31E24]">cumpără în câteva secunde.</span>
+              </p>
+
+              <button className="w-full py-4 rounded-full bg-[#E31E24] text-white font-bold text-base mb-3">
+                Explorează produse
+              </button>
+              <button className="w-full py-4 rounded-full border border-[#E5E5EA] text-[#111111] font-bold text-sm flex items-center justify-center gap-2">
+                <span className="text-[#9CA3AF] text-base">✦</span>
+                Vorbește cu EvoMi
+              </button>
+            </div>
+
+            {/* EvoMi suggestion card */}
+            <div className="mx-4 mt-4 p-4 bg-white rounded-2xl border border-[#E5E5EA]">
+              <div className="flex items-start gap-3">
+                <span className="text-base font-bold text-[#111111] mt-0.5">✦</span>
+                <div className="flex-1">
+                  <p className="font-bold text-[#111111] text-sm mb-1">Nu știi ce să alegi?</p>
+                  <p className="text-sm text-[#6B7280] mb-3">EvoMi te poate ajuta să găsești produsul potrivit pentru tine.</p>
+                  <button className="flex items-center gap-2 px-4 py-2 rounded-full border border-[#E31E24] text-[#E31E24] text-sm font-bold">
+                    <MessageSquare className="w-4 h-4" /> Întreabă EvoMi
+                  </button>
                 </div>
-                {firstProduct && (
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-[#F5F5F7] rounded-xl p-2 shrink-0">
-                      <img src={firstProduct.images?.[0] ?? ""} className="w-full h-full object-contain mix-blend-multiply" alt={firstProduct.name} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-bold text-sm text-[#111111] line-clamp-1">
-                        {firstProduct.name}{order.products.length > 1 ? ` +${order.products.length - 1} produse` : ""}
-                      </p>
-                      <p className="text-xs text-[#6B7280] mt-1">{formatDate(order.orderDate)}</p>
-                      <p className="font-black text-[#E31E24] mt-1.5">{total.toLocaleString("ro-RO")} Lei</p>
-                    </div>
+              </div>
+            </div>
+
+            {/* Popular categories */}
+            <div className="px-4 mt-4 pb-6">
+              <h3 className="font-bold text-[#111111] text-base mb-3">Explorează categorii populare</h3>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { name: "Laptopuri", desc: "Performanță pentru orice nevoie", img: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=200&q=80" },
+                  { name: "Telefoane", desc: "Cele mai noi modele", img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=200&q=80" },
+                  { name: "Smart Home", desc: "Tehnologie pentru casă ta", img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=80" }
+                ].map(cat => (
+                  <div key={cat.name} className="bg-white rounded-2xl border border-[#E5E5EA] p-3 flex flex-col overflow-hidden">
+                    <p className="font-bold text-xs text-[#111111] mb-1">{cat.name}</p>
+                    <p className="text-[10px] text-[#6B7280] mb-2 leading-tight flex-1">{cat.desc}</p>
+                    <img src={cat.img} className="w-full h-16 object-contain mix-blend-multiply rounded-lg" alt={cat.name} />
                   </div>
-                )}
-              </Card>
-            );
-          }) : (
-            <div className="text-center text-[#6B7280] py-10">Nu există comenzi pentru acest status.</div>
-          )}
-        </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* ── Orders Content ── */
+          <div className="flex-1 overflow-y-auto p-4">
+            {/* Stats summary */}
+            <div className="bg-white rounded-2xl border border-[#E5E5EA] shadow-sm p-4 mb-4 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                <Package className="w-6 h-6 text-[#E31E24]" />
+              </div>
+              <div className="flex flex-1 items-stretch">
+                <div className="flex-1 pr-4">
+                  <p className="text-2xl font-black text-[#E31E24] leading-none">{inLivrareCount}</p>
+                  <p className="text-xs font-bold text-[#111111]">în livrare</p>
+                  <p className="text-[10px] text-[#6B7280]">Comenzi active</p>
+                </div>
+                <div className="w-px bg-[#E5E5EA]" />
+                <div className="flex-1 pl-4">
+                  <p className="text-2xl font-black text-green-600 leading-none">{recentlyDeliveredCount}</p>
+                  <p className="text-xs font-bold text-[#111111]">livrată recent</p>
+                  <p className="text-[10px] text-[#6B7280]">În ultimele 30 zile</p>
+                </div>
+              </div>
+            </div>
+
+            {activeOrders.length > 0 && (
+              <>
+                <h2 className="text-base font-black text-[#111111] mb-3">Comenzi active</h2>
+                {activeOrders.map(renderActiveOrderCard)}
+              </>
+            )}
+
+            {recentlyDeliveredOrders.length > 0 && (
+              <>
+                <h2 className="text-base font-black text-[#111111] mb-3 mt-2">Comenzi livrate recent</h2>
+                {recentlyDeliveredOrders.map(renderDeliveredOrderCard)}
+              </>
+            )}
+          </div>
+        )}
       </div>
     );
   }

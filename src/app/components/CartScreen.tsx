@@ -1,5 +1,5 @@
 import React, { useRef, useState, useMemo } from "react";
-import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { ProductCard } from "./ProductCard";
 import { getWishlist } from "../services/wishlist";
@@ -73,6 +73,7 @@ interface CartScreenProps {
 
 export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onCheckout, onProductClick, onAddToCart }: CartScreenProps) {
   const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const totalQty = cartItems.reduce((acc, i) => acc + i.quantity, 0);
 
   const wishlistProducts = useMemo<Product[]>(() => getWishlist(), []);
 
@@ -112,35 +113,35 @@ export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onChecko
       <header className="shrink-0 flex items-center px-4 py-4 bg-white border-b sticky top-0 z-10">
         <h1 className="text-xl font-bold ml-2 flex-1">Coșul meu</h1>
         <span className="text-sm font-semibold bg-muted px-2 py-1 rounded-full">
-          {cartItems.reduce((acc, i) => acc + i.quantity, 0)} articole
+          {totalQty} {totalQty === 1 ? 'produs' : 'produse'}
         </span>
       </header>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {cartItems.map((item) => (
-          <div key={item.id} className="flex gap-4 p-3 bg-white rounded-xl shadow-sm border border-gray-100">
-            <div className="w-20 h-20 bg-muted/30 rounded-lg p-2 shrink-0">
+          <div key={item.id} className="flex gap-3 p-3 bg-white rounded-xl shadow-sm border border-gray-100">
+            <div className="w-[72px] h-[72px] bg-gray-50 rounded-lg p-1.5 shrink-0 border border-gray-100">
               <img src={item.images?.[0] ?? ""} alt={item.name} className="w-full h-full object-contain" />
             </div>
             
-            <div className="flex-1 flex flex-col justify-between">
+            <div className="flex-1 flex flex-col justify-between min-w-0">
               <div>
-                <h3 className="text-xs font-medium line-clamp-2 mb-1">{item.name}</h3>
-                <span className="text-sm font-bold text-primary">{item.price.toLocaleString('ro-RO')} Lei</span>
+                <h3 className="text-xs font-medium line-clamp-2 mb-1 text-gray-800">{item.name}</h3>
+                <span className="text-sm font-bold text-[#E31E24]">{item.price.toLocaleString('ro-RO')} Lei</span>
               </div>
               
               <div className="flex items-center justify-between mt-2">
-                <div className="flex items-center gap-3 bg-muted/50 rounded-full px-1 py-1">
+                <div className="flex items-center border border-gray-200 rounded-full overflow-hidden">
                   <button 
                     onClick={() => onUpdateQuantity(item.id, -1)}
-                    className="w-6 h-6 rounded-full bg-white flex items-center justify-center shadow-sm"
+                    className="w-7 h-7 flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors"
                   >
                     <Minus className="h-3 w-3" />
                   </button>
-                  <span className="text-xs font-bold w-4 text-center">{item.quantity}</span>
+                  <span className="text-xs font-bold w-6 text-center">{item.quantity}</span>
                   <button 
                     onClick={() => onUpdateQuantity(item.id, 1)}
-                    className="w-6 h-6 rounded-full bg-white flex items-center justify-center shadow-sm"
+                    className="w-7 h-7 flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors"
                   >
                     <Plus className="h-3 w-3" />
                   </button>
@@ -148,7 +149,7 @@ export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onChecko
                 
                 <button 
                   onClick={() => onRemoveItem(item.id)}
-                  className="p-1.5 text-muted-foreground hover:text-destructive transition-colors"
+                  className="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
@@ -156,6 +157,14 @@ export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onChecko
             </div>
           </div>
         ))}
+
+        {/* Discount code */}
+        <div className="flex items-center justify-between bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+          <span className="text-sm text-gray-600">Ai un cod de reducere?</span>
+          <button className="text-sm font-semibold text-[#E31E24] flex items-center gap-0.5">
+            Adaugă cod <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
 
         {/* Subtotal & Cost livrare */}
         <div className="bg-white rounded-xl p-4 shadow-sm space-y-3">
@@ -171,7 +180,7 @@ export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onChecko
 
         {/* Cumpărate frecvent împreună */}
         <section className="bg-white rounded-xl py-4 shadow-sm -mx-4 px-0">
-          <SectionHeader title="Cumpărate frecvent împreună" />
+          <SectionHeader title="S-ar putea să-ți placă" />
           <ProductScroll>
             {frequentlyBought.map((product) => (
               <div key={product.id} className="w-[150px] shrink-0 snap-start" onClick={() => onProductClick?.(product)}>
@@ -232,13 +241,13 @@ export function CartScreen({ cartItems, onUpdateQuantity, onRemoveItem, onChecko
         )}
       </div>
 
-      <div className="bg-white border-t p-4 pb-safe space-y-4">
+      <div className="bg-white border-t p-4 pb-safe space-y-3">
         <div className="flex justify-between items-center">
-          <span className="font-bold text-base">Total estimat</span>
-          <span className="font-black text-xl text-primary">{total.toLocaleString('ro-RO')} Lei</span>
+          <span className="font-semibold text-sm text-gray-600">Total <span className="text-xs">(TVA inclus)</span></span>
+          <span className="font-black text-xl text-[#E31E24]">{total.toLocaleString('ro-RO')} Lei</span>
         </div>
-        <Button onClick={onCheckout} className="w-full h-12 rounded-full text-base font-bold shadow-lg shadow-primary/20">
-          Continuă
+        <Button onClick={onCheckout} className="w-full h-12 bg-[#E31E24] hover:bg-red-700 text-white rounded-full text-base font-bold shadow-lg border-0 shadow-primary/20">
+          Continuă comanda
         </Button>
       </div>
     </div>

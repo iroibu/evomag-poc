@@ -8,7 +8,7 @@ import { seedAddresses } from "./app/services/addresses.ts";
 import { seedCards } from "./app/services/cards.ts";
 
 // Seed a demo delivered order if no orders exist yet
-const shuffled = [...productsData].sort(() => Math.random() - 0.5);
+/* const shuffled = [...productsData].sort(() => Math.random() - 0.5);
 seedOrder(
   shuffled.slice(0, 1).map((p: any) => ({
     id: String(p.id),
@@ -18,7 +18,7 @@ seedOrder(
     quantity: 1,
   })),
   "delivered"
-);
+); */
 
 // Seed default addresses if local storage is empty
 seedAddresses();
