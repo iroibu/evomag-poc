@@ -27,9 +27,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'icon.svg', 'apple-touch-icon-180x180.png'],
       manifest: {
-        name: 'Ecommerce App',
+        name: 'EvoMag Application',
         short_name: 'EvoMag',
-        description: 'Ecommerce app design',
+        description: 'EvoMag Ecommerce Application',
         theme_color: '#1a1a2e',
         background_color: '#1a1a2e',
         display: 'standalone',
