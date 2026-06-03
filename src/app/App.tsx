@@ -82,6 +82,7 @@ export default function App() {
                  onProductClick={handleProductClick} 
                  onAddToCart={handleAddToCart} 
                  onSeeAllClick={(title, products) => setCategoryView({ title, products })}
+                 onAIClick={() => setActiveTab("assistant")}
                />;
       case "search":
         return <SearchScreen onProductClick={handleProductClick} onCancel={() => setActiveTab("home")} />;
@@ -105,6 +106,7 @@ export default function App() {
                  onProductClick={handleProductClick} 
                  onAddToCart={handleAddToCart} 
                  onSeeAllClick={(title, products) => setCategoryView({ title, products })}
+                 onAIClick={() => setActiveTab("assistant")}
                />;
     }
   };
