@@ -6,9 +6,6 @@ import {
   Sparkles,
   Zap,
 } from "lucide-react";
-import { useState } from "react";
-import { savePreferences } from "../services/userPreferences";
-import { OnboardingPreferences, type OnboardingPrefs } from "./OnboardingPreferences";
 import { Button } from "./ui/button";
 
 function EvomagLogo() {
@@ -87,19 +84,9 @@ interface WelcomeScreenProps {
 }
 
 export function WelcomeScreen({ onEnter }: WelcomeScreenProps) {
-  const [step, setStep] = useState(0); // 0: Splash, 1: Onboarding preferences
-
-  const handleOnboardingComplete = (prefs: OnboardingPrefs) => {
-    savePreferences(prefs);
-    onEnter();
-  };
-
   return (
     <div className="h-screen flex flex-col bg-[#F2F2F7] max-w-md mx-auto overflow-hidden relative z-50">
-      {/* STEP 0: SPLASH */}
-      <div
-        className={`absolute inset-0 flex flex-col overflow-y-auto transition-all duration-700 ease-in-out ${step === 0 ? "translate-x-0 opacity-100 z-20" : "-translate-x-full opacity-0 z-0"}`}
-      >
+      <div className="absolute inset-0 flex flex-col overflow-y-auto">
         {/* Logo */}
         <div className="flex justify-center pt-14 pb-4 flex-shrink-0">
           <EvomagLogo />
@@ -277,17 +264,14 @@ export function WelcomeScreen({ onEnter }: WelcomeScreenProps) {
 
           {/* CTA */}
           <Button
-            onClick={() => setStep(1)}
+            onClick={onEnter}
             className="w-full h-14 bg-[#E31E24] hover:bg-[#c5191f] text-white text-base font-bold rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-red-200"
           >
             Începe <ArrowRight className="w-5 h-5" />
           </Button>
 
           <button
-            onClick={() => {
-              savePreferences({ selectedCategories: [], selectedBrands: [] });
-              onEnter();
-            }}
+            onClick={onEnter}
             className="w-full mt-3 text-sm font-semibold text-gray-400 hover:text-gray-600 transition-colors flex items-center justify-center gap-1"
           >
             Am deja cont <ChevronRight className="w-4 h-4" />
@@ -295,12 +279,6 @@ export function WelcomeScreen({ onEnter }: WelcomeScreenProps) {
         </div>
       </div>
 
-      {/* STEP 1: ONBOARDING PREFERENCES */}
-      <div
-        className={`absolute inset-0 flex flex-col bg-background transition-all duration-700 ease-in-out ${step > 0 ? "translate-x-0 opacity-100 z-20" : "translate-x-full opacity-0 z-0"}`}
-      >
-        <OnboardingPreferences onComplete={handleOnboardingComplete} />
-      </div>
     </div>
   );
 }

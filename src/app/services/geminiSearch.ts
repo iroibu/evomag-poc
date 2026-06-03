@@ -1,4 +1,4 @@
-import { PRODUCT_CATALOG, CATALOG_SUMMARY, generateGeminiContent, parseJsonResponse, CatalogProduct } from "./gemini";
+import { PRODUCT_CATALOG, CATALOG_SUMMARY, generateGeminiContent, parseJsonResponse, type CatalogProduct } from "./gemini";
 
 export interface AISuggestedProduct extends CatalogProduct {
   aiReason: string;

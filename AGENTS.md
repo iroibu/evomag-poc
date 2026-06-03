@@ -36,7 +36,7 @@ src/
 ## Build & Dev
 
 ```bash
-npm i           # install dependencies
+npm install     # install dependencies
 npm run dev     # start dev server
 npm run build   # production build → ./dist
 ```
@@ -51,4 +51,4 @@ Deployment is automatic on push to `main` via `.github/workflows/deploy.yml` (Gi
 - **New screens**: Add as a component in `src/app/components/`, wire the navigation state in `App.tsx`, and add a tab entry in `BottomNav.tsx` only if it requires a persistent tab.
 - **New services**: Place in `src/app/services/`, use `localStorage` for client-side persistence, and keep AI calls inside the `gemini*.ts` files.
 - **Styling**: Prefer Tailwind utility classes and shadcn/ui components over custom CSS. Custom theme tokens are in `src/styles/theme.css`.
-- **No test suite** exists; verify changes by running `npm run build`.
+- **No test suite** exists. Do **not** run the build or check for errors after making changes.

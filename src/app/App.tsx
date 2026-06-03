@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { loadPreferences } from "./services/userPreferences";
+import { loadPreferences, savePreferences } from "./services/userPreferences";
 import { addRecentlyViewed } from "./services/recentlyViewed";
 import { getCart, saveCart, clearCart } from "./services/cart";
 import { BottomNav } from "./components/BottomNav";
 import { HomeFeed } from "./components/HomeFeed";
 import { SearchScreen } from "./components/SearchScreen";
 import { AIAssistant } from "./components/AIAssistant";
-import { CartScreen, CartItemType } from "./components/CartScreen";
+import { CartScreen, type CartItemType } from "./components/CartScreen";
 import { CheckoutScreen } from "./components/CheckoutScreen";
 import { OrderConfirmationScreen } from "./components/OrderConfirmationScreen";
 import { OrderDetailScreen } from "./components/OrderDetailScreen";
@@ -16,6 +16,9 @@ import { Profile } from "./components/Profile";
 import { NotificationsScreen } from "./components/NotificationsScreen";
 import { CategoryScreen } from "./components/CategoryScreen";
 import { WelcomeScreen } from "./components/WelcomeScreen";
+import { LoginScreen } from "./components/LoginScreen";
+import { OnboardingPreferences, type OnboardingPrefs } from "./components/OnboardingPreferences";
+import { isLoggedIn, saveAuthUser } from "./services/auth";
 import { Search, Bell } from "lucide-react";
 import { ProductDetail } from "./components/ProductDetail";
 import { Badge } from "./components/ui/badge";
@@ -24,7 +27,11 @@ import { type Order } from "./services/orders";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("home");
-  const [hasSeenWelcome, setHasSeenWelcome] = useState(() => loadPreferences() !== null);
+  const [hasSeenWelcome, setHasSeenWelcome] = useState(
+    () => localStorage.getItem("evomag_has_seen_welcome") === "true" || loadPreferences() !== null
+  );
+  const [isAuthenticated, setIsAuthenticated] = useState(() => isLoggedIn());
+  const [hasSetPreferences, setHasSetPreferences] = useState(() => loadPreferences() !== null);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
 
   const handleProductClick = (product: any) => {
@@ -112,7 +119,37 @@ export default function App() {
   };
 
   if (!hasSeenWelcome) {
-    return <WelcomeScreen onEnter={() => setHasSeenWelcome(true)} />;
+    return (
+      <WelcomeScreen
+        onEnter={() => {
+          localStorage.setItem("evomag_has_seen_welcome", "true");
+          setHasSeenWelcome(true);
+        }}
+      />
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <LoginScreen
+        onLoginSuccess={() => setIsAuthenticated(true)}
+        onCreateAccount={() => {
+          saveAuthUser({ email: "novo@evomag.ro", rememberMe: false });
+          setIsAuthenticated(true);
+        }}
+      />
+    );
+  }
+
+  if (!hasSetPreferences) {
+    return (
+      <OnboardingPreferences
+        onComplete={(prefs: OnboardingPrefs) => {
+          savePreferences(prefs);
+          setHasSetPreferences(true);
+        }}
+      />
+    );
   }
 
   if (selectedProduct) {

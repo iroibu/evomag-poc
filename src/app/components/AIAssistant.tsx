@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Avatar } from "./ui/avatar";
 import { motion } from "motion/react";
-import { getAssistantReply, AssistantProduct } from "../services/geminiAssistant";
+import { getAssistantReply, type AssistantProduct } from "../services/geminiAssistant";
 
 interface Message {
   id: string;
