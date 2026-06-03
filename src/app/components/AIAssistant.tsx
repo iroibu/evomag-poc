@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Sparkles, ShoppingCart } from "lucide-react";
+import { Send, Sparkles, ShoppingCart, Laptop, Smartphone, Home, Flame, ChevronRight } from "lucide-react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
@@ -14,12 +14,53 @@ interface Message {
   products?: AssistantProduct[];
 }
 
-const quickPrompts = [
-  "Recomandă-mi un laptop pentru programare",
-  "Care este cel mai bun telefon în 2026?",
-  "Căști pentru sală de sport sub 300 Lei",
-  "Monitoare pentru gaming",
+const quickActions = [
+  {
+    icon: Laptop,
+    iconBg: "bg-violet-100",
+    iconColor: "text-violet-600",
+    title: "Vreau un laptop",
+    subtitle: "Găsește modelul potrivit pentru tine",
+    prompt: "Vreau un laptop",
+  },
+  {
+    icon: Smartphone,
+    iconBg: "bg-red-100",
+    iconColor: "text-red-500",
+    title: "Compară telefoane",
+    subtitle: "Alege telefonul care ți se potrivește",
+    prompt: "Compară telefoane",
+  },
+  {
+    icon: Home,
+    iconBg: "bg-green-100",
+    iconColor: "text-green-600",
+    title: "Smart Home",
+    subtitle: "Soluții inteligente pentru casa ta",
+    prompt: "Smart Home",
+  },
+  {
+    icon: Flame,
+    iconBg: "bg-orange-100",
+    iconColor: "text-orange-500",
+    title: "Vezi ofertele de azi",
+    subtitle: "Cele mai bune reduceri pentru tine",
+    prompt: "Vezi ofertele de azi",
+  },
 ];
+
+function RobotMascot() {
+  return (
+    <div className="relative h-[146px] w-[164px] overflow-hidden">
+      <img
+        src="/evomag-poc/evomi-mascot.png"
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 h-full w-full select-none"
+      />
+    </div>
+  );
+}
 
 export function AIAssistant() {
   const [messages, setMessages] = useState<Message[]>([
@@ -80,6 +121,80 @@ export function AIAssistant() {
     handleSendMessage(input);
     setInput("");
   };
+
+  const isWelcomeState = messages.length <= 1;
+
+  if (isWelcomeState) {
+    return (
+      <div className="flex flex-col h-full bg-white">
+        {/* Header */}
+        <div className="shrink-0 px-4 pt-4 pb-2 flex items-center justify-between">
+          <div className="flex-1" />
+          <div className="flex flex-col items-center">
+            <span className="text-lg font-bold text-[#E31E24] flex items-center gap-1">
+              EvoMi <Sparkles className="h-4 w-4 text-[#E31E24]" />
+            </span>
+            <span className="text-xs text-gray-400">Asistentul tău de shopping</span>
+          </div>
+          <div className="flex-1" />
+        </div>
+
+        {/* Robot mascot + greeting */}
+        <div className="shrink-0 flex flex-col items-center px-4 pt-2 pb-4">
+          <div className="relative mb-3">
+            <RobotMascot />
+          </div>
+        </div>
+
+        {/* Action cards */}
+        <div className="shrink-0 px-4 pb-3 space-y-2">
+          {quickActions.map((action, index) => {
+            const Icon = action.icon;
+            return (
+              <button
+                key={index}
+                onClick={() => handleSendMessage(action.prompt)}
+                className="w-full flex items-center gap-3 bg-white rounded-2xl px-3 py-2.5 shadow-sm border border-gray-100 text-left"
+              >
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${action.iconBg}`}>
+                  <Icon className={`h-4 w-4 ${action.iconColor}`} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-xs text-gray-900">{action.title}</p>
+                  <p className="text-[11px] text-gray-400 mt-0.5">{action.subtitle}</p>
+                </div>
+                <ChevronRight className="h-3.5 w-3.5 text-gray-300 shrink-0" />
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Spacer to push input bar to bottom */}
+        <div className="flex-1" />
+
+        {/* Input bar */}
+        <div className="shrink-0 px-4 py-4 bg-white border-t border-gray-100">
+          <div className="flex items-center gap-2 bg-gray-50 rounded-full px-4 py-2.5 border border-gray-100">
+            <Sparkles className="h-4 w-4 text-[#E31E24] shrink-0" />
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSend()}
+              placeholder="Întreabă EvoMi orice despre produse..."
+              className="flex-1 bg-transparent text-sm outline-none text-gray-600 placeholder:text-gray-400"
+            />
+            <button
+              onClick={handleSend}
+              disabled={!input.trim()}
+              className="w-8 h-8 rounded-full bg-[#E31E24] flex items-center justify-center shrink-0 disabled:opacity-40"
+            >
+              <Send className="h-3.5 w-3.5 text-white" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -176,23 +291,6 @@ export function AIAssistant() {
 
         <div ref={messagesEndRef} />
       </div>
-
-      {/* Quick Prompts */}
-      {messages.length <= 1 && (
-        <div className="shrink-0 px-4 pb-2">
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-            {quickPrompts.map((prompt, index) => (
-              <button
-                key={index}
-                onClick={() => handleSendMessage(prompt)}
-                className="shrink-0 px-4 py-2 bg-muted rounded-full text-sm whitespace-nowrap"
-              >
-                {prompt}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Input */}
       <div className="shrink-0 border-t bg-background px-4 py-4">
