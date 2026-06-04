@@ -25,10 +25,8 @@ const DISPLAY_CATEGORIES = [
 ];
 
 const quickActions = [
-  { id: "recommend", label: "Recomandă-mi ceva nou", icon: Sparkles },
   { id: "laptop", label: "Vreau un laptop", icon: Laptop },
-  { id: "gift", label: "Caut un cadou", icon: Gift },
-  { id: "compare", label: "Compară produse", icon: GitCompare },
+  { id: "phone", label: "Vreau un telefon", icon: Smartphone },
 ];
 
 const trendingOrderCounts = [128, 93, 81, 67, 49];

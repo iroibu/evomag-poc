@@ -141,15 +141,15 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
               <div className="bg-white rounded-xl shadow-sm border border-[#E5E5EA] p-4 space-y-4">
                 <div>
                   <p className="text-xs text-[#6B7280] mb-1.5">Nume și prenume</p>
-                  <input type="text" placeholder="Nume și prenume" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all" />
+                  <input type="text" placeholder="Nume și prenume" className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all" />
                 </div>
                 <div>
                   <p className="text-xs text-[#6B7280] mb-1.5">Email</p>
-                  <input type="email" placeholder="Email" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all" />
+                  <input type="email" placeholder="Email" className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all" />
                 </div>
                 <div>
                   <p className="text-xs text-[#6B7280] mb-1.5">Telefon</p>
-                  <input type="tel" placeholder="Telefon" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all" />
+                  <input type="tel" placeholder="Telefon" className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all" />
                 </div>
               </div>
             </section>
@@ -159,20 +159,20 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
               <section className="space-y-3 animate-in fade-in zoom-in-95 duration-200">
                 <h2 className="text-sm font-semibold text-[#111111]">Detalii Firmă</h2>
                 <div className="bg-white rounded-xl shadow-sm border border-[#E5E5EA] p-4 space-y-3">
-                  <input type="text" placeholder="Cod fiscal (CUI/CIF)" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
-                  <input type="text" placeholder="Nume firmă" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
-                  <input type="text" placeholder="Reg. Comerțului (ex: J40/1234/2020)" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
-                  <input type="text" placeholder="Banca" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
-                  <input type="text" placeholder="Cont bancar (IBAN)" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
+                  <input type="text" placeholder="Cod fiscal (CUI/CIF)" className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
+                  <input type="text" placeholder="Nume firmă" className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
+                  <input type="text" placeholder="Reg. Comerțului (ex: J40/1234/2020)" className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
+                  <input type="text" placeholder="Banca" className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
+                  <input type="text" placeholder="Cont bancar (IBAN)" className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
                   
                   <div className="pt-2 mt-2 border-t border-gray-100">
                     <h3 className="text-xs font-semibold text-[#6B7280] mb-3">Adresă Sediu Social</h3>
                     <div className="space-y-3">
                       <div className="grid grid-cols-2 gap-3">
-                        <input type="text" placeholder="Județ" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
-                        <input type="text" placeholder="Localitate / Sector" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
+                        <input type="text" placeholder="Județ" className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
+                        <input type="text" placeholder="Localitate / Sector" className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
                       </div>
-                      <input type="text" placeholder="Adresă completă" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
+                      <input type="text" placeholder="Adresă completă" className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
                     </div>
                   </div>
                 </div>
@@ -211,10 +211,10 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                 
                 {!useProfileAddressFacturare && (
                   <div className="p-4 space-y-3 border-t border-[#E5E5EA] bg-[#F5F5F7] mt-4 animate-in slide-in-from-top-2">
-                    <input type="text" placeholder="Județ" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24]" />
-                    <input type="text" placeholder="Localitate/sector" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24]" />
-                    <input type="text" placeholder="Adresă" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24]" />
-                    <input type="text" placeholder="Cod poștal" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24]" />
+                    <input type="text" placeholder="Județ" className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24]" />
+                    <input type="text" placeholder="Localitate/sector" className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24]" />
+                    <input type="text" placeholder="Adresă" className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24]" />
+                    <input type="text" placeholder="Cod poștal" className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24]" />
                   </div>
                 )}
               </div>
@@ -319,10 +319,10 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                   
                   {!useProfileAddressLivrare && (
                     <div className="p-4 space-y-3 border-t border-[#E5E5EA] bg-[#F5F5F7] mt-4">
-                      <input type="text" placeholder="Județ" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24]" />
-                      <input type="text" placeholder="Localitate/sector" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24]" />
-                      <input type="text" placeholder="Adresă" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24]" />
-                      <input type="text" placeholder="Cod poștal" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24]" />
+                      <input type="text" placeholder="Județ" className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24]" />
+                      <input type="text" placeholder="Localitate/sector" className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24]" />
+                      <input type="text" placeholder="Adresă" className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24]" />
+                      <input type="text" placeholder="Cod poștal" className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24]" />
                     </div>
                   )}
                 </div>
@@ -522,7 +522,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                         }}
                         placeholder="1234 5678 9012 3456"
                         maxLength={19}
-                        className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all pr-16"
+                        className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all pr-16"
                       />
                       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-700 font-extrabold text-xs tracking-widest select-none">VISA</span>
                     </div>
@@ -534,7 +534,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                       value={cardFormData.name}
                       onChange={(e) => setCardFormData({ ...cardFormData, name: e.target.value })}
                       placeholder="Andrei Popescu"
-                      className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all"
+                      className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
@@ -546,7 +546,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                         onChange={(e) => setCardFormData({ ...cardFormData, expiry: e.target.value })}
                         placeholder="LL / AA"
                         maxLength={7}
-                        className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all"
+                        className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all"
                       />
                     </div>
                     <div>
@@ -560,7 +560,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                         onChange={(e) => setCardFormData({ ...cardFormData, cvv: e.target.value })}
                         placeholder="•••"
                         maxLength={4}
-                        className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all"
+                        className="w-full text-base p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all"
                       />
                     </div>
                   </div>
@@ -772,7 +772,11 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
         <div className="bg-white border-t p-4 pb-safe space-y-3 shadow-[0_-4px_15px_-3px_rgba(0,0,0,0.05)] sticky bottom-0 z-10">
           {paymentSubView === "rate" && (
             <Button
-              onClick={() => onSuccess(saveOrder(cartItems, total))}
+              onClick={() => {
+                const factor = INSTALLMENT_PLANS.find(p => p.months === installments)?.totalFactor ?? 1;
+                const rateTotal = Math.round(total * factor);
+                onSuccess(saveOrder(cartItems, rateTotal));
+              }}
               className="w-full h-14 bg-[#E31E24] hover:bg-red-700 text-white rounded-full text-base font-bold shadow-lg border-0"
             >
               Continuă plata
@@ -875,7 +879,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                   type="text"
                   placeholder="0000 0000 0000 0000"
                   maxLength={19}
-                  className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-[#E31E24] outline-none transition-all"
+                  className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3.5 text-base font-medium focus:ring-2 focus:ring-[#E31E24] outline-none transition-all"
                   value={newCardForm.number}
                   onChange={(e) => {
                     const digits = e.target.value.replace(/\D/g, "").slice(0, 16);
@@ -889,7 +893,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                 <input
                   type="text"
                   placeholder="Nume Prenume"
-                  className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-[#E31E24] outline-none transition-all"
+                  className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3.5 text-base font-medium focus:ring-2 focus:ring-[#E31E24] outline-none transition-all"
                   value={newCardForm.name}
                   onChange={(e) => setNewCardForm({...newCardForm, name: e.target.value})}
                 />
@@ -901,7 +905,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                     type="text"
                     placeholder="LL/AA"
                     maxLength={5}
-                    className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-[#E31E24] outline-none transition-all"
+                    className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3.5 text-base font-medium focus:ring-2 focus:ring-[#E31E24] outline-none transition-all"
                     value={newCardForm.expiry}
                     onChange={(e) => setNewCardForm({...newCardForm, expiry: e.target.value})}
                   />
@@ -912,7 +916,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                     type="password"
                     placeholder="***"
                     maxLength={3}
-                    className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3.5 text-sm font-medium focus:ring-2 focus:ring-[#E31E24] outline-none transition-all"
+                    className="w-full bg-[#F5F5F7] border-0 rounded-xl px-4 py-3.5 text-base font-medium focus:ring-2 focus:ring-[#E31E24] outline-none transition-all"
                     value={newCardForm.cvv}
                     onChange={(e) => setNewCardForm({...newCardForm, cvv: e.target.value})}
                   />

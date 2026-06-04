@@ -114,7 +114,7 @@ export default function App() {
       case "search":
         return <SearchScreen onProductClick={handleProductClick} onCancel={() => setActiveTab("home")} />;
       case "assistant":
-        return <AIAssistant key={aiSessionKey} initialPrompt={pendingAIPrompt} onAddToCart={handleAddToCart} />;
+        return <AIAssistant key={aiSessionKey} initialPrompt={pendingAIPrompt} onAddToCart={handleAddToCart} onProductClick={handleProductClick} />;
       case "cart":
         return <CartScreen 
                  cartItems={cartItems} 

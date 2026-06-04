@@ -1,15 +1,75 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Sparkles, ShoppingCart, Laptop, Smartphone, Home, Flame, ChevronRight, ArrowLeft } from "lucide-react";
+import { Send, Sparkles, ShoppingCart, Heart, Laptop, Smartphone, Home, Flame, ChevronRight, ArrowLeft } from "lucide-react";
 import { Avatar } from "./ui/avatar";
 import { motion, AnimatePresence } from "motion/react";
 import { getAssistantReply, type AssistantProduct } from "../services/geminiAssistant";
 import { getAuthUser } from "../services/auth";
+import { isInWishlist, toggleWishlist } from "../services/wishlist";
 
 interface Message {
   id: string;
   type: "user" | "assistant";
   content: string;
   products?: AssistantProduct[];
+}
+
+function AIProductCard({
+  product,
+  onAddToCart,
+  onProductClick,
+}: {
+  product: AssistantProduct;
+  onAddToCart?: (product: any) => void;
+  onProductClick?: (product: any) => void;
+}) {
+  const [wishlisted, setWishlisted] = useState(() => isInWishlist(product.id));
+
+  return (
+    <div
+      className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-200 flex items-center gap-3 p-2.5 cursor-pointer active:scale-[0.98]"
+      onClick={() => onProductClick?.(product)}
+    >
+      <div className="w-[72px] h-[72px] bg-white flex items-center justify-center shrink-0 p-1">
+        <img
+          src={product.images?.[0] ?? ""}
+          alt={product.name}
+          className="max-h-full object-contain mix-blend-multiply"
+          draggable={false}
+        />
+      </div>
+      <div className="flex-1 min-w-0">
+        {product.aiReason && (
+          <p className="text-[10px] text-[#E31E24] font-semibold mb-0.5 line-clamp-1">{product.aiReason}</p>
+        )}
+        <p className="text-[11px] font-semibold text-gray-800 line-clamp-2 leading-snug mb-1.5">{product.name}</p>
+        <div className="flex items-center justify-between">
+          <span className="text-[13px] font-black text-[#E31E24] leading-none">
+            {product.price.toLocaleString("ro-RO")} Lei
+          </span>
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                const newState = toggleWishlist(product);
+                setWishlisted(newState);
+              }}
+              className="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors"
+              aria-label={`${wishlisted ? "Elimină din" : "Adaugă în"} wishlist`}
+            >
+              <Heart className={`w-3.5 h-3.5 transition-colors ${wishlisted ? "fill-[#E31E24] text-[#E31E24]" : "text-gray-400"}`} />
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); onAddToCart?.(product); }}
+              className="w-7 h-7 rounded-full border border-[#E31E24] flex items-center justify-center hover:bg-[#E31E24] hover:text-white text-[#E31E24] transition-colors"
+              aria-label={`Adaugă ${product.name} în coș`}
+            >
+              <ShoppingCart className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 const quickActions = [
@@ -108,7 +168,7 @@ function ChatInputBar({
   );
 }
 
-export function AIAssistant({ initialPrompt, onAddToCart }: { initialPrompt?: string; onAddToCart?: (product: any) => void }) {
+export function AIAssistant({ initialPrompt, onAddToCart, onProductClick }: { initialPrompt?: string; onAddToCart?: (product: any) => void; onProductClick?: (product: any) => void }) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -290,36 +350,12 @@ export function AIAssistant({ initialPrompt, onAddToCart }: { initialPrompt?: st
                 {message.products && message.products.length > 0 && (
                   <div className="mt-3 flex flex-col gap-2.5 max-w-[85%]">
                     {message.products.map((product) => (
-                      <div key={product.id}>
-                        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-200 flex items-center gap-3 p-2.5">
-                          <div className="w-[72px] h-[72px] bg-white flex items-center justify-center shrink-0 p-1">
-                            <img
-                              src={product.images?.[0] ?? ""}
-                              alt={product.name}
-                              className="max-h-full object-contain mix-blend-multiply"
-                              draggable={false}
-                            />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            {product.aiReason && (
-                              <p className="text-[10px] text-[#E31E24] font-semibold mb-0.5 line-clamp-1">{product.aiReason}</p>
-                            )}
-                            <p className="text-[11px] font-semibold text-gray-800 line-clamp-2 leading-snug mb-1.5">{product.name}</p>
-                            <div className="flex items-center justify-between">
-                              <span className="text-[13px] font-black text-[#E31E24] leading-none">
-                                {product.price.toLocaleString("ro-RO")} Lei
-                              </span>
-                              <button
-                                onClick={() => onAddToCart?.(product)}
-                                className="w-7 h-7 rounded-full border border-[#E31E24] flex items-center justify-center hover:bg-[#E31E24] hover:text-white text-[#E31E24] transition-colors"
-                                aria-label={`Adaugă ${product.name} în coș`}
-                              >
-                                <ShoppingCart className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      <AIProductCard
+                        key={product.id}
+                        product={product}
+                        onAddToCart={onAddToCart}
+                        onProductClick={onProductClick}
+                      />
                     ))}
                   </div>
                 )}

@@ -17,10 +17,7 @@ export function OrderConfirmationScreen({ order, onGoHome, onViewOrder }: OrderC
     minute: "2-digit",
   });
 
-  const totalPaid = order.products.reduce(
-    (acc, p) => acc + p.paidPrice * p.quantity,
-    0
-  );
+  const totalPaid = order.total;
 
   return (
     <div className="flex flex-col h-full bg-gray-50">

@@ -14,6 +14,7 @@ export interface Order {
   orderNumber: number;
   orderDate: string;
   products: OrderProduct[];
+  total: number;
   deliveryStatus: DeliveryStatus;
 }
 
@@ -35,6 +36,7 @@ export function seedOrder(products: OrderProduct[], deliveryStatus: DeliveryStat
     orderNumber: 1,
     orderDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
     products,
+    total: products.reduce((sum, p) => sum + p.paidPrice * p.quantity, 0),
     deliveryStatus,
   };
 
@@ -55,6 +57,7 @@ export function saveOrder(cartItems: CartItemType[], total: number): Order {
       paidPrice: item.price,
       quantity: item.quantity,
     })),
+    total,
     deliveryStatus: "pending",
   };
 

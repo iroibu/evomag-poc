@@ -105,7 +105,7 @@ function TrackingTimeline({ status }: { status: DeliveryStatus }) {
 }
 
 export function OrderDetailScreen({ order, onBack, onProductClick }: OrderDetailScreenProps) {
-  const orderTotal = order.products.reduce((sum, p) => sum + p.paidPrice * p.quantity, 0);
+  const orderTotal = order.total;
 
   return (
     <div className="flex flex-col h-full bg-gray-50">

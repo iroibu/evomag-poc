@@ -170,8 +170,7 @@ export function Profile({ onProductClick, onAddToCart, onLogout, onOpenAI, onCat
     ? orders
     : orders.filter(o => deliveryStatusToFilter(o.deliveryStatus) === orderFilter);
 
-  const orderTotal = (order: Order) =>
-    order.products.reduce((sum, p) => sum + p.paidPrice * p.quantity, 0);
+  const orderTotal = (order: Order) => order.total;
 
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString("ro-RO", { day: "numeric", month: "short", year: "numeric" });
