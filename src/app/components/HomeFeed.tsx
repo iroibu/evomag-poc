@@ -66,42 +66,6 @@ function ProductScroll({ children }: { children: React.ReactNode }) {
   const [scrollLeft, setScrollLeft] = useState(0);
   const [dragged, setDragged] = useState(false);
 
-  const touchStartX = useRef(0);
-  const touchStartY = useRef(0);
-  const isHorizontalTouch = useRef<boolean | null>(null);
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-
-    const onTouchStart = (e: TouchEvent) => {
-      touchStartX.current = e.touches[0].clientX;
-      touchStartY.current = e.touches[0].clientY;
-      isHorizontalTouch.current = null;
-    };
-
-    const onTouchMove = (e: TouchEvent) => {
-      if (isHorizontalTouch.current === null) {
-        const dx = Math.abs(e.touches[0].clientX - touchStartX.current);
-        const dy = Math.abs(e.touches[0].clientY - touchStartY.current);
-        if (dx > 5 || dy > 5) {
-          isHorizontalTouch.current = dx > dy;
-        }
-      }
-      // Only capture the touch for horizontal carousel scrolling; let vertical pass through
-      if (isHorizontalTouch.current === true) {
-        e.preventDefault();
-      }
-    };
-
-    el.addEventListener("touchstart", onTouchStart, { passive: true });
-    el.addEventListener("touchmove", onTouchMove, { passive: false });
-    return () => {
-      el.removeEventListener("touchstart", onTouchStart);
-      el.removeEventListener("touchmove", onTouchMove);
-    };
-  }, []);
-
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!scrollRef.current) return;
     setIsDragging(true);
