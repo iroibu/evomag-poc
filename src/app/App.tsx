@@ -86,6 +86,22 @@ export default function App() {
   };
 
   const renderScreen = () => {
+    if (selectedProduct) {
+      return <ProductDetail product={selectedProduct} onBack={() => setSelectedProduct(null)} onAddToCart={handleAddToCart} onProductClick={setSelectedProduct} />;
+    }
+    if (categoryView) {
+      return <CategoryScreen
+               title={categoryView.title}
+               products={categoryView.products}
+               catId={categoryView.catId}
+               onBack={() => setCategoryView(null)}
+               onProductClick={handleProductClick}
+               onAddToCart={handleAddToCart}
+             />;
+    }
+    if (showNotifications) {
+      return <NotificationsScreen onBack={() => setShowNotifications(false)} />;
+    }
     switch (activeTab) {
       case "home":
         return <HomeFeed 
@@ -155,61 +171,6 @@ export default function App() {
     );
   }
 
-  if (selectedProduct) {
-    return (
-      <div className="h-screen flex flex-col bg-background max-w-md mx-auto overflow-hidden">
-        <Toaster />
-        <header className="shrink-0 flex items-center justify-between px-4 py-3 border-b bg-background gap-3">
-          <div className="flex-shrink-0">
-            <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="evoMAG" className="h-7 w-auto" />
-          </div>
-          <div className="flex-1 relative" onClick={() => setSelectedProduct(null)}>
-            <div className="w-full bg-muted rounded-full pl-9 pr-3 py-2 text-xs border-0 text-muted-foreground flex items-center cursor-pointer h-9">
-              Caută produse...
-            </div>
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          </div>
-          <button
-            className="flex-shrink-0 p-2 -mr-2 relative"
-            aria-label="Notificări"
-            onClick={() => setShowNotifications(true)}
-          >
-            <Bell className="h-6 w-6 text-foreground" />
-            <span className="absolute top-2 right-2 w-2 h-2 bg-red-600 rounded-full border border-background"></span>
-          </button>
-        </header>
-        <main className="flex-1 overflow-y-auto">
-          <ProductDetail product={selectedProduct} onBack={() => setSelectedProduct(null)} onAddToCart={handleAddToCart} onProductClick={setSelectedProduct} />
-        </main>
-        <BottomNav activeTab={activeTab} onTabChange={(tab) => { setSelectedProduct(null); setCategoryView(null); if (tab === "assistant") setPendingAIPrompt(undefined); if (tab === "profile") { setProfileInitialView("main"); setViewingOrder(null); } setActiveTab(tab); }} cartItemCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)} />
-      </div>
-    );
-  }
-
-  if (showNotifications) {
-    return (
-      <div className="h-screen flex flex-col bg-background max-w-md mx-auto overflow-hidden">
-        <NotificationsScreen onBack={() => setShowNotifications(false)} />
-      </div>
-    );
-  }
-
-  if (categoryView) {
-    return (
-      <div className="h-screen flex flex-col bg-background max-w-md mx-auto overflow-hidden">
-        <CategoryScreen 
-          title={categoryView.title}
-          products={categoryView.products}
-          catId={categoryView.catId}
-          onBack={() => setCategoryView(null)}
-          onProductClick={handleProductClick}
-          onAddToCart={handleAddToCart}
-        />
-        <BottomNav activeTab={activeTab} onTabChange={(tab) => { setCategoryView(null); if (tab === "assistant") setPendingAIPrompt(undefined); setActiveTab(tab); }} cartItemCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)} />
-      </div>
-    );
-  }
-
   if (showCheckout) {
     return (
       <div className="h-screen flex flex-col bg-background max-w-md mx-auto overflow-hidden">
@@ -252,7 +213,7 @@ export default function App() {
     <div className="h-screen flex flex-col bg-background max-w-md mx-auto overflow-hidden">
       <Toaster />
       {/* Top Header */}
-      {activeTab !== "assistant" && activeTab !== "search" && (
+      {activeTab !== "search" && (
         <header className="shrink-0 flex items-center justify-between px-4 py-3 border-b bg-background gap-3">
           <div className="flex-shrink-0">
             <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="evoMAG" className="h-7 w-auto" />
@@ -280,7 +241,7 @@ export default function App() {
       </main>
 
       {/* Bottom Navigation */}
-      <BottomNav activeTab={activeTab} onTabChange={(tab) => { if (tab === "assistant") setPendingAIPrompt(undefined); if (tab === "profile") { setProfileInitialView("main"); setViewingOrder(null); } setActiveTab(tab); }} cartItemCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)} />
+      <BottomNav activeTab={activeTab} onTabChange={(tab) => { setSelectedProduct(null); setCategoryView(null); if (tab === "assistant") setPendingAIPrompt(undefined); if (tab === "profile") { setProfileInitialView("main"); setViewingOrder(null); } setActiveTab(tab); }} cartItemCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)} />
     </div>
   );
 }

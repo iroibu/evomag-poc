@@ -17,7 +17,7 @@ const tabs = [
 
 export function BottomNav({ activeTab, onTabChange, cartItemCount = 0 }: BottomNavProps) {
   return (
-    <nav className="shrink-0 bg-background border-t z-50 safe-area-inset-bottom">
+    <nav className="shrink-0 bg-background border-t z-50" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
       <div className="flex items-center justify-around h-20 max-w-md mx-auto px-2">
         {tabs.map((tab) => {
           const Icon = tab.icon;

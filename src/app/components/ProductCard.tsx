@@ -1,6 +1,7 @@
-import { Info, ShoppingCart, Star } from "lucide-react";
+import { Heart, Info, ShoppingCart, Star } from "lucide-react";
 import React, { useState } from "react";
 import reviewsData from "../../data/reviews.json";
+import { isInWishlist, toggleWishlist } from "../services/wishlist";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 interface ProductCardProps {
@@ -30,6 +31,7 @@ export function ProductCard({
   onProductClick,
 }: ProductCardProps) {
   const [tooltipOpen, setTooltipOpen] = useState(false);
+  const [wishlisted, setWishlisted] = useState(() => isInWishlist(id));
 
   const productReviews = reviewsData.filter((r) => r.productId === String(id));
   const reviewCount = productReviews.length;
@@ -55,6 +57,18 @@ export function ProductCard({
         </div>
       )}
 
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          const newState = toggleWishlist({ id, name, price, originalPrice, images });
+          setWishlisted(newState);
+        }}
+        className={`absolute top-2 right-2 h-6 w-6 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-colors z-20`}
+        aria-label={wishlisted ? "Elimină din favorite" : "Adaugă la favorite"}
+      >
+        <Heart className={`h-3.5 w-3.5 transition-colors ${wishlisted ? "fill-[#E31E24] text-[#E31E24]" : "text-gray-400"}`} />
+      </button>
+
       {aiReason && (
         <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
           <TooltipTrigger asChild>
@@ -63,7 +77,7 @@ export function ProductCard({
                 e.stopPropagation();
                 setTooltipOpen((v) => !v);
               }}
-              className="absolute top-2 right-2 h-6 w-6 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-colors z-20"
+              className="absolute top-2 right-10 h-6 w-6 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-colors z-20"
               aria-label="Motivul recomandării"
             >
               <Info className="h-3.5 w-3.5 text-[#E31E24]" />

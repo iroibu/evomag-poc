@@ -9,7 +9,7 @@ import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Card } from "./ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
-import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
+import { ProductScroll } from "./ProductScroll";
 import { motion } from "motion/react";
 import { isInWishlist, toggleWishlist } from "../services/wishlist";
 import { getRecentlyViewed } from "../services/recentlyViewed";
@@ -572,10 +572,9 @@ export function ProductDetail({ product, onBack, onAddToCart, onProductClick }: 
               <h2 className="text-base font-bold text-[#111111]">{title}</h2>
               <button className="text-xs font-semibold text-[#E31E24]">Vezi toate</button>
             </div>
-            <Carousel opts={{ align: "start", dragFree: true }}>
-              <CarouselContent className="-ml-2 px-4">
+            <ProductScroll>
                 {items.map((p: any) => (
-                  <CarouselItem key={p.id} className="pl-2 basis-[160px]">
+                  <div key={p.id} className="w-[160px] shrink-0">
                     <ProductCard
                       id={String(p.id)}
                       name={p.name}
@@ -585,10 +584,9 @@ export function ProductDetail({ product, onBack, onAddToCart, onProductClick }: 
                       badge={p.badge}
                       onProductClick={() => onProductClick?.(p)}
                     />
-                  </CarouselItem>
+                  </div>
                 ))}
-              </CarouselContent>
-            </Carousel>
+            </ProductScroll>
           </div>
         ))}
       </div>

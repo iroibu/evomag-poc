@@ -1,4 +1,5 @@
-import React, { useRef, useState, useMemo, useEffect } from "react";
+import React, { useMemo, useEffect, useState } from "react";
+import { ProductScroll } from "./ProductScroll";
 import { Skeleton } from "./ui/skeleton";
 import {
   ChevronRight, ShoppingCart, Smartphone, Laptop, Tv,
@@ -55,51 +56,6 @@ function SectionHeader({
           <ChevronRight className="h-4 w-4" />
         </button>
       )}
-    </div>
-  );
-}
-
-function ProductScroll({ children }: { children: React.ReactNode }) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const [dragged, setDragged] = useState(false);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!scrollRef.current) return;
-    setIsDragging(true);
-    setDragged(false);
-    setStartX(e.pageX - scrollRef.current.offsetLeft);
-    setScrollLeft(scrollRef.current.scrollLeft);
-  };
-  const handleMouseLeave = () => setIsDragging(false);
-  const handleMouseUp = () => setIsDragging(false);
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !scrollRef.current) return;
-    e.preventDefault();
-    const x = e.pageX - scrollRef.current.offsetLeft;
-    const walk = (x - startX) * 2;
-    if (Math.abs(walk) > 5) setDragged(true);
-    scrollRef.current.scrollLeft = scrollLeft - walk;
-  };
-  const handleClickCapture = (e: React.MouseEvent) => {
-    if (dragged) { e.stopPropagation(); e.preventDefault(); }
-  };
-
-  return (
-    <div
-      ref={scrollRef}
-      onMouseDown={handleMouseDown}
-      onMouseLeave={handleMouseLeave}
-      onMouseUp={handleMouseUp}
-      onMouseMove={handleMouseMove}
-      onClickCapture={handleClickCapture}
-      className={`flex overflow-x-auto scrollbar-hide px-4 scroll-pl-4 pb-4 gap-3 select-none ${
-        isDragging ? "snap-none cursor-grabbing" : "snap-x snap-mandatory cursor-grab"
-      }`}
-    >
-      {children}
     </div>
   );
 }
@@ -436,7 +392,7 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
         <div className="grid grid-cols-2 gap-3">
           {/* Green – Next-day delivery */}
           <div
-            className="rounded-2xl overflow-hidden cursor-pointer bg-[#EDFAF2] relative h-[110px] flex flex-col justify-between p-4"
+            className="rounded-2xl overflow-hidden cursor-pointer bg-[#EDFAF2] relative min-h-[110px] flex flex-col justify-between p-4"
             onClick={() => onSeeAllClick?.("Livrare mâine", products as any[])}
           >
             <div className="flex items-start gap-2">
@@ -449,7 +405,7 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
               </div>
             </div>
             <button
-              className="self-end w-7 h-7 bg-green-500 rounded-full flex items-center justify-center hover:bg-green-600 transition-colors"
+              className="self-end mt-2 w-7 h-7 shrink-0 bg-green-500 rounded-full flex items-center justify-center hover:bg-green-600 transition-colors"
               aria-label="Livrare mâine"
             >
               <ArrowRight className="w-3.5 h-3.5 text-white" />
@@ -459,7 +415,7 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
 
           {/* Purple – Better prices */}
           <div
-            className="rounded-2xl overflow-hidden cursor-pointer bg-[#F3EEFF] relative h-[110px] flex flex-col justify-between p-4"
+            className="rounded-2xl overflow-hidden cursor-pointer bg-[#F3EEFF] relative min-h-[110px] flex flex-col justify-between p-4"
             onClick={() => onSeeAllClick?.("Prețuri mai bune", discountedProducts)}
           >
             <div className="flex items-start gap-2">
@@ -473,7 +429,7 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
             </div>
             <button
               onClick={(e) => { e.stopPropagation(); onSeeAllClick?.("Prețuri mai bune", discountedProducts); }}
-              className="self-end w-7 h-7 bg-purple-500 rounded-full flex items-center justify-center hover:bg-purple-600 transition-colors"
+              className="self-end mt-2 w-7 h-7 shrink-0 bg-purple-500 rounded-full flex items-center justify-center hover:bg-purple-600 transition-colors"
               aria-label="Prețuri mai bune"
             >
               <ArrowRight className="w-3.5 h-3.5 text-white" />
