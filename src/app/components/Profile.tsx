@@ -40,7 +40,8 @@ import {
   Briefcase,
   Edit2,
   MessageSquare,
-  Laptop
+  Laptop,
+  LogOut
 } from "lucide-react";
 import { Card } from "./ui/card";
 import { OrderDetailScreen } from "./OrderDetailScreen";
@@ -1505,6 +1506,23 @@ export function Profile({ onProductClick, onAddToCart, onLogout, onOpenAI, onCat
             <p className="text-[13px] text-[#6B7280] leading-tight">Cont și preferințe</p>
           </div>
           <ChevronRight className="w-5 h-5 text-gray-400 shrink-0" />
+        </button>
+
+        {/* Deconectare */}
+        <button
+          onClick={() => {
+            clearAuthUser();
+            onLogout?.();
+          }}
+          className="w-full flex items-center gap-4 p-4 bg-white rounded-2xl shadow-sm border border-red-100 active:bg-red-50 transition-colors text-left"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-[#FEF2F2] flex items-center justify-center shrink-0">
+            <LogOut className="w-6 h-6 text-[#DC2626]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-[15px] text-[#DC2626] leading-tight">Deconectare</p>
+            <p className="text-[13px] text-[#6B7280] leading-tight">Ieși din cont</p>
+          </div>
         </button>
 
       </div>

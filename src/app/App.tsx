@@ -165,7 +165,7 @@ export default function App() {
           </div>
           <div className="flex-1 relative" onClick={() => setSelectedProduct(null)}>
             <div className="w-full bg-muted rounded-full pl-9 pr-3 py-2 text-xs border-0 text-muted-foreground flex items-center cursor-pointer h-9">
-              Caută produse, branduri, categorii...
+              Caută produse...
             </div>
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
@@ -181,7 +181,7 @@ export default function App() {
         <main className="flex-1 overflow-y-auto">
           <ProductDetail product={selectedProduct} onBack={() => setSelectedProduct(null)} onAddToCart={handleAddToCart} onProductClick={setSelectedProduct} />
         </main>
-        <BottomNav activeTab={activeTab} onTabChange={(tab) => { setSelectedProduct(null); if (tab === "assistant") setPendingAIPrompt(undefined); if (tab === "profile") setProfileInitialView("main"); setActiveTab(tab); }} cartItemCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)} />
+        <BottomNav activeTab={activeTab} onTabChange={(tab) => { setSelectedProduct(null); if (tab === "assistant") setPendingAIPrompt(undefined); if (tab === "profile") { setProfileInitialView("main"); setViewingOrder(null); } setActiveTab(tab); }} cartItemCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)} />
       </div>
     );
   }
@@ -259,7 +259,7 @@ export default function App() {
           </div>
           <div className="flex-1 relative" onClick={() => setActiveTab("search")}>
             <div className="w-full bg-muted rounded-full pl-9 pr-3 py-2 text-xs border-0 text-muted-foreground flex items-center cursor-pointer h-9">
-              Caută produse, branduri, categorii...
+              Caută produse...
             </div>
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
@@ -280,7 +280,7 @@ export default function App() {
       </main>
 
       {/* Bottom Navigation */}
-      <BottomNav activeTab={activeTab} onTabChange={(tab) => { if (tab === "assistant") setPendingAIPrompt(undefined); if (tab === "profile") setProfileInitialView("main"); setActiveTab(tab); }} cartItemCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)} />
+      <BottomNav activeTab={activeTab} onTabChange={(tab) => { if (tab === "assistant") setPendingAIPrompt(undefined); if (tab === "profile") { setProfileInitialView("main"); setViewingOrder(null); } setActiveTab(tab); }} cartItemCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)} />
     </div>
   );
 }

@@ -483,28 +483,14 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                   <span>Dobânda este inclusă în rata afișată.</span>
                 </div>
 
-                {/* Total + CTA */}
+                {/* Total */}
                 <div className="space-y-1 pt-1">
                   <p className="text-xs text-[#6B7280]">Total de plată</p>
                   <p className="text-[10px] text-[#6B7280]">TVA inclus</p>
                   <p className="text-2xl font-black text-[#E31E24]">
                     {Math.round(total * (INSTALLMENT_PLANS.find(p => p.months === installments)?.totalFactor ?? 1)).toLocaleString('ro-RO')} Lei
                   </p>
-                  <Button
-                    onClick={() => onSuccess(saveOrder(cartItems, total))}
-                    className="w-full h-14 bg-[#E31E24] hover:bg-red-700 text-white rounded-full text-base font-bold shadow-lg border-0 mt-2"
-                  >
-                    Continuă plata
-                  </Button>
                 </div>
-
-                <button
-                  onClick={() => setPaymentSubView(null)}
-                  className="flex items-center gap-1 text-sm text-[#6B7280] hover:text-[#111111] transition-colors mx-auto pt-1"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  <span>Înapoi la metodele de plată</span>
-                </button>
               </div>
             )}
 
@@ -620,25 +606,10 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                   </div>
                 </section>
 
-                <Button
-                  onClick={() => onSuccess(saveOrder(cartItems, total))}
-                  className="w-full h-14 bg-[#E31E24] hover:bg-red-700 text-white rounded-full text-base font-bold shadow-lg border-0 flex items-center gap-2 justify-center"
-                >
-                  <Lock className="w-4 h-4" /> Plătește {total.toLocaleString('ro-RO')} Lei
-                </Button>
-
-                {/* Security note */}
-                <div className="flex items-start gap-2 justify-center pb-2">
-                  <ShieldCheck className="w-4 h-4 text-green-600 mt-0.5 shrink-0" />
-                  <div>
-                    <p className="text-sm font-semibold text-[#111111]">Plată 100% sigură</p>
-                    <p className="text-xs text-[#6B7280]">Datele cardului tău sunt protejate.</p>
-                  </div>
-                </div>
               </div>
             )}
 
-            {/* ── Apple Pay sub-view ───────────────────────────────── */}
+            {/* ── Apple Pay sub-view───────────────────────────────── */}
             {paymentSubView === "apple_pay" && (
               <div className="space-y-4">
                 <div className="flex items-center gap-3 bg-white rounded-xl border border-[#E5E5EA] p-4">
@@ -671,28 +642,10 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                   </div>
                 </section>
 
-                <Button
-                  onClick={() => onSuccess(saveOrder(cartItems, total))}
-                  className="w-full h-14 bg-black hover:bg-gray-900 text-white rounded-full text-base font-bold border-0 flex items-center gap-2 justify-center"
-                >
-                  Plătește cu <svg viewBox="0 0 814 1000" className="w-4 h-4 fill-white inline-block"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105.7-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-207.5 135.4-317.3 269-317.3 70.1 0 128.4 46.4 172.5 46.4 42.8 0 109.6-49 191.4-49 30.8 0 108.2 2.6 168.6 71.9zm-174.6-89.5c-7.7 36.4-22.9 70.1-43.5 98.1-20.7 27.9-52.2 52.2-88.6 52.2s-68-2.6-88-53.5c20.7-29.1 53.5-79.3 91.2-108.9 37.7-29.5 75.5-46.4 113.2-46.4 0 0 15.9 58 15.7 58.5z"/><path d="M549.6 77.5c-30.1 35.9-78.2 63.8-126.4 59.7-6-48.8 17.9-100.7 45.6-132.7 30.1-36.6 82.6-63.8 125.4-65.7 5.3 50.1-14.6 99.8-44.6 138.7"/></svg> Pay
-                </Button>
-
-                <p className="text-center text-xs text-[#6B7280] flex items-center gap-1 justify-center">
-                  <Lock className="w-3 h-3" /> Vei fi redirecționat către Apple Pay
-                </p>
-
-                <button
-                  onClick={() => setPaymentSubView(null)}
-                  className="flex items-center gap-1 text-sm text-[#6B7280] hover:text-[#111111] transition-colors mx-auto"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  <span>Înapoi la metodele de plată</span>
-                </button>
               </div>
             )}
 
-            {/* ── Google Pay sub-view ──────────────────────────────── */}
+            {/* ── Google Pay sub-view──────────────────────────────── */}
             {paymentSubView === "google_pay" && (
               <div className="space-y-4">
                 <div className="flex items-center gap-3 bg-white rounded-xl border border-[#E5E5EA] p-4">
@@ -724,24 +677,6 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                   </div>
                 </section>
 
-                <Button
-                  onClick={() => onSuccess(saveOrder(cartItems, total))}
-                  className="w-full h-14 bg-white border-2 border-gray-300 hover:bg-gray-50 text-gray-900 rounded-full text-base font-bold shadow-sm flex items-center gap-2 justify-center"
-                >
-                  Plătește cu&nbsp;<svg width="18" height="18" viewBox="0 0 48 48" className="inline-block"><path fill="#4285F4" d="M43.6 20.5H42V20H24v8h11.3C33.6 32.6 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.4-.4-3.5z" /><path fill="#34A853" d="M6.3 14.7l6.6 4.8C14.5 16 19 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.5 4 24 4c-7.7 0-14.4 4.3-17.7 10.7z" /><path fill="#FBBC05" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.3 35.5 26.8 36 24 36c-5.2 0-9.6-3.4-11.3-8L6.2 33C9.5 39.6 16.2 44 24 44z" /><path fill="#EA4335" d="M43.6 20.5H42V20H24v8h11.3c-.9 2.5-2.5 4.7-4.7 6.2l.1-.1 6.2 5.2C36.6 41.1 44 36 44 24c0-1.2-.1-2.4-.4-3.5z" /></svg>&nbsp;Pay
-                </Button>
-
-                <p className="text-center text-xs text-[#6B7280] flex items-center gap-1 justify-center">
-                  <Lock className="w-3 h-3" /> Vei fi redirecționat către Google Pay
-                </p>
-
-                <button
-                  onClick={() => setPaymentSubView(null)}
-                  className="flex items-center gap-1 text-sm text-[#6B7280] hover:text-[#111111] transition-colors mx-auto"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  <span>Înapoi la metodele de plată</span>
-                </button>
               </div>
             )}
 
@@ -778,25 +713,6 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                   </div>
                 </section>
 
-                <Button
-                  onClick={() => onSuccess(saveOrder(cartItems, total))}
-                  className="w-full h-14 bg-[#E31E24] hover:bg-red-700 text-white rounded-full text-base font-bold shadow-lg border-0 flex items-center gap-2 justify-center"
-                >
-                  <Check className="w-5 h-5" /> Confirmă comanda
-                </Button>
-
-                <div className="flex items-center gap-2 bg-[#F0FDF4] border border-green-200 rounded-xl p-3 text-xs text-[#6B7280]">
-                  <Info className="w-4 h-4 text-green-600 shrink-0" />
-                  <span>Vei plăti cu numerar sau card la livrare, direct curierului.</span>
-                </div>
-
-                <button
-                  onClick={() => setPaymentSubView(null)}
-                  className="flex items-center gap-1 text-sm text-[#6B7280] hover:text-[#111111] transition-colors mx-auto"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  <span>Înapoi la metodele de plată</span>
-                </button>
               </div>
             )}
 
@@ -849,6 +765,88 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
               </Button>
             </>
           )}
+        </div>
+      )}
+
+      {paymentSubView !== null && (
+        <div className="bg-white border-t p-4 pb-safe space-y-3 shadow-[0_-4px_15px_-3px_rgba(0,0,0,0.05)] sticky bottom-0 z-10">
+          {paymentSubView === "rate" && (
+            <Button
+              onClick={() => onSuccess(saveOrder(cartItems, total))}
+              className="w-full h-14 bg-[#E31E24] hover:bg-red-700 text-white rounded-full text-base font-bold shadow-lg border-0"
+            >
+              Continuă plata
+            </Button>
+          )}
+
+          {paymentSubView === "card_form" && (
+            <>
+              <Button
+                onClick={() => onSuccess(saveOrder(cartItems, total))}
+                className="w-full h-14 bg-[#E31E24] hover:bg-red-700 text-white rounded-full text-base font-bold shadow-lg border-0 flex items-center gap-2 justify-center"
+              >
+                <Lock className="w-4 h-4" /> Plătește {total.toLocaleString('ro-RO')} Lei
+              </Button>
+              <div className="flex items-start gap-2 justify-center">
+                <ShieldCheck className="w-4 h-4 text-green-600 mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-sm font-semibold text-[#111111]">Plată 100% sigură</p>
+                  <p className="text-xs text-[#6B7280]">Datele cardului tău sunt protejate.</p>
+                </div>
+              </div>
+            </>
+          )}
+
+          {paymentSubView === "apple_pay" && (
+            <>
+              <Button
+                onClick={() => onSuccess(saveOrder(cartItems, total))}
+                className="w-full h-14 bg-black hover:bg-gray-900 text-white rounded-full text-base font-bold border-0 flex items-center gap-2 justify-center"
+              >
+                Plătește cu <svg viewBox="0 0 814 1000" className="w-4 h-4 fill-white inline-block"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105.7-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-207.5 135.4-317.3 269-317.3 70.1 0 128.4 46.4 172.5 46.4 42.8 0 109.6-49 191.4-49 30.8 0 108.2 2.6 168.6 71.9zm-174.6-89.5c-7.7 36.4-22.9 70.1-43.5 98.1-20.7 27.9-52.2 52.2-88.6 52.2s-68-2.6-88-53.5c20.7-29.1 53.5-79.3 91.2-108.9 37.7-29.5 75.5-46.4 113.2-46.4 0 0 15.9 58 15.7 58.5z"/><path d="M549.6 77.5c-30.1 35.9-78.2 63.8-126.4 59.7-6-48.8 17.9-100.7 45.6-132.7 30.1-36.6 82.6-63.8 125.4-65.7 5.3 50.1-14.6 99.8-44.6 138.7"/></svg> Pay
+              </Button>
+              <p className="text-center text-xs text-[#6B7280] flex items-center gap-1 justify-center">
+                <Lock className="w-3 h-3" /> Vei fi redirecționat către Apple Pay
+              </p>
+            </>
+          )}
+
+          {paymentSubView === "google_pay" && (
+            <>
+              <Button
+                onClick={() => onSuccess(saveOrder(cartItems, total))}
+                className="w-full h-14 bg-white border-2 border-gray-300 hover:bg-gray-50 text-gray-900 rounded-full text-base font-bold shadow-sm flex items-center gap-2 justify-center"
+              >
+                Plătește cu&nbsp;<svg width="18" height="18" viewBox="0 0 48 48" className="inline-block"><path fill="#4285F4" d="M43.6 20.5H42V20H24v8h11.3C33.6 32.6 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.4-.4-3.5z" /><path fill="#34A853" d="M6.3 14.7l6.6 4.8C14.5 16 19 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.5 4 24 4c-7.7 0-14.4 4.3-17.7 10.7z" /><path fill="#FBBC05" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.3 35.5 26.8 36 24 36c-5.2 0-9.6-3.4-11.3-8L6.2 33C9.5 39.6 16.2 44 24 44z" /><path fill="#EA4335" d="M43.6 20.5H42V20H24v8h11.3c-.9 2.5-2.5 4.7-4.7 6.2l.1-.1 6.2 5.2C36.6 41.1 44 36 44 24c0-1.2-.1-2.4-.4-3.5z" /></svg>&nbsp;Pay
+              </Button>
+              <p className="text-center text-xs text-[#6B7280] flex items-center gap-1 justify-center">
+                <Lock className="w-3 h-3" /> Vei fi redirecționat către Google Pay
+              </p>
+            </>
+          )}
+
+          {paymentSubView === "ramburs" && (
+            <>
+              <Button
+                onClick={() => onSuccess(saveOrder(cartItems, total))}
+                className="w-full h-14 bg-[#E31E24] hover:bg-red-700 text-white rounded-full text-base font-bold shadow-lg border-0 flex items-center gap-2 justify-center"
+              >
+                <Check className="w-5 h-5" /> Confirmă comanda
+              </Button>
+              <div className="flex items-center gap-2 bg-[#F0FDF4] border border-green-200 rounded-xl p-3 text-xs text-[#6B7280]">
+                <Info className="w-4 h-4 text-green-600 shrink-0" />
+                <span>Vei plăti cu numerar sau card la livrare, direct curierului.</span>
+              </div>
+            </>
+          )}
+
+          <button
+            onClick={() => setPaymentSubView(null)}
+            className="flex items-center gap-1 text-sm text-[#6B7280] hover:text-[#111111] transition-colors mx-auto"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            <span>Înapoi la metodele de plată</span>
+          </button>
         </div>
       )}
 

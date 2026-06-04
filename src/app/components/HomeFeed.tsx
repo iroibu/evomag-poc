@@ -3,13 +3,14 @@ import { Skeleton } from "./ui/skeleton";
 import {
   ChevronRight, ShoppingCart, Smartphone, Laptop, Tv,
   Sparkles, Home, Gift,
-  GitCompare, ArrowRight, Bell, TrendingDown, LayoutGrid, Gamepad2, Truck, Tag,
+  GitCompare, ArrowRight, Bell, TrendingDown, LayoutGrid, Gamepad2, Truck, Tag, Heart,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import { loadPreferences } from "../services/userPreferences";
 import { getRecentlyViewed } from "../services/recentlyViewed";
 import { getAuthUser } from "../services/auth";
+import { toggleWishlist, getWishlist } from "../services/wishlist";
 import type { Product } from "../../data/types";
 import products from "../../data/products.json";
 
@@ -65,6 +66,42 @@ function ProductScroll({ children }: { children: React.ReactNode }) {
   const [scrollLeft, setScrollLeft] = useState(0);
   const [dragged, setDragged] = useState(false);
 
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+  const isHorizontalTouch = useRef<boolean | null>(null);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartX.current = e.touches[0].clientX;
+      touchStartY.current = e.touches[0].clientY;
+      isHorizontalTouch.current = null;
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (isHorizontalTouch.current === null) {
+        const dx = Math.abs(e.touches[0].clientX - touchStartX.current);
+        const dy = Math.abs(e.touches[0].clientY - touchStartY.current);
+        if (dx > 5 || dy > 5) {
+          isHorizontalTouch.current = dx > dy;
+        }
+      }
+      // Only capture the touch for horizontal carousel scrolling; let vertical pass through
+      if (isHorizontalTouch.current === true) {
+        e.preventDefault();
+      }
+    };
+
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
+    return () => {
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
+    };
+  }, []);
+
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!scrollRef.current) return;
     setIsDragging(true);
@@ -94,7 +131,7 @@ function ProductScroll({ children }: { children: React.ReactNode }) {
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
       onClickCapture={handleClickCapture}
-      className={`flex overflow-x-auto scrollbar-hide px-4 scroll-pl-4 pb-4 gap-3 select-none touch-pan-x ${
+      className={`flex overflow-x-auto scrollbar-hide px-4 scroll-pl-4 pb-4 gap-3 select-none ${
         isDragging ? "snap-none cursor-grabbing" : "snap-x snap-mandatory cursor-grab"
       }`}
     >
@@ -120,6 +157,20 @@ const getProductsForCategory = (category: string) =>
 export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick, onAIClick, onAIQuickAction }: HomeFeedProps) {
   const [recentlyViewed, setRecentlyViewed] = useState<Product[]>(() => getRecentlyViewed());
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [wishlistedIds, setWishlistedIds] = useState<Set<string>>(
+    () => new Set(getWishlist().map((p) => p.id))
+  );
+
+  const handleToggleWishlist = (e: React.MouseEvent, product: Product) => {
+    e.stopPropagation();
+    const nowInWishlist = toggleWishlist(product);
+    setWishlistedIds((prev) => {
+      const next = new Set(prev);
+      nowInWishlist ? next.add(product.id) : next.delete(product.id);
+      return next;
+    });
+    toast.success(nowInWishlist ? "Adăugat la favorite!" : "Eliminat din favorite!");
+  };
 
   useEffect(() => {
     setRecentlyViewed(getRecentlyViewed());
@@ -306,7 +357,16 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
                 className="w-[160px] shrink-0 snap-start cursor-pointer group"
                 onClick={() => onProductClick?.(product)}
               >
-                <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-200">
+                <div className="relative bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-200">
+                  <button
+                    onClick={(e) => handleToggleWishlist(e, product)}
+                    className="absolute top-2 right-2 z-10 w-6 h-6 rounded-full bg-white/80 flex items-center justify-center shadow-sm hover:scale-110 transition-transform"
+                    aria-label="Adaugă la favorite"
+                  >
+                    <Heart
+                      className={`w-3.5 h-3.5 transition-colors ${wishlistedIds.has(product.id) ? "fill-[#E31E24] text-[#E31E24]" : "text-gray-400"}`}
+                    />
+                  </button>
                   <div className="h-[120px] bg-white flex items-center justify-center p-3">
                     <img
                       src={(product.images ?? (product.image ? [product.image] : []))[0]}
@@ -361,6 +421,15 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
                       -{discount}%
                     </div>
                   )}
+                  <button
+                    onClick={(e) => handleToggleWishlist(e, product as Product)}
+                    className="absolute top-2 right-2 z-10 w-6 h-6 rounded-full bg-white/80 flex items-center justify-center shadow-sm hover:scale-110 transition-transform"
+                    aria-label="Adaugă la favorite"
+                  >
+                    <Heart
+                      className={`w-3.5 h-3.5 transition-colors ${wishlistedIds.has(product.id) ? "fill-[#E31E24] text-[#E31E24]" : "text-gray-400"}`}
+                    />
+                  </button>
                   <div className="h-[130px] bg-white flex items-center justify-center p-3">
                     <img
                       src={product.images[0]}

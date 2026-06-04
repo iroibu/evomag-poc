@@ -129,7 +129,7 @@ export function AISearchBar({
           onKeyDown={handleKeyDown}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setTimeout(() => setIsFocused(false), 200)}
-          placeholder="Caută..."
+          placeholder="Caută produse..."
           className="h-14 pl-12 pr-12 rounded-2xl bg-muted border-0 text-base"
         />
         {isLoading ? (
