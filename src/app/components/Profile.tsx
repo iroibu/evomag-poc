@@ -1,10 +1,11 @@
 import { useState } from "react";
+import products from "../../data/products.json";
 import { Wishlist } from "./Wishlist";
-import { OrderDetailScreen } from "./OrderDetailScreen";
 import { getOrders, type Order } from "../services/orders";
 import { getWishlist } from "../services/wishlist";
 import { loadAddresses, saveAddresses, updateAddress, deleteAddress, type Address } from "../services/addresses";
 import { loadCards, addCard, setMainCard, deleteCard, type PaymentCard } from "../services/cards";
+import { clearAuthUser, getAuthUser } from "../services/auth";
 import { 
   Package, 
   CreditCard, 
@@ -18,6 +19,7 @@ import {
   Truck,
   Box,
   CheckCircle2,
+  Check,
   Clock,
   Plus,
   ShoppingCart,
@@ -26,20 +28,31 @@ import {
   Wallet,
   Ticket,
   Star,
-  HelpCircle,
   Bell,
   Calendar,
   Tag,
   Activity,
   Search,
-  Trash2
+  Trash2,
+  MoreVertical,
+  Zap,
+  Home,
+  Briefcase,
+  Edit2,
+  MessageSquare,
+  Laptop
 } from "lucide-react";
 import { Card } from "./ui/card";
-import { Avatar } from "./ui/avatar";
+import { OrderDetailScreen } from "./OrderDetailScreen";
 
 interface ProfileProps {
   onProductClick?: (product: any) => void;
   onAddToCart?: (product: any) => void;
+  onLogout?: () => void;
+  onOpenAI?: () => void;
+  onCategoryClick?: (title: string, products: any[], catId?: string) => void;
+  initialView?: ActiveView;
+  viewingOrder?: Order;
 }
 
 type ActiveView = "main" | "my-products" | "orders" | "favorites" | "cards" | "addresses";
@@ -47,6 +60,25 @@ type OrderStatus = "all" | "in-procesare" | "in-livrare" | "livrate" | "retur";
 type ProductFilter = "all" | "upgrade" | "attention" | "good";
 
 // --- Mock Data ---
+
+// Hardcoded upgrade product IDs per equipment item — same brand, same product line only
+const upgradeProductMap: Record<string, { title: string; ids: string[]; catId: string }> = {
+  e1: {
+    title: "Upgrade iPhone — modele noi",
+    ids: ["t4", "d1"],   // iPhone 15 Pro, iPhone 15 Pro Max
+    catId: "phones",
+  },
+  e2: {
+    title: "Upgrade MacBook — modele noi",
+    ids: ["t7"],         // MacBook Air M3
+    catId: "laptops",
+  },
+  e3: {
+    title: "Upgrade Apple Watch — modele noi",
+    ids: ["t25"],        // Apple Watch Series 9 (newest in catalog)
+    catId: "smartwatch",
+  },
+};
 
 const initialEquipment = [
   {
@@ -94,12 +126,25 @@ const initialFavorites = [
   { id: "f4", name: "Apple Watch Series 9, GPS, 45mm", price: "2.199 Lei", image: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=300&q=80" }
 ];
 
-export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
-  const [activeView, setActiveView] = useState<ActiveView>("main");
+export function Profile({ onProductClick, onAddToCart, onLogout, onOpenAI, onCategoryClick, initialView, viewingOrder }: ProfileProps) {
+  const [activeView, setActiveView] = useState<ActiveView>(initialView ?? "main");
   const [orderFilter, setOrderFilter] = useState<OrderStatus>("all");
   const [productFilter, setProductFilter] = useState<ProductFilter>("all");
   const [orders] = useState<Order[]>(() => getOrders());
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(viewingOrder);
+
+  const authUser = getAuthUser();
+  const fullName = authUser ? `${authUser.firstName} ${authUser.lastName}`.trim() : "Utilizator";
+  const initials = authUser
+    ? `${authUser.firstName.charAt(0)}${authUser.lastName.charAt(0)}`.toUpperCase()
+    : "?";
+  const email = authUser?.email ?? "";
+
+  const inLivrareCount = orders.filter(o => o.deliveryStatus === "shipped").length;
+  const recentlyDeliveredCount = orders.filter(o =>
+    o.deliveryStatus === "delivered" &&
+    new Date(o.orderDate) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+  ).length;
 
   const deliveryStatusToFilter = (status: Order["deliveryStatus"]): OrderStatus => {
     if (status === "pending" || status === "processing") return "in-procesare";
@@ -136,11 +181,13 @@ export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
   // Card adding state
   const [isAddingCard, setIsAddingCard] = useState(false);
   const [newCardData, setNewCardData] = useState({ number: "", expiry: "", name: "" });
+  const [cardMenuOpenId, setCardMenuOpenId] = useState<string | null>(null);
 
   // Address adding state
   const [isAddingAddress, setIsAddingAddress] = useState(false);
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
-  const [newAddressData, setNewAddressData] = useState({ judet: "", localitate: "", adresa: "", codPostal: "" });
+  const [newAddressData, setNewAddressData] = useState({ judet: "", localitate: "", adresa: "", codPostal: "", tag: "" });
+  const [addressMenuOpenId, setAddressMenuOpenId] = useState<string | null>(null);
 
   const [addresses, setAddresses] = useState<Address[]>(() => loadAddresses());
 
@@ -171,44 +218,55 @@ export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
 
   const handleSaveAddress = () => {
     if (newAddressData.adresa.trim().length > 0 && newAddressData.localitate.trim().length > 0) {
+      const resolvedName = newAddressData.tag.trim() ||
+        `${newAddressData.localitate.trim()}${newAddressData.judet.trim() ? ", " + newAddressData.judet.trim() : ""}`;
       const newAddress: Address = {
         id: Date.now().toString(),
-        name: newAddressData.localitate.trim(),
+        name: resolvedName,
         street: newAddressData.adresa.trim(),
         city: `${newAddressData.localitate.trim()}${newAddressData.judet.trim() ? ", " + newAddressData.judet.trim() : ""}`,
+        codPostal: newAddressData.codPostal.trim(),
         isMain: addresses.length === 0
       };
       const updated = [...addresses, newAddress];
       saveAddresses(updated);
       setAddresses(updated);
       setIsAddingAddress(false);
-      setNewAddressData({ judet: "", localitate: "", adresa: "", codPostal: "" });
+      setNewAddressData({ judet: "", localitate: "", adresa: "", codPostal: "", tag: "" });
     } else {
       alert("Introduceți cel puțin adresa și localitatea.");
     }
   };
 
   const handleEditAddress = (addr: Address) => {
+    const knownTags = ["Acasă", "Birou"];
+    const cityParts = addr.city.split(",").map(s => s.trim());
+    const localitate = cityParts[0] ?? "";
+    const judet = cityParts[1] ?? "";
     setEditingAddressId(addr.id);
     setNewAddressData({
-      judet: "",
-      localitate: addr.name,
+      judet,
+      localitate,
       adresa: addr.street,
-      codPostal: ""
+      codPostal: addr.codPostal ?? "",
+      tag: knownTags.includes(addr.name) ? addr.name : ""
     });
   };
 
   const handleUpdateAddress = () => {
     if (!editingAddressId) return;
     if (newAddressData.adresa.trim().length > 0 && newAddressData.localitate.trim().length > 0) {
+      const resolvedName = newAddressData.tag.trim() ||
+        `${newAddressData.localitate.trim()}${newAddressData.judet.trim() ? ", " + newAddressData.judet.trim() : ""}`;
       const updated = updateAddress(editingAddressId, {
-        name: newAddressData.localitate.trim(),
+        name: resolvedName,
         street: newAddressData.adresa.trim(),
-        city: `${newAddressData.localitate.trim()}${newAddressData.judet.trim() ? ", " + newAddressData.judet.trim() : ""}`
+        city: `${newAddressData.localitate.trim()}${newAddressData.judet.trim() ? ", " + newAddressData.judet.trim() : ""}`,
+        codPostal: newAddressData.codPostal.trim(),
       });
       setAddresses(updated);
       setEditingAddressId(null);
-      setNewAddressData({ judet: "", localitate: "", adresa: "", codPostal: "" });
+      setNewAddressData({ judet: "", localitate: "", adresa: "", codPostal: "", tag: "" });
     } else {
       alert("Introduceți cel puțin adresa și localitatea.");
     }
@@ -243,71 +301,307 @@ export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
   }
 
   if (activeView === "orders") {
-    return (
-      <div className="flex flex-col h-full bg-[#F5F5F7]">
-        {renderHeader("Comenzile mele")}
-        
-        {/* Filters */}
-        <div className="bg-white px-4 py-3 border-b border-[#E5E5EA] overflow-x-auto scrollbar-hide flex gap-2">
-          {[
-            { id: "all", label: "Toate" },
-            { id: "in-procesare", label: "În procesare" },
-            { id: "in-livrare", label: "În livrare" },
-            { id: "livrate", label: "Livrate" },
-            { id: "retur", label: "Retururi" }
-          ].map(f => (
-            <button
-              key={f.id}
-              onClick={() => setOrderFilter(f.id as OrderStatus)}
-              className={`px-4 h-8 flex items-center justify-center rounded-full text-[13px] font-bold transition-colors border whitespace-nowrap ${
-                orderFilter === f.id 
-                  ? "bg-[#111111] text-white border-[#111111]" 
-                  : "bg-white text-[#6B7280] border-[#E5E5EA] hover:border-[#111111]"
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
+    const activeOrders = orders.filter(o =>
+      o.deliveryStatus === "pending" || o.deliveryStatus === "processing" || o.deliveryStatus === "shipped"
+    );
+    const recentlyDeliveredOrders = orders.filter(o => o.deliveryStatus === "delivered");
 
-        <div className="p-4 space-y-3 overflow-y-auto">
-          {filteredOrders.length > 0 ? filteredOrders.map(order => {
-            const firstProduct = order.products[0];
-            const total = orderTotal(order);
-            const filterStatus = deliveryStatusToFilter(order.deliveryStatus);
-            return (
-              <Card key={order.orderNumber} className="p-4 border border-[#E5E5EA] shadow-sm bg-white rounded-2xl cursor-pointer active:scale-[0.98] transition-transform" onClick={() => setSelectedOrder(order)}>
-                <div className="flex justify-between items-center mb-3">
-                  <span className="text-sm font-bold text-[#6B7280]">Comanda #{order.orderNumber}</span>
-                  <span className={`text-[10px] font-bold px-2 py-1 rounded-md ${
-                    filterStatus === 'in-procesare' ? 'bg-orange-100 text-orange-700' :
-                    filterStatus === 'in-livrare' ? 'bg-blue-100 text-blue-700' :
-                    filterStatus === 'livrate' ? 'bg-[#DDF7E7] text-[#2E9B4F]' :
-                    'bg-gray-100 text-gray-700'
-                  }`}>
-                    {statusLabel(order.deliveryStatus)}
-                  </span>
-                </div>
-                {firstProduct && (
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-[#F5F5F7] rounded-xl p-2 shrink-0">
-                      <img src={firstProduct.images?.[0] ?? ""} className="w-full h-full object-contain mix-blend-multiply" alt={firstProduct.name} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-bold text-sm text-[#111111] line-clamp-1">
-                        {firstProduct.name}{order.products.length > 1 ? ` +${order.products.length - 1} produse` : ""}
-                      </p>
-                      <p className="text-xs text-[#6B7280] mt-1">{formatDate(order.orderDate)}</p>
-                      <p className="font-black text-[#E31E24] mt-1.5">{total.toLocaleString("ro-RO")} Lei</p>
-                    </div>
+    const getStepsDone= (status: Order["deliveryStatus"]) => {
+      if (status === "pending") return 1;
+      if (status === "processing") return 2;
+      if (status === "shipped") return 3;
+      return 4;
+    };
+
+    const formatOrderNumber = (n: number) => `#${n}`;
+
+    const formatShortDate = (iso: string) =>
+      new Date(iso).toLocaleDateString("ro-RO", { day: "numeric", month: "short" });
+
+    const getStepDate = (orderDate: string, stepOffset: number) => {
+      const d = new Date(orderDate);
+      d.setDate(d.getDate() + stepOffset);
+      return formatShortDate(d.toISOString());
+    };
+
+    const renderStatusBadge = (status: Order["deliveryStatus"]) => {
+      if (status === "shipped") return (
+        <span className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-green-50 text-green-700 border border-green-100">
+          <Truck className="w-3 h-3" /> În livrare
+        </span>
+      );
+      if (status === "processing" || status === "pending") return (
+        <span className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-orange-50 text-orange-500 border border-orange-100">
+          <Clock className="w-3 h-3" /> În procesare
+        </span>
+      );
+      if (status === "delivered") return (
+        <span className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-green-50 text-green-700 border border-green-100">
+          <Package className="w-3 h-3" /> Livrată
+        </span>
+      );
+      return null;
+    };
+
+    const STEP_LABELS = ["Confirmată", "Pregătită", "La curier", "Livrare estimată"];
+
+    const renderActiveOrderCard = (order: Order) => {
+      const total = orderTotal(order);
+      const stepsDone = getStepsDone(order.deliveryStatus);
+      const isSingleProduct = order.products.length === 1;
+      const firstProduct = order.products[0];
+      const displayProducts = order.products.slice(0, 3);
+      const extraCount = order.products.length - 3;
+
+      return (
+        <div key={order.orderNumber} className="bg-white rounded-2xl border border-[#E5E5EA] shadow-sm overflow-hidden mb-3">
+          {/* Order header row */}
+          <div className="flex justify-between items-center px-4 pt-4 pb-3">
+            <div>
+              <p className="font-bold text-sm text-[#111111]">{formatOrderNumber(order.orderNumber)}</p>
+              <p className="text-xs text-[#6B7280] mt-0.5">{formatDate(order.orderDate)}</p>
+            </div>
+            {renderStatusBadge(order.deliveryStatus)}
+          </div>
+
+          {/* Products row — single product: image + name/price; multiple: thumbnails + summary */}
+          {isSingleProduct ? (
+            <div className="px-4 pb-3 flex items-center gap-3">
+              <div className="w-16 h-16 bg-[#F5F5F7] rounded-xl p-1.5 shrink-0">
+                <img src={firstProduct.images?.[0] ?? ""} className="w-full h-full object-contain mix-blend-multiply" alt={firstProduct.name} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-sm text-[#111111] line-clamp-2 leading-snug">{firstProduct.name}</p>
+                <p className="font-black text-base text-[#111111] mt-1">{total.toLocaleString("ro-RO")} Lei</p>
+              </div>
+            </div>
+          ) : (
+            <div className="px-4 pb-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {displayProducts.map((p, i) => (
+                  <div key={i} className="w-14 h-14 bg-[#F5F5F7] rounded-xl p-1 shrink-0">
+                    <img src={p.images?.[0] ?? ""} className="w-full h-full object-contain mix-blend-multiply" alt={p.name} />
+                  </div>
+                ))}
+                {extraCount > 0 && (
+                  <div className="w-10 h-10 rounded-full bg-[#F5F5F7] flex items-center justify-center text-xs font-bold text-[#6B7280]">
+                    +{extraCount}
                   </div>
                 )}
-              </Card>
-            );
-          }) : (
-            <div className="text-center text-[#6B7280] py-10">Nu există comenzi pentru acest status.</div>
+              </div>
+              <div className="text-right ml-2">
+                <p className="text-xs text-[#6B7280]">{order.products.length} produse</p>
+                <p className="font-black text-base text-[#111111]">{total.toLocaleString("ro-RO")} Lei</p>
+              </div>
+            </div>
           )}
+
+          {/* Delivery timeline */}
+          <div className="px-8 pb-3">
+            <div className="flex items-center mb-2">
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${stepsDone > 0 ? "bg-[#E31E24]" : "bg-[#E5E5EA]"}`}>
+                {stepsDone > 0 && <Check className="w-3 h-3 text-white" />}
+              </div>
+              <div className={`flex-1 h-0.5 ${stepsDone > 1 ? "bg-[#E31E24]" : "bg-[#E5E5EA]"}`} />
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${stepsDone > 1 ? "bg-[#E31E24]" : "bg-[#E5E5EA]"}`}>
+                {stepsDone > 1 && <Check className="w-3 h-3 text-white" />}
+              </div>
+              <div className={`flex-1 h-0.5 ${stepsDone > 2 ? "bg-[#E31E24]" : "bg-[#E5E5EA]"}`} />
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${stepsDone > 2 ? "bg-[#E31E24]" : "bg-[#E5E5EA]"}`}>
+                {stepsDone > 2 && (stepsDone === 3 ? <Truck className="w-3 h-3 text-white" /> : <Check className="w-3 h-3 text-white" />)}
+              </div>
+              <div className={`flex-1 h-0.5 ${stepsDone > 3 ? "bg-[#E31E24]" : "bg-[#E5E5EA]"}`} />
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${stepsDone > 3 ? "bg-[#E31E24]" : "bg-[#E5E5EA]"}`}>
+                {stepsDone > 3 && <Check className="w-3 h-3 text-white" />}
+              </div>
+            </div>
+            <div className="flex items-start">
+              {STEP_LABELS.map((label, i) => (
+                <>
+                  {i > 0 && <div key={`sep-${i}`} className="flex-1" />}
+                  <div key={i} className="flex flex-col items-center w-6">
+                    <p className="text-[9px] font-medium text-[#6B7280] text-center leading-tight whitespace-nowrap">{label}</p>
+                    <p className="text-[9px] text-[#9CA3AF] text-center whitespace-nowrap">{getStepDate(order.orderDate, i)}</p>
+                  </div>
+                </>
+              ))}
+            </div>
+          </div>
+
+          {/* Estimated delivery banner for shipped orders */}
+          {order.deliveryStatus === "shipped" && (
+            <div className="mx-4 mb-3 px-3 py-2.5 bg-[#FFF2F2] rounded-xl flex items-center gap-3">
+              <Calendar className="w-5 h-5 text-[#E31E24] shrink-0" />
+              <div>
+                <p className="text-xs font-bold text-[#111111]">Ajunge mâine</p>
+                <p className="text-xs text-[#6B7280]">între 14:00 - 18:00</p>
+              </div>
+            </div>
+          )}
+
+          <div className="px-4 pb-4 pt-3 border-t border-[#F5F5F7] flex justify-end">
+            <button
+              onClick={() => setSelectedOrder(order)}
+              className="flex items-center gap-0.5 text-sm font-bold text-[#E31E24]"
+            >
+              Vezi detalii <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
+      );
+    };
+
+    const renderDeliveredOrderCard = (order: Order) => {
+      const total = orderTotal(order);
+      const firstProduct = order.products[0];
+      const [productName, productSpec] = firstProduct
+        ? firstProduct.name.includes(",")
+          ? firstProduct.name.split(",").map(s => s.trim())
+          : [firstProduct.name, null]
+        : [null, null];
+      return (
+        <div key={order.orderNumber} className="bg-white rounded-2xl border border-[#E5E5EA] shadow-sm overflow-hidden mb-3">
+          <div className="flex justify-between items-center px-4 pt-4 pb-3">
+            <div>
+              <p className="font-bold text-sm text-[#111111]">{formatOrderNumber(order.orderNumber)}</p>
+              <p className="text-xs text-[#6B7280] mt-0.5">{formatDate(order.orderDate)}</p>
+            </div>
+            {renderStatusBadge(order.deliveryStatus)}
+          </div>
+          {firstProduct && (
+            <div className="px-4 pb-3 flex items-center gap-4">
+              <div className="w-20 h-20 bg-[#F5F5F7] rounded-xl p-2 shrink-0">
+                <img src={firstProduct.images?.[0] ?? ""} className="w-full h-full object-contain mix-blend-multiply" alt={firstProduct.name} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-sm text-[#111111] line-clamp-1">{productName}</p>
+                {productSpec && <p className="text-xs text-[#6B7280] mt-0.5">{productSpec}</p>}
+                <p className="font-black text-base text-[#111111] mt-1">{total.toLocaleString("ro-RO")} Lei</p>
+              </div>
+            </div>
+          )}
+          <div className="px-4 pb-4 pt-3 border-t border-[#F5F5F7] flex justify-end">
+            <button
+              onClick={() => setSelectedOrder(order)}
+              className="flex items-center gap-0.5 text-sm font-bold text-[#E31E24]"
+            >
+              Vezi din nou <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      );
+    };
+
+    return (
+      <div className="flex flex-col h-full bg-[#F5F5F7]">
+        {/* Header */}
+        <header className="shrink-0 flex items-center px-4 py-4 bg-white border-b sticky top-0 z-10 shadow-sm">
+          <button
+            onClick={() => setActiveView("main")}
+            className="p-2 -ml-2 rounded-full hover:bg-muted mr-2 flex items-center justify-center"
+          >
+            <ChevronLeft className="h-6 w-6 text-[#111111]" />
+          </button>
+          <h1 className="text-xl font-bold flex-1 text-[#111111]">Comenzile mele</h1>
+        </header>
+
+        {orders.length === 0 ? (
+          /* ── Empty State ── */
+          <div className="flex-1 overflow-y-auto">
+            <div className="bg-white px-6 pt-8 pb-8 flex flex-col items-center">
+              {/* Illustration */}
+              <div className="w-48 h-48 mb-2">
+                <img src="/evomag-poc/orders_box.png" alt="Nicio comandă" className="w-full h-full object-contain" />
+              </div>
+
+              <h2 className="text-[22px] font-black text-[#111111] text-center leading-tight mb-2">
+                Prima ta comandă<br/>începe aici.
+              </h2>
+              <p className="text-sm text-[#9CA3AF] text-center mb-1">Nu ai plasat încă nicio comandă.</p>
+              <p className="text-sm text-[#9CA3AF] text-center mb-6">
+                Descoperă produse recomandate și{" "}
+                <span className="font-bold text-[#E31E24]">cumpără în câteva secunde.</span>
+              </p>
+
+              <button className="w-full py-4 rounded-full bg-[#E31E24] text-white font-bold text-base mb-3" onClick={() => onCategoryClick?.("Toate categoriile", products as any[])}>
+                Explorează produse
+              </button>
+              <button className="w-full py-4 rounded-full border border-[#E5E5EA] text-[#111111] font-bold text-sm flex items-center justify-center gap-2" onClick={onOpenAI}>
+                <span className="text-[#9CA3AF] text-base">✦</span>
+                Vorbește cu EvoMi
+              </button>
+            </div>
+
+            {/* EvoMi suggestion card */}
+            <div className="mx-4 mt-4 p-4 bg-white rounded-2xl border border-[#E5E5EA]">
+              <div className="flex items-start gap-3">
+                <span className="text-base font-bold text-[#111111] mt-0.5">✦</span>
+                <div className="flex-1">
+                  <p className="font-bold text-[#111111] text-sm mb-1">Nu știi ce să alegi?</p>
+                  <p className="text-sm text-[#6B7280] mb-3">EvoMi te poate ajuta să găsești produsul potrivit pentru tine.</p>
+                  <button className="flex items-center gap-2 px-4 py-2 rounded-full border border-[#E31E24] text-[#E31E24] text-sm font-bold" onClick={onOpenAI}>
+                    <MessageSquare className="w-4 h-4" /> Întreabă EvoMi
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Popular categories */}
+            <div className="px-4 mt-4 pb-6">
+              <h3 className="font-bold text-[#111111] text-base mb-3">Explorează categorii populare</h3>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { id: "laptops", name: "Laptopuri", desc: "Performanță pentru orice nevoie", img: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=200&q=80" },
+                  { id: "phones", name: "Telefoane", desc: "Cele mai noi modele", img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=200&q=80" },
+                  { id: "smart-home", name: "Smart Home", desc: "Tehnologie pentru casă ta", img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=80" }
+                ].map(cat => (
+                  <div key={cat.name} className="bg-white rounded-2xl border border-[#E5E5EA] p-3 flex flex-col overflow-hidden cursor-pointer active:opacity-70" onClick={() => onCategoryClick?.(cat.name, (products as any[]).filter(p => p.category && p.category.toLowerCase().includes(cat.id)), cat.id)}>
+                    <p className="font-bold text-xs text-[#111111] mb-1">{cat.name}</p>
+                    <p className="text-[10px] text-[#6B7280] mb-2 leading-tight flex-1">{cat.desc}</p>
+                    <img src={cat.img} className="w-full h-16 object-contain mix-blend-multiply rounded-lg" alt={cat.name} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* ── Orders Content ── */
+          <div className="flex-1 overflow-y-auto p-4">
+            {/* Stats summary */}
+            <div className="bg-white rounded-2xl border border-[#E5E5EA] shadow-sm p-4 mb-4 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                <Package className="w-6 h-6 text-[#E31E24]" />
+              </div>
+              <div className="flex flex-1 items-stretch">
+                <div className="flex-1 pr-4">
+                  <p className="text-2xl font-black text-[#E31E24] leading-none">{inLivrareCount}</p>
+                  <p className="text-xs font-bold text-[#111111]">în livrare</p>
+                  <p className="text-[10px] text-[#6B7280]">Comenzi active</p>
+                </div>
+                <div className="w-px bg-[#E5E5EA]" />
+                <div className="flex-1 pl-4">
+                  <p className="text-2xl font-black text-green-600 leading-none">{recentlyDeliveredCount}</p>
+                  <p className="text-xs font-bold text-[#111111]">livrată recent</p>
+                  <p className="text-[10px] text-[#6B7280]">În ultimele 30 zile</p>
+                </div>
+              </div>
+            </div>
+
+            {activeOrders.length > 0 && (
+              <>
+                <h2 className="text-base font-black text-[#111111] mb-3">Comenzi active</h2>
+                {activeOrders.map(renderActiveOrderCard)}
+              </>
+            )}
+
+            {recentlyDeliveredOrders.length > 0 && (
+              <>
+                <h2 className="text-base font-black text-[#111111] mb-3 mt-2">Comenzi livrate recent</h2>
+                {recentlyDeliveredOrders.map(renderDeliveredOrderCard)}
+              </>
+            )}
+          </div>
+        )}
       </div>
     );
   }
@@ -394,59 +688,208 @@ export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
     return (
       <div className="flex flex-col h-full bg-[#F5F5F7]">
         {renderHeader("Cardurile mele")}
-        <div className="p-4 space-y-3 overflow-y-auto">
-          {cards.map(card => (
-            <Card 
-              key={card.id}
-              onClick={() => {
-                const updated = setMainCard(card.id);
-                setCards(updated);
-              }}
-              className={`p-4 border-2 shadow-sm rounded-2xl relative overflow-hidden cursor-pointer transition-colors ${
-                card.isMain ? "border-[#E31E24] bg-[#FEF2F2]" : "border-[#E5E5EA] bg-white hover:border-gray-300"
-              }`}
-            >
-              {card.isMain && <div className="absolute top-0 right-0 bg-[#E31E24] text-white text-[10px] font-bold px-2.5 py-1 rounded-bl-lg">Principal</div>}
-              <div className="flex items-center gap-4">
-                <div className={`w-14 h-10 rounded-lg flex items-center justify-center shrink-0 overflow-hidden ${card.isMain ? 'bg-white shadow-sm' : 'bg-[#F5F5F7]'}`}>
-                  {card.type.toLowerCase() === "visa" ? (
-                    <svg viewBox="0 0 48 20" className="w-10 h-auto" aria-label="Visa">
-                      <text x="24" y="15" textAnchor="middle" fontFamily="Arial, sans-serif" fontWeight="bold" fontSize="15" fill="#1A1F71" letterSpacing="-0.5">VISA</text>
-                    </svg>
-                  ) : card.type.toLowerCase() === "mastercard" ? (
-                    <svg viewBox="0 0 38 24" className="w-9 h-auto" aria-label="Mastercard">
-                      <circle cx="13" cy="12" r="10" fill="#EB001B" />
-                      <circle cx="25" cy="12" r="10" fill="#F79E1B" />
-                      <path d="M19 4.8a10 10 0 0 1 0 14.4A10 10 0 0 1 19 4.8z" fill="#FF5F00" />
-                    </svg>
-                  ) : (
-                    <CreditCard className={`h-6 w-6 ${card.isMain ? 'text-[#E31E24]' : 'text-[#6B7280]'}`} />
-                  )}
-                </div>
-                <div>
-                  <p className={`font-bold text-base ${card.isMain ? 'text-[#E31E24]' : 'text-[#111111]'}`}>{card.number}</p>
-                  <p className={`text-xs ${card.isMain ? 'text-[#E31E24]/70' : 'text-[#6B7280]'}`}>Expiră {card.expiry} • {card.type}</p>
-                </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const updated = deleteCard(card.id);
-                    setCards(updated);
-                  }}
-                  className="ml-auto p-2 rounded-xl text-gray-400 hover:text-[#E31E24] hover:bg-red-50 transition-colors"
-                  aria-label="Șterge card"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+        <div className="px-4 pt-3 pb-6 overflow-y-auto space-y-4">
+
+          {/* Subtitle */}
+          <p className="text-sm text-[#6B7280]">Gestionează cardurile tale pentru plăți rapide și sigure.</p>
+
+          {/* Stats Row */}
+          <div className="bg-white rounded-2xl px-4 py-3 flex items-start shadow-sm border border-gray-100">
+            <div className="flex-1 flex items-start gap-2">
+              <div className="w-9 h-9 rounded-full bg-red-50 flex items-center justify-center shrink-0 mt-0.5">
+                <CreditCard className="w-4 h-4 text-[#E31E24]" />
               </div>
-            </Card>
-          ))}
-          <button 
+              <div>
+                <p className="text-lg font-black text-[#111111] leading-tight">{cards.length}</p>
+                <p className="text-[11px] font-bold text-[#111111] leading-tight">Carduri salvate</p>
+                <p className="text-[10px] text-[#6B7280] leading-tight">Plăți mai rapide</p>
+              </div>
+            </div>
+            <div className="w-px bg-gray-100 self-stretch mx-1" />
+            <div className="flex-1 flex items-start gap-2 px-1">
+              <div className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center shrink-0 mt-0.5">
+                <ShieldCheck className="w-4 h-4 text-green-600" />
+              </div>
+              <div>
+                <p className="text-lg font-black text-[#111111] leading-tight">100%</p>
+                <p className="text-[11px] font-bold text-[#111111] leading-tight">Securizate</p>
+                <p className="text-[10px] text-[#6B7280] leading-tight">Date criptate</p>
+              </div>
+            </div>
+            <div className="w-px bg-gray-100 self-stretch mx-1" />
+            <div className="flex-1 flex items-start gap-2 pl-1">
+              <div className="w-9 h-9 rounded-full bg-purple-50 flex items-center justify-center shrink-0 mt-0.5">
+                <Zap className="w-4 h-4 text-purple-600" />
+              </div>
+              <div>
+                <p className="text-[11px] font-black text-[#111111] leading-tight mt-1">Plată 1-click</p>
+                <p className="text-[10px] text-[#6B7280] leading-tight">Fără completare la fiecare comandă</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Card Items */}
+          <div className="space-y-3">
+            {cards.map(card => (
+              <Card
+                key={card.id}
+                className={`border-2 shadow-sm rounded-2xl overflow-hidden transition-colors ${
+                  card.isMain ? "border-[#E31E24] bg-white" : "border-[#E5E5EA] bg-white hover:border-gray-300"
+                }`}
+              >
+                <div className="p-4 pb-3 flex items-start gap-3 relative">
+                  {/* Card Visual */}
+                  <div className="w-[82px] h-[54px] rounded-xl flex flex-col justify-between p-2 shrink-0 shadow-md relative bg-gradient-to-br from-[#aaaaaa] to-[#cccccc]">
+                    <div className="w-5 h-3.5 rounded-sm" style={{ background: "linear-gradient(135deg, #f9d54a 0%, #c8962a 100%)" }} />
+                    <div className="flex justify-end">
+                      {card.type.toLowerCase() === "visa" ? (
+                        <svg viewBox="0 0 48 20" className="w-8 h-auto" aria-label="Visa">
+                          <text x="24" y="15" textAnchor="middle" fontFamily="Arial, sans-serif" fontWeight="bold" fontSize="15" fill="white" letterSpacing="-0.5">VISA</text>
+                        </svg>
+                      ) : card.type.toLowerCase() === "mastercard" ? (
+                        <svg viewBox="0 0 38 24" className="w-7 h-auto" aria-label="Mastercard">
+                          <circle cx="13" cy="12" r="10" fill="#EB001B" />
+                          <circle cx="25" cy="12" r="10" fill="#F79E1B" />
+                          <path d="M19 4.8a10 10 0 0 1 0 14.4A10 10 0 0 1 19 4.8z" fill="#FF5F00" />
+                        </svg>
+                      ) : (
+                        <CreditCard className="w-5 h-5 text-white" />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Card Info */}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-sm text-[#111111] tracking-wide">{card.number}</p>
+                    <p className="text-xs text-[#6B7280] mt-0.5">
+                      Expiră {card.expiry} · {card.type}
+                    </p>
+                    {card.isMain && (
+                      <div className="flex items-center gap-1 mt-2 bg-red-50 px-2 py-1 rounded-full w-fit">
+                        <ShieldCheck className="w-3 h-3 text-[#E31E24] shrink-0" />
+                        <p className="text-[10px] font-semibold text-[#E31E24]">Cardul principal pentru plățile tale</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Principal badge + menu */}
+                  <div className="flex flex-col items-end gap-2 shrink-0 relative">
+                    {card.isMain && (
+                      <span className="bg-[#E31E24] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full">Principal</span>
+                    )}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCardMenuOpenId(cardMenuOpenId === card.id ? null : card.id);
+                      }}
+                      className="p-1 rounded-lg text-gray-400 hover:text-gray-600 transition-colors"
+                      aria-label="Opțiuni card"
+                    >
+                      <MoreVertical className="w-5 h-5" />
+                    </button>
+
+                    {/* Dropdown menu */}
+                    {cardMenuOpenId === card.id && (
+                      <>
+                        {/* Backdrop to close menu */}
+                        <div
+                          className="fixed inset-0 z-10"
+                          onClick={(e) => { e.stopPropagation(); setCardMenuOpenId(null); }}
+                        />
+                        <div className="absolute top-full right-0 mt-1 w-44 bg-white rounded-xl shadow-lg border border-gray-100 z-20 overflow-hidden">
+                          {!card.isMain && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const updated = setMainCard(card.id);
+                                setCards(updated);
+                                setCardMenuOpenId(null);
+                              }}
+                              className="w-full flex items-center gap-2 px-3 py-2.5 text-xs text-[#111111] hover:bg-gray-50 transition-colors whitespace-nowrap"
+                            >
+                              <ShieldCheck className="w-3.5 h-3.5 text-green-600 shrink-0" />
+                              Marchează ca principal
+                            </button>
+                          )}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const updated = deleteCard(card.id);
+                              setCards(updated);
+                              setCardMenuOpenId(null);
+                            }}
+                            className={`w-full flex items-center gap-2 px-3 py-2.5 text-xs text-[#E31E24] hover:bg-red-50 transition-colors whitespace-nowrap ${!card.isMain ? "border-t border-gray-100" : ""}`}
+                          >
+                            <Trash2 className="w-3.5 h-3.5 shrink-0" />
+                            Șterge card
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+              </Card>
+            ))}
+          </div>
+
+          {/* Add Card Button */}
+          <button
             onClick={() => setIsAddingCard(true)}
-            className="w-full flex items-center justify-center gap-2 py-4 border-2 border-dashed border-[#E5E5EA] rounded-2xl text-[#111111] font-bold hover:bg-white hover:border-gray-300 transition-colors mt-2"
+            className="w-full flex flex-col items-center justify-center gap-0.5 py-4 border-2 border-dashed border-[#E5E5EA] rounded-2xl bg-white hover:border-gray-300 transition-colors"
           >
-            <Plus className="w-5 h-5" /> Adaugă card nou
+            <div className="flex items-center gap-2">
+              <Plus className="w-4 h-4 text-[#111111]" />
+              <span className="text-[#111111] font-bold text-sm">Adaugă card nou</span>
+            </div>
+            <span className="text-[11px] text-[#6B7280]">Visa, Mastercard sau alte carduri</span>
           </button>
+
+          {/* Why save card section */}
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+            <h3 className="font-black text-sm text-[#111111] mb-4">De ce să salvezi cardul?</h3>
+            <div className="flex items-start gap-3">
+              <div className="flex-1 space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                    <Zap className="w-4 h-4 text-[#E31E24]" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-[#111111]">Plăți mai rapide</p>
+                    <p className="text-[11px] text-[#6B7280]">Finalizezi comenzile în 1-click</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center shrink-0">
+                    <ShieldCheck className="w-4 h-4 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-[#111111]">Siguranță maximă</p>
+                    <p className="text-[11px] text-[#6B7280]">Datele tale sunt criptate și securizate</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+                    <RefreshCcw className="w-4 h-4 text-blue-500" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-[#111111]">Control deplin</p>
+                    <p className="text-[11px] text-[#6B7280]">Poți șterge sau edita oricând</p>
+                  </div>
+                </div>
+              </div>
+              {/* Card illustration */}
+              <div className="flex items-center justify-center shrink-0 w-24">
+                <div className="relative">
+                  <div className="w-16 h-10 rounded-lg bg-gradient-to-br from-[#E31E24] to-[#a01015] shadow-md" />
+                  <div className="absolute -bottom-3 -right-3 w-8 h-8 rounded-full bg-green-500 flex items-center justify-center shadow-md border-2 border-white">
+                    <ShieldCheck className="w-4 h-4 text-white" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     );
@@ -460,9 +903,34 @@ export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
           {renderHeader(isEditing ? "Editează adresa" : "Adaugă adresă nouă", () => {
             setIsAddingAddress(false);
             setEditingAddressId(null);
-            setNewAddressData({ judet: "", localitate: "", adresa: "", codPostal: "" });
+            setNewAddressData({ judet: "", localitate: "", adresa: "", codPostal: "", tag: "" });
           })}
           <div className="p-4 space-y-4 overflow-y-auto">
+            {/* Tag selector */}
+            <div>
+              <label className="text-xs font-bold text-[#6B7280] mb-2 block">Etichetă (opțional)</label>
+              <div className="flex gap-3">
+                {[
+                  { value: "Acasă", label: "Acasă", icon: <Home className="w-4 h-4" /> },
+                  { value: "Birou", label: "Birou", icon: <Briefcase className="w-4 h-4" /> },
+                ].map(opt => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setNewAddressData({ ...newAddressData, tag: newAddressData.tag === opt.value ? "" : opt.value })}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-semibold transition-all ${
+                      newAddressData.tag === opt.value
+                        ? "bg-[#FEF2F2] border-[#E31E24] text-[#E31E24]"
+                        : "bg-white border-[#E5E5EA] text-[#6B7280] hover:bg-gray-50"
+                    }`}
+                  >
+                    {opt.icon}
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="bg-white p-5 rounded-2xl border border-[#E5E5EA] shadow-sm space-y-4">
               <div>
                 <label className="text-xs font-bold text-[#6B7280] mb-1.5 block">Județ</label>
@@ -511,7 +979,7 @@ export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
                 onClick={() => {
                   setIsAddingAddress(false);
                   setEditingAddressId(null);
-                  setNewAddressData({ judet: "", localitate: "", adresa: "", codPostal: "" });
+                  setNewAddressData({ judet: "", localitate: "", adresa: "", codPostal: "", tag: "" });
                 }}
                 className="flex-1 py-3.5 rounded-xl font-bold text-[#111111] bg-white border border-[#E5E5EA] hover:bg-gray-50 transition-colors"
               >
@@ -529,47 +997,174 @@ export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
       );
     }
 
+    const mainAddress = addresses.find(a => a.isMain);
+    const otherAddresses = addresses.filter(a => !a.isMain);
+
     return (
       <div className="flex flex-col h-full bg-[#F5F5F7]">
-        {renderHeader("Adresele mele")}
-        <div className="p-4 space-y-3 overflow-y-auto">
-          {addresses.map(addr => (
-            <Card
-              key={addr.id}
-              onClick={() => {
-                const updated = addresses.map(a => ({ ...a, isMain: a.id === addr.id }));
-                saveAddresses(updated);
-                setAddresses(updated);
-              }}
-              className={`p-4 border-2 shadow-sm rounded-2xl relative overflow-hidden cursor-pointer transition-colors ${
-                addr.isMain ? "border-[#E31E24] bg-[#FEF2F2]" : "border-[#E5E5EA] bg-white hover:border-gray-300"
-              }`}
-            >
-              {addr.isMain && <div className="absolute top-0 right-0 bg-[#E31E24] text-white text-[10px] font-bold px-2.5 py-1 rounded-bl-lg">Principală</div>}
-              <div className="flex items-start gap-4">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 mt-1 ${addr.isMain ? 'bg-white text-[#E31E24]' : 'bg-[#F5F5F7] text-[#6B7280]'}`}>
-                  <MapPin className="h-5 w-5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className={`font-bold text-sm mb-1 ${addr.isMain ? 'text-[#E31E24]' : 'text-[#111111]'}`}>{addr.name}</h4>
-                  <p className={`text-xs leading-relaxed ${addr.isMain ? 'text-[#E31E24]/80' : 'text-[#6B7280]'}`}>{addr.street}<br/>{addr.city}</p>
-                </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteAddress(addr.id);
-                  }}
-                  className="shrink-0 p-1.5 rounded-full text-[#6B7280] hover:text-[#E31E24] hover:bg-[#FEF2F2] transition-colors self-center"
-                  aria-label="Șterge adresa"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            </Card>
-          ))}
-          <button onClick={() => setIsAddingAddress(true)} className="w-full flex items-center justify-center gap-2 py-4 border-2 border-dashed border-[#E5E5EA] rounded-2xl text-[#111111] font-bold hover:bg-white hover:border-gray-300 transition-colors mt-2">
-            <Plus className="w-5 h-5" /> Adaugă adresă nouă
+        {/* Custom header matching design */}
+        <header className="shrink-0 flex items-center px-4 pt-5 pb-4 bg-white sticky top-0 z-10">
+          <button
+            onClick={() => setActiveView("main")}
+            className="p-2 -ml-2 rounded-full hover:bg-muted mr-1 flex items-center justify-center"
+          >
+            <ChevronLeft className="h-6 w-6 text-[#111111]" />
           </button>
+          <div className="flex-1">
+            <h1 className="text-xl font-bold text-[#111111] leading-tight">Adresele mele</h1>
+            <p className="text-xs text-[#6B7280] font-medium mt-0.5">{addresses.length} adrese salvate</p>
+          </div>
+        </header>
+
+        <div className="px-4 pt-4 pb-6 space-y-3 overflow-y-auto" onClick={() => setAddressMenuOpenId(null)}>
+          {/* Main address section */}
+          {mainAddress && (() => {
+            const addrIcon = mainAddress.name === "Acasă"
+              ? { bg: "bg-[#FEF2F2]", icon: <Home className="h-5 w-5 text-[#E31E24]" /> }
+              : mainAddress.name === "Birou"
+              ? { bg: "bg-[#EEF2FF]", icon: <Briefcase className="h-5 w-5 text-[#6366F1]" /> }
+              : { bg: "bg-[#F0FDF4]", icon: <MapPin className="h-5 w-5 text-[#16A34A]" /> };
+            return (
+            <div>
+              <div className="flex items-center gap-1.5 mb-2">
+                <span className="text-xs font-bold text-[#E31E24]">Adresă principală</span>
+                <Star className="w-3.5 h-3.5 text-[#E31E24]" />
+              </div>
+              <Card className="bg-white border border-[#E5E5EA] rounded-2xl shadow-sm overflow-hidden">
+                <div className="p-4">
+                  <div className="flex items-start gap-3">
+                    <div className={`w-10 h-10 rounded-xl ${addrIcon.bg} flex items-center justify-center shrink-0`}>
+                      {addrIcon.icon}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-bold text-sm text-[#111111] mb-0.5">{mainAddress.name}</h4>
+                      <p className="text-xs text-[#6B7280] leading-relaxed">{mainAddress.street}<br />{mainAddress.city}</p>
+                    </div>
+                    <div className="flex items-center gap-1.5 bg-[#FEF2F2] px-2.5 py-1 rounded-full shrink-0 mt-0.5">
+                      <CheckCircle2 className="w-3 h-3 text-[#E31E24]" />
+                      <span className="text-[11px] font-semibold text-[#E31E24]">Principală</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="border-t border-[#E5E5EA] flex">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleEditAddress(mainAddress); }}
+                    className="flex-1 flex items-center justify-center gap-2 py-3 text-[#6B7280] text-xs font-semibold hover:bg-gray-50 transition-colors"
+                  >
+                    <Edit2 className="w-3.5 h-3.5" />
+                    Editează
+                  </button>
+                </div>
+              </Card>
+            </div>
+            );
+          })()}
+
+          {/* Other addresses section */}
+          {otherAddresses.length > 0 && (
+            <div>
+              <p className="text-xs font-semibold text-[#6B7280] mb-2 mt-1">Alte adrese</p>
+              {otherAddresses.map(addr => {
+                const addrIcon = addr.name === "Acasă"
+                  ? { bg: "bg-[#FEF2F2]", icon: <Home className="h-5 w-5 text-[#E31E24]" /> }
+                  : addr.name === "Birou"
+                  ? { bg: "bg-[#EEF2FF]", icon: <Briefcase className="h-5 w-5 text-[#6366F1]" /> }
+                  : { bg: "bg-[#F0FDF4]", icon: <MapPin className="h-5 w-5 text-[#16A34A]" /> };
+                return (
+                <Card key={addr.id} className="bg-white border border-[#E5E5EA] rounded-2xl shadow-sm overflow-visible mb-2">
+                  <div className="p-4">
+                    <div className="flex items-start gap-3">
+                      <div className={`w-10 h-10 rounded-xl ${addrIcon.bg} flex items-center justify-center shrink-0`}>
+                        {addrIcon.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-sm text-[#111111] mb-0.5">{addr.name}</h4>
+                        <p className="text-xs text-[#6B7280] leading-relaxed">{addr.street}<br />{addr.city}</p>
+                      </div>
+                      <div className="relative shrink-0">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setAddressMenuOpenId(addressMenuOpenId === addr.id ? null : addr.id); }}
+                          className="p-1 text-[#6B7280] hover:text-[#111111] transition-colors"
+                          aria-label="Opțiuni adresă"
+                        >
+                          <MoreVertical className="w-4 h-4" />
+                        </button>
+                        {addressMenuOpenId === addr.id && (
+                          <div className="absolute right-0 top-7 z-20 bg-white border border-[#E5E5EA] rounded-xl shadow-lg overflow-hidden w-48">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditAddress(addr);
+                                setAddressMenuOpenId(null);
+                              }}
+                              className="w-full flex items-center gap-2.5 px-4 py-3 text-sm font-medium text-[#111111] hover:bg-[#F5F5F7] transition-colors"
+                            >
+                              <Edit2 className="w-4 h-4 text-[#6B7280]" />
+                              Editează
+                            </button>
+                            <div className="h-px bg-[#E5E5EA]" />
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const updated = addresses.map(a => ({ ...a, isMain: a.id === addr.id }));
+                                saveAddresses(updated);
+                                setAddresses(updated);
+                                setAddressMenuOpenId(null);
+                              }}
+                              className="w-full flex items-center gap-2.5 px-4 py-3 text-sm font-medium text-[#111111] hover:bg-[#F5F5F7] transition-colors"
+                            >
+                              <Star className="w-4 h-4 text-[#6366F1]" />
+                              Setează ca principală
+                            </button>
+                            <div className="h-px bg-[#E5E5EA]" />
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteAddress(addr.id);
+                                setAddressMenuOpenId(null);
+                              }}
+                              className="w-full flex items-center gap-2.5 px-4 py-3 text-sm font-medium text-[#E31E24] hover:bg-[#FEF2F2] transition-colors"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                              Șterge
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Add new address — card style */}
+          <button
+            onClick={() => setIsAddingAddress(true)}
+            className="w-full flex items-center gap-3 px-4 py-3.5 bg-white border border-[#E5E5EA] rounded-2xl shadow-sm hover:bg-gray-50 transition-colors"
+          >
+            <div className="w-8 h-8 rounded-full border-2 border-[#E5E5EA] flex items-center justify-center shrink-0">
+              <Plus className="w-4 h-4 text-[#6B7280]" />
+            </div>
+            <div className="flex-1 text-left">
+              <p className="text-sm font-bold text-[#111111] leading-tight">Adaugă adresă nouă</p>
+              <p className="text-xs text-[#6B7280] mt-0.5">Adaugă o adresă pentru livrări rapide și sigure</p>
+            </div>
+            <ChevronRight className="w-4 h-4 text-[#6B7280] shrink-0" />
+          </button>
+
+          {/* Promo banner */}
+          <div className="flex items-center gap-3 px-4 py-4 bg-[#FEF2F2] rounded-2xl">
+            <MapPin className="w-9 h-9 text-[#E31E24] shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-[#111111] leading-tight">Livrare mai rapidă</p>
+              <p className="text-xs text-[#6B7280] leading-relaxed mt-0.5">Salvează mai multe adrese și alege ușor unde livrăm.</p>
+            </div>
+            <button onClick={() => setIsAddingAddress(true)} className="shrink-0 bg-[#E31E24] text-white text-xs font-bold px-3 py-2 rounded-xl whitespace-nowrap">
+              Adaugă acum
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -582,69 +1177,94 @@ export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
 
     const filteredEquipment = productFilter === "all" ? equipment : equipment.filter(e => e.productStatus === productFilter);
 
+    const getPercentage = (performance: string) =>
+      parseInt(performance.match(/\d+/)?.[0] ?? "0");
+
+    const renderStatusRing = (performance: string, status: string) => {
+      const pct = getPercentage(performance);
+      const r = 13;
+      const circ = 2 * Math.PI * r;
+      const dashOffset = circ - (pct / 100) * circ;
+      const color = status === "upgrade" ? "#E31E24" : status === "attention" ? "#F97316" : "#2E9B4F";
+      return (
+        <svg width="34" height="34" viewBox="0 0 34 34" className="shrink-0 -rotate-90">
+          <circle cx="17" cy="17" r={r} fill="none" stroke="#E5E5EA" strokeWidth="3" />
+          <circle
+            cx="17" cy="17" r={r}
+            fill="none"
+            stroke={color}
+            strokeWidth="3"
+            strokeDasharray={`${circ}`}
+            strokeDashoffset={`${dashOffset}`}
+            strokeLinecap="round"
+          />
+        </svg>
+      );
+    };
+
     return (
       <div className="flex flex-col h-full bg-[#F5F5F7] font-sans">
-        {/* Light Modern Header */}
-        <header className="shrink-0 flex flex-col px-5 pt-10 pb-6 sticky top-0 z-10 bg-[#F5F5F7]/95 backdrop-blur-md border-b border-gray-200">
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={() => setActiveView("main")} 
-              className="p-2 -ml-2 rounded-full hover:bg-gray-200 flex items-center justify-center transition-colors"
+        {/* Header */}
+        <header className="shrink-0 flex flex-col px-4 pt-5 pb-4 sticky top-0 z-10 bg-white border-b border-gray-100">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setActiveView("main")}
+              className="p-2 -ml-2 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors"
             >
               <ChevronLeft className="h-6 w-6 text-[#111111]" />
             </button>
             <h1 className="text-2xl font-black flex-1 text-[#111111] tracking-tight">Produsele mele</h1>
           </div>
-          <p className="text-gray-500 text-sm mt-2 font-medium">Gestionează inteligent dispozitivele deținute. Afli instant valoarea de trade-in și momentul perfect pentru upgrade.</p>
+          <p className="text-gray-500 text-sm mt-1.5 leading-snug">
+            Gestionează inteligent dispozitivele deținute.<br />
+            Afli instant valoarea de trade-in și momentul perfect pentru upgrade.
+          </p>
         </header>
 
         <div className="flex-1 overflow-y-auto">
-          
-          {/* Status Summary Row - Light Mode */}
-          <div className="px-5 mt-6 grid grid-cols-3 gap-3">
-            <div className="rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-sm bg-white border border-red-100 relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#E31E24]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="flex items-center gap-2 mb-2 relative z-10">
-                <AlertCircle className="w-5 h-5 text-[#E31E24]" />
+
+          {/* Status Summary Row */}
+          <div className="px-4 mt-5 grid grid-cols-3 gap-3">
+            <div className="rounded-2xl px-3 py-4 flex flex-col items-center justify-center text-center bg-white border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <RefreshCcw className="w-4 h-4 text-[#E31E24]" />
                 <span className="text-[#E31E24] font-black text-2xl leading-none">{upgradeCount}</span>
               </div>
-              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider leading-tight relative z-10">Upgrade<br/>Acum</span>
+              <span className="text-[11px] font-medium text-gray-500 leading-tight">Upgrade<br />recomandat</span>
             </div>
-            
-            <div className="rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-sm bg-white border border-orange-100 relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="flex items-center gap-2 mb-2 relative z-10">
-                <Info className="w-5 h-5 text-orange-500" />
+
+            <div className="rounded-2xl px-3 py-4 flex flex-col items-center justify-center text-center bg-white border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <Clock className="w-4 h-4 text-orange-500" />
                 <span className="text-orange-500 font-black text-2xl leading-none">{attentionCount}</span>
               </div>
-              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider leading-tight relative z-10">Atenție<br/>Curând</span>
+              <span className="text-[11px] font-medium text-gray-500 leading-tight">Atenție<br />curând</span>
             </div>
-            
-            <div className="rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-sm bg-white border border-green-100 relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#2E9B4F]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="flex items-center gap-2 mb-2 relative z-10">
-                <CheckCircle2 className="w-5 h-5 text-[#2E9B4F]" />
+
+            <div className="rounded-2xl px-3 py-4 flex flex-col items-center justify-center text-center bg-white border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <CheckCircle2 className="w-4 h-4 text-[#2E9B4F]" />
                 <span className="text-[#2E9B4F] font-black text-2xl leading-none">{goodCount}</span>
               </div>
-              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider leading-tight relative z-10">Stare<br/>Optimă</span>
+              <span className="text-[11px] font-medium text-gray-500 leading-tight">Stare<br />optimă</span>
             </div>
           </div>
 
-          {/* Pill Filters - Light Mode */}
-          <div className="px-5 mt-8 overflow-x-auto scrollbar-hide flex gap-2 pb-2">
+          {/* Pill Filters */}
+          <div className="px-4 mt-5 overflow-x-auto scrollbar-hide flex gap-2 pb-1">
             {[
-              { id: "all", label: "Toate dispozitivele", activeClass: "bg-gray-200/60 text-[#111111] border-gray-300" },
-              { id: "upgrade", label: "Necesită Upgrade", activeClass: "bg-[#E31E24]/10 text-[#E31E24] border-[#E31E24]/20" },
-              { id: "attention", label: "De Urmărit", activeClass: "bg-orange-500/10 text-orange-600 border-orange-500/20" },
-              { id: "good", label: "Stare Perfectă", activeClass: "bg-[#2E9B4F]/10 text-[#2E9B4F] border-[#2E9B4F]/20" }
+              { id: "all", label: "Toate dispozitivele" },
+              { id: "upgrade", label: "Necesită upgrade" },
+              { id: "attention", label: "De urmărit" },
+              { id: "good", label: "Stare perfectă" }
             ].map(f => (
               <button
                 key={f.id}
                 onClick={() => setProductFilter(f.id as ProductFilter)}
-                className={`px-5 h-10 flex items-center justify-center rounded-full text-xs font-bold transition-all whitespace-nowrap border ${
-                  productFilter === f.id 
-                    ? f.activeClass 
-                    : "bg-transparent text-gray-500 border-gray-200 hover:bg-gray-50"
+                className={`px-3 h-7 flex items-center justify-center rounded-full text-xs font-semibold transition-all whitespace-nowrap border ${
+                  productFilter === f.id
+                    ? "bg-[#111111] text-white border-[#111111]"
+                    : "bg-white text-[#6B7280] border-[#E5E5EA] hover:bg-gray-50"
                 }`}
               >
                 {f.label}
@@ -652,81 +1272,113 @@ export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
             ))}
           </div>
 
-          {/* Product List - Light Mode */}
-          <div className="px-5 mt-4 space-y-4 pb-6">
+          {/* Product List */}
+          <div className="px-4 mt-4 space-y-4 pb-6">
             {filteredEquipment.map((item) => (
-              <div key={item.id} className="bg-white rounded-3xl p-4 border border-gray-100 shadow-sm flex flex-col relative overflow-hidden">
-                {/* Decorative background glow for upgrade/attention items */}
-                {item.productStatus === 'upgrade' && <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#FEF2F2] rounded-full blur-2xl pointer-events-none" />}
-                {item.productStatus === 'attention' && <div className="absolute -top-10 -right-10 w-32 h-32 bg-orange-50 rounded-full blur-2xl pointer-events-none" />}
-                
-                <div className="flex gap-4 items-stretch relative z-10">
-                  <div className="w-24 h-24 bg-[#F5F5F7] rounded-2xl p-2 shrink-0 flex items-center justify-center">
-                    <img src={item.image} className="max-w-full max-h-full object-contain mix-blend-multiply" alt={item.name} />
+              <div key={item.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+
+                {/* Card Header: image + info + badge + menu */}
+                <div className="flex gap-3 p-4 pb-3 items-start">
+                  <div className="w-[82px] h-[82px] bg-[#F5F5F7] rounded-xl shrink-0 flex items-center justify-center overflow-hidden">
+                    <img src={item.image} className="w-full h-full object-contain mix-blend-multiply" alt={item.name} />
                   </div>
-                  <div className="flex-1 min-w-0 flex flex-col justify-center">
-                    <h3 className="font-black text-base text-[#111111] leading-tight mb-1">{item.name}</h3>
-                    <p className="text-xs font-medium text-gray-500 truncate mb-2">{item.specs}</p>
-                    
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 border border-gray-100 w-max">
-                      <Clock className="w-3.5 h-3.5 text-gray-400" />
-                      <span className="text-[10px] font-bold text-gray-500">Achiziție: {new Date(item.purchaseDate).toLocaleDateString('ro-RO', { month: 'short', year: 'numeric' })}</span>
+                  <div className="flex-1 min-w-0 pt-0.5">
+                    <h3 className="font-bold text-[15px] text-[#111111] leading-snug mb-0.5">{item.name}</h3>
+                    <p className="text-xs text-gray-500 mb-2 truncate">{item.specs}</p>
+                    <div className="inline-flex items-center gap-1">
+                      <Calendar className="w-3 h-3 text-gray-400" />
+                      <span className="text-[11px] text-gray-500">
+                        Achiziție: {new Date(item.purchaseDate).toLocaleDateString('ro-RO', { month: 'short', year: 'numeric' })}
+                      </span>
                     </div>
                   </div>
+                  {/* Status badge */}
+                  <div className="flex flex-col items-end gap-1.5 shrink-0 pt-0.5">
+                    {item.productStatus === 'upgrade' && (
+                      <span className="flex items-center gap-1 text-[10px] font-bold text-[#E31E24] bg-[#FEF2F2] px-2 py-1 rounded-full border border-[#E31E24]/20 whitespace-nowrap">
+                        <RefreshCcw className="w-2.5 h-2.5" />
+                        Upgrade recomandat
+                      </span>
+                    )}
+                    {item.productStatus === 'attention' && (
+                      <span className="flex items-center gap-1 text-[10px] font-bold text-orange-500 bg-orange-50 px-2 py-1 rounded-full border border-orange-200 whitespace-nowrap">
+                        <Clock className="w-2.5 h-2.5" />
+                        Atenție curând
+                      </span>
+                    )}
+                    {item.productStatus === 'good' && (
+                      <span className="flex items-center gap-1 text-[10px] font-bold text-[#2E9B4F] bg-[#F0FDF4] px-2 py-1 rounded-full border border-green-100 whitespace-nowrap">
+                        <CheckCircle2 className="w-2.5 h-2.5" />
+                        Stare optimă
+                      </span>
+                    )}
+                  </div>
                 </div>
 
-                {/* Status Specific Text Box */}
-                <div className={`mt-4 p-3 rounded-xl border relative z-10 ${
-                  item.productStatus === 'upgrade' ? 'bg-[#FEF2F2] border-[#E31E24]/20 text-[#E31E24]' :
-                  item.productStatus === 'attention' ? 'bg-orange-50 border-orange-200 text-orange-600' :
-                  'bg-[#DDF7E7]/50 border-[#2E9B4F]/20 text-[#2E9B4F]'
-                }`}>
+                {/* Info Text Box */}
+                <div className="mx-4 mb-3 p-3 rounded-xl bg-[#EFF6FF] border border-blue-100">
                   <div className="flex items-start gap-2">
-                    {item.productStatus === 'upgrade' && <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />}
-                    {item.productStatus === 'attention' && <Info className="w-4 h-4 shrink-0 mt-0.5" />}
-                    {item.productStatus === 'good' && <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />}
-                    <p className="text-[11px] font-bold leading-relaxed">{item.detailsText}</p>
+                    <Info className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                    <p className="text-[12px] text-gray-600 leading-relaxed">{item.detailsText}</p>
                   </div>
                 </div>
 
-                {/* 3 Stats Grid */}
-                <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100 relative z-10 px-1">
-                  <div className="flex flex-col">
-                    <span className="text-[10px] text-gray-400 uppercase font-black tracking-wider mb-1">Vechime</span>
-                    <span className="text-xs font-bold text-[#111111]">{item.age}</span>
+                {/* Stats Row */}
+                <div className="flex items-center gap-2 mx-4 mb-3 pt-3 border-t border-gray-100">
+                  <div className="flex-1">
+                    <p className="text-[11px] text-gray-400 font-medium mb-0.5">Vechime</p>
+                    <p className="text-sm font-bold text-[#111111]">{item.age}</p>
                   </div>
-                  <div className="w-px h-8 bg-gray-100"></div>
-                  <div className="flex flex-col items-center">
-                    <span className="text-[10px] text-gray-400 uppercase font-black tracking-wider mb-1">Trade-in</span>
-                    <span className="text-xs font-black text-[#E31E24]">{item.tradeIn}</span>
+                  <div className="flex-1">
+                    <p className="text-[11px] text-gray-400 font-medium mb-0.5">Trade-in estimat</p>
+                    <p className="text-sm font-bold text-[#111111]">{item.tradeIn}</p>
                   </div>
-                  <div className="w-px h-8 bg-gray-100"></div>
-                  <div className="flex flex-col items-end">
-                    <span className="text-[10px] text-gray-400 uppercase font-black tracking-wider mb-1">Status</span>
-                    <span className="text-xs font-bold text-[#111111]">{item.performance}</span>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <div>
+                      <p className="text-[11px] text-gray-400 font-medium mb-0.5">Stare</p>
+                      <p className="text-sm font-bold text-[#111111]">{item.performance}</p>
+                    </div>
+                    {renderStatusRing(item.performance, item.productStatus)}
                   </div>
                 </div>
 
                 {/* Action Buttons */}
-                {item.productStatus === 'upgrade' && (
-                  <button className="w-full mt-4 bg-[#E31E24]/10 hover:bg-[#E31E24]/20 text-[#E31E24] py-3 rounded-xl text-xs font-black transition-colors relative z-10 border border-[#E31E24]/20">
-                    Vezi oferte pentru upgrade
-                  </button>
-                )}
-                {item.productStatus === 'attention' && (
-                  <button className="w-full mt-4 bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 py-3 rounded-xl text-xs font-black transition-colors relative z-10 border border-orange-500/20">
-                    Evaluează opțiunile de trade-in
-                  </button>
-                )}
-                {item.productStatus === 'good' && (
-                  <button className="w-full mt-4 bg-[#2E9B4F]/10 hover:bg-[#2E9B4F]/20 text-[#2E9B4F] py-3 rounded-xl text-xs font-black transition-colors relative z-10 border border-[#2E9B4F]/20">
-                    Vezi accesorii compatibile
-                  </button>
-                )}
+                <div className="mx-4 mb-4">
+                  {item.productStatus === 'upgrade' && (
+                    <button
+                      className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-[#FEF2F2] text-[#E31E24] text-xs font-bold border border-[#E31E24]/20 hover:bg-red-100 transition-colors"
+                      onClick={() => {
+                        const map = upgradeProductMap[item.id];
+                        if (map) {
+                          const upgradeProducts = (products as any[]).filter(p => map.ids.includes(p.id));
+                          onCategoryClick?.(map.title, upgradeProducts, map.catId);
+                        }
+                      }}
+                    >
+                      Vezi oferte pentru upgrade
+                      <ChevronRight className="w-3 h-3" />
+                    </button>
+                  )}
+                  {item.productStatus === 'attention' && (
+                    <button
+                      className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-orange-50 text-orange-500 text-xs font-bold border border-orange-100 hover:bg-orange-100 transition-colors"
+                      onClick={() => {
+                        const map = upgradeProductMap[item.id];
+                        if (map) {
+                          const upgradeProducts = (products as any[]).filter(p => map.ids.includes(p.id));
+                          onCategoryClick?.(map.title, upgradeProducts, map.catId);
+                        }
+                      }}
+                    >
+                      Vezi oferte pentru upgrade
+                      <ChevronRight className="w-3 h-3 shrink-0" />
+                    </button>
+                  )}
+                </div>
 
               </div>
             ))}
-            
+
             {filteredEquipment.length === 0 && (
               <div className="text-center text-gray-500 py-12 font-medium text-sm">
                 Nu s-a găsit niciun produs.
@@ -740,171 +1392,121 @@ export function Profile({ onProductClick, onAddToCart }: ProfileProps) {
 
   // MAIN PROFILE VIEW
   return (
-    <div className="flex flex-col h-full bg-[#F5F5F7] overflow-y-auto font-sans">
-      {/* User Profile Header */}
-      <div className="px-4 pt-8 pb-6">
-        <div className="flex items-start gap-4">
-          <Avatar className="w-20 h-20 ring-4 ring-white shadow-lg">
-            <div className="w-full h-full bg-gradient-to-br from-[#E31E24] to-[#C71015] flex items-center justify-center text-white text-2xl font-black">
-              AR
-            </div>
-          </Avatar>
-          <div className="flex-1 pt-1">
-            <h2 className="text-2xl font-black text-[#111111] leading-tight mb-1.5">Andrei Răducu</h2>
-            <p className="text-sm font-medium text-gray-500 mb-3">andrei.raducu@email.com</p>
-            <div className="inline-flex items-center gap-1.5 bg-white text-[#E31E24] px-3 py-1.5 rounded-full text-[11px] font-bold border border-red-100 shadow-sm">
-              <ShieldCheck className="w-4 h-4" />
-              <span>Membru din 2021</span>
-            </div>
+    <div className="flex flex-col h-full bg-[#F2F2F7] overflow-y-auto font-sans">
+      {/* Profile Section — centered */}
+      <div className="flex flex-col items-center pt-4 pb-8 px-4">
+        <div className="w-[96px] h-[96px] rounded-full bg-white shadow-lg flex items-center justify-center mb-4">
+          <div className="w-[84px] h-[84px] rounded-full bg-[#E31E24] flex items-center justify-center text-white text-[28px] font-black select-none">
+            {initials}
           </div>
         </div>
+        <h2 className="text-[22px] font-bold text-[#111111] leading-tight mb-1">{fullName}</h2>
+        <p className="text-[15px] text-[#6B7280]">{email}</p>
       </div>
 
-      <div className="px-4 relative z-20 space-y-3 pb-8">
+      {/* Menu Items */}
+      <div className="flex flex-col gap-3 px-4 pb-8">
 
-        {/* Orders Section */}
-        <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-          <div
-            className="flex items-center justify-between p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50/50 transition-colors"
-            onClick={() => handleOpenOrders("all")}
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center">
-                <Package className="w-5 h-5 text-[#E31E24]" />
-              </div>
-              <h3 className="font-black text-base text-[#111111]">Comenzile mele</h3>
-            </div>
-            <ChevronRight className="w-5 h-5 text-gray-400" />
+        {/* Comenzile mele */}
+        <button
+          onClick={() => handleOpenOrders("all")}
+          className="w-full flex items-center gap-4 p-4 bg-white rounded-2xl shadow-sm border border-gray-100 active:bg-gray-50 transition-colors text-left"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-[#FEF2F2] flex items-center justify-center shrink-0">
+            <Package className="w-6 h-6 text-[#E31E24]" />
           </div>
-
-          <div className="grid grid-cols-4 divide-x divide-gray-100 p-4">
-            <div onClick={() => handleOpenOrders("in-procesare")} className="flex flex-col items-center gap-2 cursor-pointer group">
-              <div className="relative">
-                <div className="w-11 h-11 bg-orange-50 rounded-xl flex items-center justify-center group-hover:bg-orange-100 transition-colors">
-                  <Box className="w-5 h-5 text-orange-600" />
-                </div>
-                {orders.filter(o => deliveryStatusToFilter(o.deliveryStatus) === "in-procesare").length > 0 && (
-                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#E31E24] rounded-full flex items-center justify-center text-white text-[10px] font-black shadow-sm">
-                    {orders.filter(o => deliveryStatusToFilter(o.deliveryStatus) === "in-procesare").length}
-                  </div>
-                )}
-              </div>
-              <span className="text-[10px] font-bold text-gray-600 text-center leading-tight">În proces</span>
-            </div>
-
-            <div onClick={() => handleOpenOrders("in-livrare")} className="flex flex-col items-center gap-2 cursor-pointer group">
-              <div className="relative">
-                <div className="w-11 h-11 bg-blue-50 rounded-xl flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-                  <Truck className="w-5 h-5 text-blue-600" />
-                </div>
-                {orders.filter(o => deliveryStatusToFilter(o.deliveryStatus) === "in-livrare").length > 0 && (
-                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center text-white text-[10px] font-black shadow-sm">
-                    {orders.filter(o => deliveryStatusToFilter(o.deliveryStatus) === "in-livrare").length}
-                  </div>
-                )}
-              </div>
-              <span className="text-[10px] font-bold text-gray-600 text-center leading-tight">În livrare</span>
-            </div>
-
-            <div onClick={() => handleOpenOrders("livrate")} className="flex flex-col items-center gap-2 cursor-pointer group">
-              <div className="w-11 h-11 bg-green-50 rounded-xl flex items-center justify-center group-hover:bg-green-100 transition-colors">
-                <CheckCircle2 className="w-5 h-5 text-green-600" />
-              </div>
-              <span className="text-[10px] font-bold text-gray-600 text-center leading-tight">Livrate</span>
-            </div>
-
-            <div onClick={() => handleOpenOrders("retur")} className="flex flex-col items-center gap-2 cursor-pointer group">
-              <div className="w-11 h-11 bg-gray-50 rounded-xl flex items-center justify-center group-hover:bg-gray-100 transition-colors">
-                <RefreshCcw className="w-5 h-5 text-gray-600" />
-              </div>
-              <span className="text-[10px] font-bold text-gray-600 text-center leading-tight">Retururi</span>
-            </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-[15px] text-[#111111] leading-tight mb-0.5">Comenzile mele</p>
+            {inLivrareCount > 0 && (
+              <p className="text-[13px] font-semibold text-[#E31E24] leading-tight">{inLivrareCount} în livrare</p>
+            )}
+            {recentlyDeliveredCount > 0 && (
+              <p className="text-[13px] text-[#6B7280] leading-tight">{recentlyDeliveredCount} {recentlyDeliveredCount === 1 ? "comandă finalizată recent" : "comenzi finalizate recent"}</p>
+            )}
           </div>
-        </div>
-
-        {/* Quick Actions List */}
-        <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 divide-y divide-gray-100">
-          <div
-            onClick={() => setActiveView("my-products")}
-            className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50/50 transition-colors"
-          >
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center shrink-0">
-              <Package className="w-6 h-6 text-[#E31E24]" />
-            </div>
-            <div className="flex-1">
-              <h4 className="font-black text-sm text-[#111111] mb-0.5">Produsele mele</h4>
-              <p className="text-[11px] font-medium text-gray-500 leading-snug">Garanții, upgrade-uri și detalii tehnice</p>
-            </div>
-            <ChevronRight className="w-5 h-5 text-gray-400" />
-          </div>
-
-          <div
-            onClick={() => setActiveView("favorites")}
-            className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50/50 transition-colors"
-          >
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-50 to-pink-100 flex items-center justify-center shrink-0">
-              <Heart className="w-6 h-6 text-pink-600" />
-            </div>
-            <div className="flex-1">
-              <h4 className="font-black text-sm text-[#111111] mb-0.5">Favorite</h4>
-              <p className="text-[11px] font-medium text-gray-500 leading-snug">{getWishlist().length} produse salvate pentru mai târziu</p>
-            </div>
-            <ChevronRight className="w-5 h-5 text-gray-400" />
-          </div>
-
-          <div
-            onClick={() => setActiveView("cards")}
-            className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50/50 transition-colors"
-          >
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center shrink-0">
-              <CreditCard className="w-6 h-6 text-blue-600" />
-            </div>
-            <div className="flex-1">
-              <h4 className="font-black text-sm text-[#111111] mb-0.5">Cardurile mele</h4>
-              <p className="text-[11px] font-medium text-gray-500 leading-snug">{cards.length} carduri salvate pentru plăți rapide</p>
-            </div>
-            <ChevronRight className="w-5 h-5 text-gray-400" />
-          </div>
-
-          <div
-            onClick={() => setActiveView("addresses")}
-            className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50/50 transition-colors"
-          >
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center shrink-0">
-              <MapPin className="w-6 h-6 text-green-600" />
-            </div>
-            <div className="flex-1">
-              <h4 className="font-black text-sm text-[#111111] mb-0.5">Adresele mele</h4>
-              <p className="text-[11px] font-medium text-gray-500 leading-snug">{addresses.length} adrese salvate pentru livrări</p>
-            </div>
-            <ChevronRight className="w-5 h-5 text-gray-400" />
-          </div>
-        </div>
-
-        {/* Settings & Support */}
-        <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 divide-y divide-gray-100">
-          <div className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50/50 transition-colors">
-            <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center shrink-0">
-              <HelpCircle className="w-5 h-5 text-purple-600" />
-            </div>
-            <h4 className="flex-1 font-bold text-sm text-[#111111]">Centru de suport</h4>
-            <ChevronRight className="w-5 h-5 text-gray-400" />
-          </div>
-
-          <div className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50/50 transition-colors">
-            <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center shrink-0">
-              <Settings className="w-5 h-5 text-gray-600" />
-            </div>
-            <h4 className="flex-1 font-bold text-sm text-[#111111]">Setări cont</h4>
-            <ChevronRight className="w-5 h-5 text-gray-400" />
-          </div>
-        </div>
-
-        {/* Logout Button */}
-        <button className="w-full bg-white rounded-2xl p-4 text-center font-bold text-sm text-gray-500 hover:text-[#E31E24] hover:bg-red-50 transition-all border border-gray-100 shadow-sm mt-1">
-          Ieși din cont
+          <ChevronRight className="w-5 h-5 text-gray-400 shrink-0" />
         </button>
-        
+
+        {/* Produse cumpărate */}
+        <button
+          onClick={() => setActiveView("my-products")}
+          className="w-full flex items-center gap-4 p-4 bg-white rounded-2xl shadow-sm border border-gray-100 active:bg-gray-50 transition-colors text-left"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-[#EEF2FF] flex items-center justify-center shrink-0">
+            <Laptop className="w-6 h-6 text-[#6366F1]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-[15px] text-[#111111] leading-tight mb-0.5">Produse cumpărate</p>
+            <p className="text-[13px] text-[#6B7280] leading-tight">Garanții și detalii tehnice</p>
+          </div>
+          <ChevronRight className="w-5 h-5 text-gray-400 shrink-0" />
+        </button>
+
+        {/* Favorite */}
+        <button
+          onClick={() => setActiveView("favorites")}
+          className="w-full flex items-center gap-4 p-4 bg-white rounded-2xl shadow-sm border border-gray-100 active:bg-gray-50 transition-colors text-left"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-[#FEF2F2] flex items-center justify-center shrink-0">
+            <Heart className="w-6 h-6 text-[#E31E24]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-[15px] text-[#111111] leading-tight mb-0.5">Favorite</p>
+            <p className="text-[13px] text-[#6B7280] leading-tight">
+              {getWishlist().length === 1 ? "1 produs urmărit" : `${getWishlist().length} produse urmărite`}
+            </p>
+          </div>
+          <ChevronRight className="w-5 h-5 text-gray-400 shrink-0" />
+        </button>
+
+        {/* Carduri */}
+        <button
+          onClick={() => setActiveView("cards")}
+          className="w-full flex items-center gap-4 p-4 bg-white rounded-2xl shadow-sm border border-gray-100 active:bg-gray-50 transition-colors text-left"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-[#EFF6FF] flex items-center justify-center shrink-0">
+            <CreditCard className="w-6 h-6 text-[#3B82F6]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-[15px] text-[#111111] leading-tight mb-0.5">Carduri</p>
+            <p className="text-[13px] text-[#6B7280] leading-tight">
+              {cards.length === 1 ? "1 card salvat" : `${cards.length} carduri salvate`}
+            </p>
+          </div>
+          <ChevronRight className="w-5 h-5 text-gray-400 shrink-0" />
+        </button>
+
+        {/* Adrese */}
+        <button
+          onClick={() => setActiveView("addresses")}
+          className="w-full flex items-center gap-4 p-4 bg-white rounded-2xl shadow-sm border border-gray-100 active:bg-gray-50 transition-colors text-left"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-[#F0FDF4] flex items-center justify-center shrink-0">
+            <MapPin className="w-6 h-6 text-[#16A34A]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-[15px] text-[#111111] leading-tight mb-0.5">Adrese</p>
+            <p className="text-[13px] text-[#6B7280] leading-tight">
+              {addresses.length === 1 ? "1 adresă salvată" : `${addresses.length} adrese salvate`}
+            </p>
+          </div>
+          <ChevronRight className="w-5 h-5 text-gray-400 shrink-0" />
+        </button>
+
+        {/* Setări */}
+        <button
+          className="w-full flex items-center gap-4 p-4 bg-white rounded-2xl shadow-sm border border-gray-100 active:bg-gray-50 transition-colors text-left"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-[#F5F5F7] flex items-center justify-center shrink-0">
+            <Settings className="w-6 h-6 text-[#6B7280]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-[15px] text-[#111111] leading-tight mb-0.5">Setări</p>
+            <p className="text-[13px] text-[#6B7280] leading-tight">Cont și preferințe</p>
+          </div>
+          <ChevronRight className="w-5 h-5 text-gray-400 shrink-0" />
+        </button>
+
       </div>
     </div>
   );

@@ -1,19 +1,28 @@
 const STORAGE_KEY = "evomag_addresses";
+const SEED_VERSION = "v2";
+const VERSION_KEY = "evomag_addresses_version";
 
 export interface Address {
   id: string;
   name: string;
   street: string;
   city: string;
+  codPostal: string;
   isMain: boolean;
 }
 
 const DEFAULT_ADDRESSES: Address[] = [
-  { id: "a1", name: "Acasă", street: "Strada Primăverii, Nr. 14, Bl. A", city: "București, Sector 1", isMain: true },
-  { id: "a2", name: "Birou", street: "Bulevardul Pipera, Nr. 1", city: "București, Sector 2", isMain: false },
+  { id: "a1", name: "Acasă", street: "Strada Primăverii, Nr. 14, Bl. A", city: "București, Sector 1", codPostal: "011972", isMain: true },
+  { id: "a2", name: "Birou", street: "Bulevardul Pipera, Nr. 1", city: "București, Sector 2", codPostal: "077190", isMain: false },
 ];
 
 export function seedAddresses(): void {
+  const version = localStorage.getItem(VERSION_KEY);
+  if (version !== SEED_VERSION) {
+    saveAddresses(DEFAULT_ADDRESSES);
+    localStorage.setItem(VERSION_KEY, SEED_VERSION);
+    return;
+  }
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) {
     saveAddresses(DEFAULT_ADDRESSES);

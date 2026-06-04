@@ -3,7 +3,7 @@ import {
   CATALOG_SUMMARY,
   generateGeminiContent,
   parseJsonResponse,
-  CatalogProduct,
+  type CatalogProduct,
 } from "./gemini";
 
 export interface AssistantProduct extends CatalogProduct {

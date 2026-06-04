@@ -5,12 +5,13 @@ import { ProductCard } from "./ProductCard";
 interface CategoryScreenProps {
   title: string;
   products: any[];
+  catId?: string;
   onBack: () => void;
   onProductClick: (product: any) => void;
   onAddToCart: (product: any) => void;
 }
 
-export function CategoryScreen({ title, products, onBack, onProductClick, onAddToCart }: CategoryScreenProps) {
+export function CategoryScreen({ title, products, catId, onBack, onProductClick, onAddToCart }: CategoryScreenProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState<'bestseller' | 'price-asc' | 'price-desc' | null>(null);
 
@@ -18,14 +19,13 @@ export function CategoryScreen({ title, products, onBack, onProductClick, onAddT
     setIsVisible(true);
   }, []);
 
-  const getBannerImage = (catTitle: string) => {
-    const t = catTitle.toLowerCase();
-    if (t.includes('laptop')) return 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&q=80';
-    if (t.includes('telefon') || t.includes('tablet')) return 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&q=80';
-    if (t.includes('tv') || t.includes('multimedia')) return 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=800&q=80';
-    if (t.includes('componente') || t.includes('pc') || t.includes('monitor')) return 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800&q=80';
-    if (t.includes('electrocasnice') || t.includes('spălat')) return 'https://images.unsplash.com/photo-1626806787426-5910811b6325?w=800&q=80';
-    if (t.includes('auto')) return 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=800&q=80';
+  const getBannerImage = (catId?: string) => {
+    const t = catId?.toLowerCase() ?? '';
+    if (t.includes('laptops')) return 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&q=80';
+    if (t.includes('phones')) return 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&q=80';
+    if (t.includes('tv-audio')) return 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=800&q=80';
+    if (t.includes('gaming') || t.includes('pc')) return 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800&q=80';
+    if (t.includes('appliances')) return 'https://images.unsplash.com/photo-1626806787426-5910811b6325?w=800&q=80';
     return 'https://images.unsplash.com/photo-1601237660234-4b77ca300409?w=800&q=80';
   };
 
@@ -62,7 +62,7 @@ export function CategoryScreen({ title, products, onBack, onProductClick, onAddT
         
         {/* Eye-catching Hero Area for the Category */}
         <div className={`rounded-2xl p-4 text-white shadow-md relative overflow-hidden transition-all duration-700 transform flex items-end min-h-[120px] ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
-          <img src={getBannerImage(title)} alt={title} className="absolute inset-0 w-full h-full object-cover" />
+          <img src={getBannerImage(catId)} alt={title} className="absolute inset-0 w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
           <div className="absolute -top-4 -right-4 p-4 opacity-10">
             <Sparkles className="w-16 h-16" />

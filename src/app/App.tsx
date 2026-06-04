@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { loadPreferences } from "./services/userPreferences";
+import { loadPreferences, savePreferences } from "./services/userPreferences";
 import { addRecentlyViewed } from "./services/recentlyViewed";
 import { getCart, saveCart, clearCart } from "./services/cart";
 import { BottomNav } from "./components/BottomNav";
 import { HomeFeed } from "./components/HomeFeed";
 import { SearchScreen } from "./components/SearchScreen";
 import { AIAssistant } from "./components/AIAssistant";
-import { CartScreen, CartItemType } from "./components/CartScreen";
+import { CartScreen, type CartItemType } from "./components/CartScreen";
 import { CheckoutScreen } from "./components/CheckoutScreen";
 import { OrderConfirmationScreen } from "./components/OrderConfirmationScreen";
 import { OrderDetailScreen } from "./components/OrderDetailScreen";
@@ -16,6 +16,9 @@ import { Profile } from "./components/Profile";
 import { NotificationsScreen } from "./components/NotificationsScreen";
 import { CategoryScreen } from "./components/CategoryScreen";
 import { WelcomeScreen } from "./components/WelcomeScreen";
+import { LoginScreen } from "./components/LoginScreen";
+import { OnboardingPreferences, type OnboardingPrefs } from "./components/OnboardingPreferences";
+import { isLoggedIn, saveAuthUser, clearAuthUser } from "./services/auth";
 import { Search, Bell } from "lucide-react";
 import { ProductDetail } from "./components/ProductDetail";
 import { Badge } from "./components/ui/badge";
@@ -24,7 +27,11 @@ import { type Order } from "./services/orders";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("home");
-  const [hasSeenWelcome, setHasSeenWelcome] = useState(() => loadPreferences() !== null);
+  const [hasSeenWelcome, setHasSeenWelcome] = useState(
+    () => localStorage.getItem("evomag_has_seen_welcome") === "true"
+  );
+  const [isAuthenticated, setIsAuthenticated] = useState(() => isLoggedIn());
+  const [hasSetPreferences, setHasSetPreferences] = useState(() => loadPreferences() !== null);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
 
   const handleProductClick = (product: any) => {
@@ -35,8 +42,11 @@ export default function App() {
   const [showCheckout, setShowCheckout] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState<Order | null>(null);
   const [viewingOrder, setViewingOrder] = useState<Order | null>(null);
+  const [profileInitialView, setProfileInitialView] = useState<"main" | "orders">("main");
   const [showNotifications, setShowNotifications] = useState(false);
-  const [categoryView, setCategoryView] = useState<{ title: string, products: any[] } | null>(null);
+  const [categoryView, setCategoryView] = useState<{ title: string, products: any[], catId?: string } | null>(null);
+  const [pendingAIPrompt, setPendingAIPrompt] = useState<string | undefined>(undefined);
+  const [aiSessionKey, setAISessionKey] = useState(0);
 
   const handleAddToCart = (product: any) => {
     setCartItems(prev => {
@@ -81,12 +91,14 @@ export default function App() {
         return <HomeFeed 
                  onProductClick={handleProductClick} 
                  onAddToCart={handleAddToCart} 
-                 onSeeAllClick={(title, products) => setCategoryView({ title, products })}
+                 onSeeAllClick={(title, products, catId) => setCategoryView({ title, products, catId })}
+                 onAIClick={() => { setPendingAIPrompt(undefined); setActiveTab("assistant"); }}
+                 onAIQuickAction={(prompt) => { setPendingAIPrompt(prompt); setAISessionKey(k => k + 1); setActiveTab("assistant"); }}
                />;
       case "search":
         return <SearchScreen onProductClick={handleProductClick} onCancel={() => setActiveTab("home")} />;
       case "assistant":
-        return <AIAssistant />;
+        return <AIAssistant key={aiSessionKey} initialPrompt={pendingAIPrompt} onAddToCart={handleAddToCart} />;
       case "cart":
         return <CartScreen 
                  cartItems={cartItems} 
@@ -99,22 +111,79 @@ export default function App() {
       case "wishlist":
         return <Wishlist onProductClick={handleProductClick} onAddToCart={handleAddToCart} />;
       case "profile":
-        return <Profile onProductClick={handleProductClick} onAddToCart={handleAddToCart} />;
+        return <Profile key={profileInitialView} onProductClick={handleProductClick} onAddToCart={handleAddToCart} onLogout={() => setIsAuthenticated(false)} onOpenAI={() => { setPendingAIPrompt(undefined); setActiveTab("assistant"); }} onCategoryClick={(title, prods, catId) => setCategoryView({ title, products: prods, catId })} initialView={profileInitialView} viewingOrder={viewingOrder} />;
       default:
         return <HomeFeed 
                  onProductClick={handleProductClick} 
                  onAddToCart={handleAddToCart} 
-                 onSeeAllClick={(title, products) => setCategoryView({ title, products })}
+                 onSeeAllClick={(title, products, catId) => setCategoryView({ title, products, catId })}
+                 onAIClick={() => { setPendingAIPrompt(undefined); setActiveTab("assistant"); }}
+                 onAIQuickAction={(prompt) => { setPendingAIPrompt(prompt); setAISessionKey(k => k + 1); setActiveTab("assistant"); }}
                />;
     }
   };
 
   if (!hasSeenWelcome) {
-    return <WelcomeScreen onEnter={() => setHasSeenWelcome(true)} />;
+    return (
+      <WelcomeScreen
+        onEnter={() => {
+          localStorage.setItem("evomag_has_seen_welcome", "true");
+          setHasSeenWelcome(true);
+        }}
+      />
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <LoginScreen
+        onLoginSuccess={() => setIsAuthenticated(true)}
+      />
+    );
+  }
+
+  if (!hasSetPreferences) {
+    return (
+      <div className="h-screen flex flex-col bg-background max-w-md mx-auto overflow-hidden">
+        <OnboardingPreferences
+          onComplete={(prefs: OnboardingPrefs) => {
+            savePreferences(prefs);
+            setHasSetPreferences(true);
+          }}
+        />
+      </div>
+    );
   }
 
   if (selectedProduct) {
-    return <ProductDetail product={selectedProduct} onBack={() => setSelectedProduct(null)} onAddToCart={handleAddToCart} />;
+    return (
+      <div className="h-screen flex flex-col bg-background max-w-md mx-auto overflow-hidden">
+        <Toaster />
+        <header className="shrink-0 flex items-center justify-between px-4 py-3 border-b bg-background gap-3">
+          <div className="flex-shrink-0">
+            <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="evoMAG" className="h-7 w-auto" />
+          </div>
+          <div className="flex-1 relative" onClick={() => setSelectedProduct(null)}>
+            <div className="w-full bg-muted rounded-full pl-9 pr-3 py-2 text-xs border-0 text-muted-foreground flex items-center cursor-pointer h-9">
+              Caută produse, branduri, categorii...
+            </div>
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          </div>
+          <button
+            className="flex-shrink-0 p-2 -mr-2 relative"
+            aria-label="Notificări"
+            onClick={() => setShowNotifications(true)}
+          >
+            <Bell className="h-6 w-6 text-foreground" />
+            <span className="absolute top-2 right-2 w-2 h-2 bg-red-600 rounded-full border border-background"></span>
+          </button>
+        </header>
+        <main className="flex-1 overflow-y-auto">
+          <ProductDetail product={selectedProduct} onBack={() => setSelectedProduct(null)} onAddToCart={handleAddToCart} onProductClick={setSelectedProduct} />
+        </main>
+        <BottomNav activeTab={activeTab} onTabChange={(tab) => { setSelectedProduct(null); if (tab === "assistant") setPendingAIPrompt(undefined); if (tab === "profile") setProfileInitialView("main"); setActiveTab(tab); }} cartItemCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)} />
+      </div>
+    );
   }
 
   if (showNotifications) {
@@ -131,10 +200,12 @@ export default function App() {
         <CategoryScreen 
           title={categoryView.title}
           products={categoryView.products}
+          catId={categoryView.catId}
           onBack={() => setCategoryView(null)}
           onProductClick={handleProductClick}
           onAddToCart={handleAddToCart}
         />
+        <BottomNav activeTab={activeTab} onTabChange={(tab) => { setCategoryView(null); if (tab === "assistant") setPendingAIPrompt(undefined); setActiveTab(tab); }} cartItemCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)} />
       </div>
     );
   }
@@ -169,19 +240,9 @@ export default function App() {
           onViewOrder={(order) => {
             setConfirmedOrder(null);
             setViewingOrder(order);
+            setProfileInitialView("orders");
+            setActiveTab("profile");
           }}
-        />
-      </div>
-    );
-  }
-
-  if (viewingOrder) {
-    return (
-      <div className="h-screen flex flex-col bg-background max-w-md mx-auto overflow-hidden">
-        <OrderDetailScreen
-          order={viewingOrder}
-          onBack={() => setViewingOrder(null)}
-          onProductClick={handleProductClick}
         />
       </div>
     );
@@ -194,9 +255,7 @@ export default function App() {
       {activeTab !== "assistant" && activeTab !== "search" && (
         <header className="shrink-0 flex items-center justify-between px-4 py-3 border-b bg-background gap-3">
           <div className="flex-shrink-0">
-            <h1 className="text-xl font-black text-primary tracking-tight">
-              evoMAG
-            </h1>
+            <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="evoMAG" className="h-7 w-auto" />
           </div>
           <div className="flex-1 relative" onClick={() => setActiveTab("search")}>
             <div className="w-full bg-muted rounded-full pl-9 pr-3 py-2 text-xs border-0 text-muted-foreground flex items-center cursor-pointer h-9">
@@ -221,7 +280,7 @@ export default function App() {
       </main>
 
       {/* Bottom Navigation */}
-      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} cartItemCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)} />
+      <BottomNav activeTab={activeTab} onTabChange={(tab) => { if (tab === "assistant") setPendingAIPrompt(undefined); if (tab === "profile") setProfileInitialView("main"); setActiveTab(tab); }} cartItemCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)} />
     </div>
   );
 }

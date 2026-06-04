@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronLeft, MapPin, CreditCard, ShieldCheck, Smartphone, Wallet, Landmark, Percent, Truck, Package, Check, Info } from "lucide-react";
+import { ChevronLeft, ChevronDown, Lock, MapPin, CreditCard, ShieldCheck, Smartphone, Wallet, Landmark, Percent, Truck, Package, Check, Info, Plus } from "lucide-react";
 import { Button } from "./ui/button";
 import { LockerPickerModal, type Locker } from "./LockerPickerModal";
 import { saveOrder, type Order } from "../services/orders";
@@ -22,56 +22,43 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
   const [useProfileAddressLivrare, setUseProfileAddressLivrare] = useState(true);
   const [deliveryMethod, setDeliveryMethod] = useState<"curier" | "depozit" | "locker">("curier");
   
-  const [paymentMethod, setPaymentMethod] = useState<string>("apple_pay");
+  const [paymentMethod, setPaymentMethod] = useState<string>("card_bancar");
   const [selectedSavedCard, setSelectedSavedCard] = useState<string>(() => {
     const cards = loadCards();
     return cards.find(c => c.isMain)?.id ?? cards[0]?.id ?? "";
   });
-  const [installments, setInstallments] = useState<number>(3);
+  const [installments, setInstallments] = useState<number>(6);
   const [agreedTerms, setAgreedTerms] = useState(false);
   const [newsletter, setNewsletter] = useState(false);
+  const [saveForFuture, setSaveForFuture] = useState(false);
   const [isLockerModalOpen, setIsLockerModalOpen] = useState(false);
   const [selectedLocker, setSelectedLocker] = useState<Locker | null>(null);
   const [isAddCardModalOpen, setIsAddCardModalOpen] = useState(false);
   const [newCardForm, setNewCardForm] = useState({ number: "", expiry: "", name: "", cvv: "" });
   const [savedCardsState, setSavedCardsState] = useState(() => loadCards());
+  const [paymentSubView, setPaymentSubView] = useState<string | null>(null);
+  const [cardFormData, setCardFormData] = useState({ number: "", expiry: "", name: "", cvv: "" });
 
   const mainAddress = loadAddresses().find(a => a.isMain) ?? null;
 
   const savedCards = savedCardsState;
 
-  const PAYMENT_GROUPS = [
-    {
-      title: "Plată digitală rapidă",
-      methods: [
-        { id: "apple_pay", label: "Apple Pay", icon: <Smartphone className="w-5 h-5 text-gray-700" /> },
-        { id: "google_pay", label: "Google Pay", icon: <Smartphone className="w-5 h-5 text-gray-700" /> },
-      ]
-    },
-    {
-      title: "Card bancar",
-      methods: [
-        { id: "online_card", label: "Online cu card bancar", icon: <CreditCard className="w-5 h-5 text-blue-600" /> },
-        { id: "card_depozit", label: "Plată cu cardul la depozit", icon: <CreditCard className="w-5 h-5 text-gray-500" /> },
-      ]
-    },
-    {
-      title: "Numerar / Transfer",
-      methods: [
-        { id: "ramburs", label: "Numerar la livrare (Ramburs)", icon: <Wallet className="w-5 h-5 text-green-600" /> },
-        { id: "ordin_plata", label: "Ordin de plată (Transfer)", icon: <Landmark className="w-5 h-5 text-indigo-600" /> },
-      ]
-    },
-    {
-      title: "În rate / Credit",
-      methods: [
-        { id: "klarna", label: "Plătește fără dobândă cu Klarna", icon: <Percent className="w-5 h-5 text-pink-500" /> },
-        { id: "cardavantaj", label: "CardAvantaj Online", icon: <CreditCard className="w-5 h-5 text-red-500" /> },
-        { id: "leanpay", label: "Rate prin Leanpay", icon: <Percent className="w-5 h-5 text-blue-500" /> },
-        { id: "tbi", label: "Cumpără acum, plătește mai târziu cu TBI Bank", icon: <Percent className="w-5 h-5 text-teal-600" /> },
-        { id: "oney", label: "Oney 6x-60x", icon: <Percent className="w-5 h-5 text-green-500" /> },
-      ]
-    }
+  const PAYMENT_METHODS = [
+    { id: "card_bancar", label: "Card bancar", sublabel: "Visa, Mastercard, Maestro", icon: <span className="bg-gray-100 p-2 rounded-lg flex items-center justify-center"><CreditCard className="w-5 h-5 text-blue-600" /></span> },
+    { id: "rate", label: "Plată în rate", sublabel: "De la 6 până la 60 de rate", icon: <span className="bg-gray-100 p-2 rounded-lg flex items-center justify-center"><Percent className="w-5 h-5 text-[#E31E24]" /></span> },
+    { id: "apple_pay", label: "Apple Pay", sublabel: null, icon: <span className="bg-gray-100 text-black text-[10px] font-black px-2 py-2 rounded-lg flex items-center gap-1"><svg viewBox="0 0 814 1000" className="w-3.5 h-3.5 fill-black"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105.7-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-207.5 135.4-317.3 269-317.3 70.1 0 128.4 46.4 172.5 46.4 42.8 0 109.6-49 191.4-49 30.8 0 108.2 2.6 168.6 71.9zm-174.6-89.5c-7.7 36.4-22.9 70.1-43.5 98.1-20.7 27.9-52.2 52.2-88.6 52.2s-68-2.6-88-53.5c20.7-29.1 53.5-79.3 91.2-108.9 37.7-29.5 75.5-46.4 113.2-46.4 0 0 15.9 58 15.7 58.5z"/><path d="M549.6 77.5c-30.1 35.9-78.2 63.8-126.4 59.7-6-48.8 17.9-100.7 45.6-132.7 30.1-36.6 82.6-63.8 125.4-65.7 5.3 50.1-14.6 99.8-44.6 138.7"/></svg> Pay</span> },
+    { id: "google_pay", label: "Google Pay", sublabel: null, icon: <span className="bg-gray-100 text-[10px] font-extrabold px-2 py-2 rounded-lg flex items-center gap-1"><svg width="14" height="14" viewBox="0 0 48 48"><path fill="#4285F4" d="M43.6 20.5H42V20H24v8h11.3C33.6 32.6 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.4-.4-3.5z" /><path fill="#34A853" d="M6.3 14.7l6.6 4.8C14.5 16 19 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.5 4 24 4c-7.7 0-14.4 4.3-17.7 10.7z" /><path fill="#FBBC05" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.3 35.5 26.8 36 24 36c-5.2 0-9.6-3.4-11.3-8L6.2 33C9.5 39.6 16.2 44 24 44z" /><path fill="#EA4335" d="M43.6 20.5H42V20H24v8h11.3c-.9 2.5-2.5 4.7-4.7 6.2l.1-.1 6.2 5.2C36.6 41.1 44 36 44 24c0-1.2-.1-2.4-.4-3.5z" /></svg>Pay</span> },
+    { id: "ramburs", label: "Plata la livrare (ramburs)", sublabel: null, icon: <span className="bg-gray-100 p-2 rounded-lg flex items-center justify-center"><Wallet className="w-5 h-5 text-green-600" /></span> },
+    { id: "transfer", label: "Ordin de plată (Transfer)", sublabel: null, icon: <span className="bg-gray-100 p-2 rounded-lg flex items-center justify-center"><Landmark className="w-5 h-5 text-indigo-600" /></span> },
+  ];
+
+  const INSTALLMENT_PLANS = [
+    { months: 6,  totalFactor: 1.076 },
+    { months: 12, totalFactor: 1.137 },
+    { months: 24, totalFactor: 1.253 },
+    { months: 36, totalFactor: 1.379 },
+    { months: 48, totalFactor: 1.497 },
+    { months: 60, totalFactor: 1.587 },
   ];
 
   const handleBack = () => {
@@ -83,7 +70,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
   };
 
   const stepTitles: Record<1 | 2 | 3, string> = {
-    1: "Facturare",
+    1: "Datele tale",
     2: "Livrare",
     3: "Plată",
   };
@@ -103,19 +90,23 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
           <div className="absolute left-0 right-0 top-3 h-0.5 bg-[#E5E5EA] z-0"></div>
           <div className="absolute left-0 top-3 h-0.5 bg-[#E31E24] z-0 transition-all duration-300" style={{ width: step === 1 ? '0%' : step === 2 ? '50%' : '100%' }}></div>
 
-          <div className={`relative z-10 flex flex-col items-center gap-1.5 ${step >= 1 ? 'text-[#E31E24]' : 'text-[#6B7280]'}`}>
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${step >= 1 ? 'bg-[#E31E24] text-white' : 'bg-white border-2 border-[#E5E5EA]'}`}>1</div>
-            <span className="text-[11px] font-bold tracking-tight">Facturare</span>
+          <div className={`relative z-10 flex flex-col items-center gap-1.5`}>
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${step >= 1 ? 'bg-[#E31E24] text-white' : 'bg-white border-2 border-[#E5E5EA]'}`}>
+              {step > 1 ? <Check className="w-3 h-3" /> : '1'}
+            </div>
+            <span className={`text-[11px] font-bold tracking-tight ${step === 1 ? 'text-[#E31E24]' : 'text-[#6B7280]'}`}>Datele tale</span>
           </div>
 
-          <div className={`relative z-10 flex flex-col items-center gap-1.5 ${step >= 2 ? 'text-[#E31E24]' : 'text-[#6B7280]'}`}>
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${step >= 2 ? 'bg-[#E31E24] text-white' : 'bg-white border-2 border-[#E5E5EA]'}`}>2</div>
-            <span className="text-[11px] font-bold tracking-tight">Livrare</span>
+          <div className={`relative z-10 flex flex-col items-center gap-1.5`}>
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${step >= 2 ? 'bg-[#E31E24] text-white' : 'bg-white border-2 border-[#E5E5EA]'}`}>
+              {step > 2 ? <Check className="w-3 h-3" /> : '2'}
+            </div>
+            <span className={`text-[11px] font-bold tracking-tight ${step === 2 ? 'text-[#E31E24]' : 'text-[#6B7280]'}`}>Livrare</span>
           </div>
 
-          <div className={`relative z-10 flex flex-col items-center gap-1.5 ${step >= 3 ? 'text-[#E31E24]' : 'text-[#6B7280]'}`}>
+          <div className={`relative z-10 flex flex-col items-center gap-1.5`}>
             <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${step >= 3 ? 'bg-[#E31E24] text-white' : 'bg-white border-2 border-[#E5E5EA]'}`}>3</div>
-            <span className="text-[11px] font-bold tracking-tight">Plată</span>
+            <span className={`text-[11px] font-bold tracking-tight ${step === 3 ? 'text-[#E31E24]' : 'text-[#6B7280]'}`}>Plată</span>
           </div>
         </div>
       </div>
@@ -126,7 +117,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
             {/* Client Type - Radio Buttons */}
             <section className="space-y-3">
-              <h2 className="text-sm font-bold text-[#6B7280] uppercase tracking-wider ml-1">Tip client</h2>
+              <h2 className="text-sm font-semibold text-[#111111]">Tip client</h2>
               <div className="bg-white rounded-xl shadow-sm border border-[#E5E5EA] p-4 flex gap-6">
                 <label className="flex items-center gap-3 cursor-pointer" onClick={() => setClientType('fizica')}>
                   <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${clientType === 'fizica' ? 'border-[#E31E24]' : 'border-[#E5E5EA]'}`}>
@@ -144,20 +135,29 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
               </div>
             </section>
 
-            {/* Date Contact */}
+            {/* Date de facturare */}
             <section className="space-y-3">
-              <h2 className="text-sm font-bold text-[#6B7280] uppercase tracking-wider ml-1">Date contact</h2>
-              <div className="bg-white rounded-xl shadow-sm border border-[#E5E5EA] p-4 space-y-3">
-                <input type="text" placeholder="Nume și prenume" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
-                <input type="email" placeholder="Email" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
-                <input type="tel" placeholder="Telefon" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
+              <h2 className="text-sm font-semibold text-[#111111]">Date de facturare</h2>
+              <div className="bg-white rounded-xl shadow-sm border border-[#E5E5EA] p-4 space-y-4">
+                <div>
+                  <p className="text-xs text-[#6B7280] mb-1.5">Nume și prenume</p>
+                  <input type="text" placeholder="Nume și prenume" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all" />
+                </div>
+                <div>
+                  <p className="text-xs text-[#6B7280] mb-1.5">Email</p>
+                  <input type="email" placeholder="Email" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all" />
+                </div>
+                <div>
+                  <p className="text-xs text-[#6B7280] mb-1.5">Telefon</p>
+                  <input type="tel" placeholder="Telefon" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all" />
+                </div>
               </div>
             </section>
 
             {/* Date Firma */}
             {clientType === 'juridica' && (
               <section className="space-y-3 animate-in fade-in zoom-in-95 duration-200">
-                <h2 className="text-sm font-bold text-[#6B7280] uppercase tracking-wider ml-1">Detalii Firmă</h2>
+                <h2 className="text-sm font-semibold text-[#111111]">Detalii Firmă</h2>
                 <div className="bg-white rounded-xl shadow-sm border border-[#E5E5EA] p-4 space-y-3">
                   <input type="text" placeholder="Cod fiscal (CUI/CIF)" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
                   <input type="text" placeholder="Nume firmă" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
@@ -166,7 +166,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                   <input type="text" placeholder="Cont bancar (IBAN)" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
                   
                   <div className="pt-2 mt-2 border-t border-gray-100">
-                    <h3 className="text-xs font-bold text-[#6B7280] mb-3 uppercase tracking-wider">Adresă Sediu Social</h3>
+                    <h3 className="text-xs font-semibold text-[#6B7280] mb-3">Adresă Sediu Social</h3>
                     <div className="space-y-3">
                       <div className="grid grid-cols-2 gap-3">
                         <input type="text" placeholder="Județ" className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-[#E31E24] focus:ring-1 focus:ring-[#E31E24] transition-all" />
@@ -181,7 +181,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
 
             {/* Adresa Facturare */}
             <section className="space-y-3">
-              <h2 className="text-sm font-bold text-[#6B7280] uppercase tracking-wider ml-1">Adresă de facturare</h2>
+              <h2 className="text-sm font-semibold text-[#111111]">Adresă de facturare</h2>
               
               <div className="bg-white rounded-xl shadow-sm border border-[#E5E5EA] overflow-hidden">
                 <label className="flex items-start gap-3 p-4 border-b border-[#E5E5EA] cursor-pointer hover:bg-gray-50 transition-colors">
@@ -191,11 +191,8 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                     </div>
                   </div>
                   <div className="flex-1" onClick={() => setUseProfileAddressFacturare(true)}>
-                    <div className="flex items-center gap-2 mb-1">
-                      <MapPin className="h-4 w-4 text-[#E31E24]" />
-                      <span className="font-semibold text-sm text-[#111111]">Adresa din profil</span>
-                    </div>
-                    <p className="text-xs text-[#6B7280] leading-relaxed">
+                    <span className="font-semibold text-sm text-[#111111]">Acasă</span>
+                    <p className="text-xs text-[#6B7280] leading-relaxed mt-0.5">
                       {mainAddress ? <>{mainAddress.street}<br />{mainAddress.city}</> : "Nicio adresă salvată"}
                     </p>
                   </div>
@@ -208,7 +205,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                     </div>
                   </div>
                   <div className="flex-1 font-medium text-sm text-[#111111]" onClick={() => setUseProfileAddressFacturare(false)}>
-                    Adaugă o adresă nouă (Manual)
+                    Adaugă o adresă nouă
                   </div>
                 </label>
                 
@@ -222,6 +219,15 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                 )}
               </div>
             </section>
+
+            {/* Salvează date */}
+            <label className="flex items-center gap-3 cursor-pointer">
+              <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors shrink-0 ${saveForFuture ? 'border-[#E31E24] bg-[#E31E24]' : 'border-gray-300 bg-white'}`}>
+                {saveForFuture && <Check className="w-3 h-3 text-white" />}
+              </div>
+              <input type="checkbox" className="hidden" checked={saveForFuture} onChange={(e) => setSaveForFuture(e.target.checked)} />
+              <span className="text-sm text-[#111111]">Salvează datele pentru comenzile viitoare</span>
+            </label>
           </div>
         )}
 
@@ -229,7 +235,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
             {/* Delivery Section */}
             <section className="space-y-3">
-              <h2 className="text-sm font-bold text-[#6B7280] uppercase tracking-wider ml-1">Metodă de livrare</h2>
+              <h2 className="text-sm font-semibold text-[#111111]">Metodă de livrare</h2>
               
               <div className="bg-white rounded-xl shadow-sm border border-[#E5E5EA] overflow-hidden">
                 <label className="flex items-center gap-3 p-4 border-b border-[#E5E5EA] cursor-pointer hover:bg-gray-50 transition-colors">
@@ -238,10 +244,11 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                       {deliveryMethod === 'curier' && <div className="w-2.5 h-2.5 bg-[#E31E24] rounded-full" />}
                     </div>
                   </div>
-                  <div className="flex-1 font-medium text-sm text-[#111111]" onClick={() => setDeliveryMethod('curier')}>
-                    Livrare prin curier
+                  <div className="flex-1" onClick={() => setDeliveryMethod('curier')}>
+                    <span className="font-medium text-sm text-[#111111]">Livrare prin curier</span>
+                    <p className="text-xs text-[#6B7280] mt-0.5">1-2 zile lucrătoare</p>
                   </div>
-                  <Truck className="h-5 w-5 text-[#6B7280]" />
+                  <span className="text-sm font-semibold text-green-600">Gratuit</span>
                 </label>
                 
                 <label className="flex items-center gap-3 p-4 border-b border-[#E5E5EA] cursor-pointer hover:bg-gray-50 transition-colors">
@@ -250,10 +257,11 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                       {deliveryMethod === 'depozit' && <div className="w-2.5 h-2.5 bg-[#E31E24] rounded-full" />}
                     </div>
                   </div>
-                  <div className="flex-1 font-medium text-sm text-[#111111]" onClick={() => setDeliveryMethod('depozit')}>
-                    Ridicare personală (depozit)
+                  <div className="flex-1" onClick={() => setDeliveryMethod('depozit')}>
+                    <span className="font-medium text-sm text-[#111111]">Ridicare personală (depozit)</span>
+                    <p className="text-xs text-[#6B7280] mt-0.5">Disponibil mâine</p>
                   </div>
-                  <Package className="h-5 w-5 text-[#6B7280]" />
+                  <span className="text-sm font-semibold text-green-600">Gratuit</span>
                 </label>
                 
                 <label className="flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-50 transition-colors" onClick={() => {
@@ -266,12 +274,14 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                     </div>
                   </div>
                   <div className="flex-1 flex flex-col justify-center">
-                    <span className="font-medium text-sm text-[#111111]">Ridicare personală din locker</span>
-                    {deliveryMethod === 'locker' && selectedLocker && (
+                    <span className="font-medium text-sm text-[#111111]">Ridicare din locker</span>
+                    {deliveryMethod === 'locker' && selectedLocker ? (
                       <span className="text-xs text-[#E31E24] font-bold mt-0.5">{selectedLocker.name}</span>
+                    ) : (
+                      <span className="text-xs text-[#6B7280] mt-0.5">1-2 zile lucrătoare</span>
                     )}
                   </div>
-                  <MapPin className="h-5 w-5 text-[#6B7280]" />
+                  <span className="text-sm font-semibold text-green-600">Gratuit</span>
                 </label>
               </div>
             </section>
@@ -279,7 +289,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
             {/* Adresa de Livrare pt Curier */}
             {deliveryMethod === 'curier' && (
               <section className="space-y-3 animate-in fade-in slide-in-from-top-2">
-                <h2 className="text-sm font-bold text-[#6B7280] uppercase tracking-wider ml-1">Adresă de livrare curier</h2>
+                <h2 className="text-sm font-semibold text-[#111111]">Adresă de livrare</h2>
                 
                 <div className="bg-white rounded-xl shadow-sm border border-[#E5E5EA] overflow-hidden">
                   <label className="flex items-start gap-3 p-4 border-b border-[#E5E5EA] cursor-pointer hover:bg-gray-50 transition-colors">
@@ -289,11 +299,8 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                       </div>
                     </div>
                     <div className="flex-1" onClick={() => setUseProfileAddressLivrare(true)}>
-                      <div className="flex items-center gap-2 mb-1">
-                        <MapPin className="h-4 w-4 text-[#E31E24]" />
-                        <span className="font-semibold text-sm text-[#111111]">Adresa din profil</span>
-                      </div>
-                      <p className="text-xs text-[#6B7280] leading-relaxed">
+                      <span className="font-semibold text-sm text-[#111111]">Acasă</span>
+                      <p className="text-xs text-[#6B7280] leading-relaxed mt-0.5">
                         {mainAddress ? <>{mainAddress.street}<br />{mainAddress.city}</> : "Nicio adresă salvată"}
                       </p>
                     </div>
@@ -306,7 +313,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                       </div>
                     </div>
                     <div className="flex-1 font-medium text-sm text-[#111111]" onClick={() => setUseProfileAddressLivrare(false)}>
-                      Adaugă o adresă nouă (Manual)
+                      Adaugă o adresă nouă
                     </div>
                   </label>
                   
@@ -321,335 +328,529 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
                 </div>
               </section>
             )}
+
+            {/* Info banner */}
+            <div className="flex items-center gap-2 bg-[#F5F5F7] border border-[#E5E5EA] rounded-xl p-3 text-sm text-[#6B7280]">
+              <Info className="w-4 h-4 shrink-0" />
+              <span>Livrarea este gratuită pentru această comandă.</span>
+            </div>
           </div>
         )}
 
         {step === 3 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300 pb-4">
-            <div className="mb-4">
-              <h2 className="text-xl font-black text-[#111111] tracking-tight">Metodă de plată</h2>
-              <p className="text-sm font-medium text-[#6B7280]">Selectează cum dorești să achiți comanda</p>
-            </div>
 
-            {/* Express Checkout */}
-            <div className="space-y-3 mb-6">
-              <h3 className="text-[10px] font-black text-[#6B7280] uppercase tracking-widest pl-2">Plată express</h3>
-              <div className="grid grid-cols-2 gap-3">
-                {PAYMENT_GROUPS[0].methods.map(method => {
-                  const isSelected = paymentMethod === method.id;
-                  return (
-                    <button
-                      key={method.id}
-                      onClick={() => setPaymentMethod(method.id)}
-                      className={`flex flex-col items-center justify-center gap-2 py-4 rounded-2xl border-2 transition-all active:scale-95 ${
-                        isSelected
-                          ? 'border-[#E31E24] bg-white shadow-md'
-                          : 'border-[#E5E5EA] bg-white hover:border-gray-300'
-                      }`}
-                    >
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isSelected ? 'bg-gray-50' : 'bg-white shadow-sm border border-gray-100'}`}>
-                        {method.icon}
-                      </div>
-                      <span className="font-bold text-[13px] text-[#111111]">{method.label.replace(' Pay', '')} Pay</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4 px-2 opacity-60 mb-6">
-              <div className="h-px bg-gray-300 flex-1"></div>
-              <span className="text-[10px] font-black text-[#6B7280] tracking-widest">SAU PLĂTEȘTE STANDARD</span>
-              <div className="h-px bg-gray-300 flex-1"></div>
-            </div>
-
-            {/* Standard Methods */}
-            <div className="space-y-6">
-              {PAYMENT_GROUPS.slice(1).map((group) => (
-                <section key={group.title} className="space-y-3">
-                  <h3 className="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider pl-1">{group.title}</h3>
-                  <div className="bg-white rounded-3xl border border-[#E5E5EA] shadow-sm overflow-hidden divide-y divide-[#F5F5F7]">
-                    {group.methods.map((method) => {
+            {/* ── Main payment list ────────────────────────────────── */}
+            {paymentSubView === null && (
+              <>
+                <section className="space-y-3">
+                  <h2 className="text-sm font-semibold text-[#111111]">Metodă de plată</h2>
+                  <div className="bg-white rounded-xl shadow-sm border border-[#E5E5EA] overflow-hidden divide-y divide-[#E5E5EA]">
+                    {PAYMENT_METHODS.map((method) => {
                       const isSelected = paymentMethod === method.id;
                       return (
-                        <div key={method.id} className="relative transition-colors">
-                          <label 
-                            className={`flex items-center gap-4 p-4 cursor-pointer transition-colors ${isSelected ? 'bg-red-50/30' : 'hover:bg-gray-50'}`}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setPaymentMethod(method.id);
-                              if (method.id === "online_card") {
-                                const mainCard = savedCards.find(c => c.isMain);
-                                if (mainCard) setSelectedSavedCard(mainCard.id);
-                              }
-                            }}
-                          >
-                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
-                              isSelected ? 'border-[#E31E24] bg-[#E31E24]' : 'border-gray-300 bg-white'
-                            }`}>
-                              {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
-                            </div>
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
-                              isSelected ? 'bg-white shadow-sm' : 'bg-[#F5F5F7]'
-                            }`}>
-                              {method.icon}
-                            </div>
-                            <span className={`font-bold text-[14px] leading-tight flex-1 ${
-                              isSelected ? 'text-[#111111]' : 'text-gray-700'
-                            }`}>
-                              {method.label}
-                            </span>
-                          </label>
-
-                          {/* Nested Configurations Wrapper */}
-                          <div className={`overflow-hidden transition-all duration-300 bg-red-50/10 ${isSelected ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'}`}>
-
-                            {/* Nested Saved Cards when "Online cu card bancar" is selected */}
-                            {method.id === "online_card" && isSelected && (
-                              <div className="p-4 pt-0 space-y-3">
-                                <p className="text-[10px] font-black text-[#6B7280] uppercase tracking-widest mb-2">Alege cardul salvat</p>
-                                {savedCards.map(card => (
-                                  <label key={card.id} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${selectedSavedCard === card.id ? 'border-[#E31E24] bg-white shadow-sm' : 'border-gray-200 bg-white/50 hover:bg-white'}`} onClick={() => setSelectedSavedCard(card.id)}>
-                                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${selectedSavedCard === card.id ? 'border-[#E31E24]' : 'border-gray-300'}`}>
-                                      {selectedSavedCard === card.id && <div className="w-2 h-2 bg-[#E31E24] rounded-full" />}
-                                    </div>
-                                    <div className="flex-1 flex items-center gap-3">
-                                      <div className="w-10 h-7 rounded bg-[#F5F5F7] border border-gray-200 flex items-center justify-center text-[#111111] shadow-sm">
-                                        <CreditCard className="w-4 h-4" />
-                                      </div>
-                                      <div>
-                                        <p className="font-bold text-sm text-[#111111] leading-none flex items-center gap-2">
-                                          {card.number}
-                                          {card.isMain && <span className="bg-[#FEF2F2] text-[#E31E24] px-1.5 py-0.5 rounded text-[9px] uppercase tracking-wider font-bold">Principal</span>}
-                                        </p>
-                                        <p className="text-[11px] text-[#6B7280] mt-1">{card.type} • Exp {card.expiry}</p>
-                                      </div>
-                                    </div>
-                                  </label>
-                                ))}
-                                <label className="flex items-center gap-3 p-3 rounded-xl border border-dashed border-gray-300 bg-white/50 hover:bg-white hover:border-[#E31E24] cursor-pointer transition-colors mt-2" onClick={() => setIsAddCardModalOpen(true)}>
-                                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${selectedSavedCard === "new" ? 'border-[#E31E24]' : 'border-gray-300'}`}>
-                                    {selectedSavedCard === "new" && <div className="w-2 h-2 bg-[#E31E24] rounded-full" />}
-                                  </div>
-                                  <div className="font-bold text-sm text-[#E31E24]">Adaugă un card nou...</div>
-                                </label>
-                              </div>
-                            )}
-
-                            {/* Nested Klarna */}
-                            {method.id === "klarna" && isSelected && (
-                              <div className="p-4 pt-0">
-                                <div className="p-4 bg-pink-50 rounded-xl border border-pink-100 flex items-center justify-center gap-2 shadow-inner">
-                                  <Info className="w-4 h-4 text-pink-500 shrink-0" />
-                                  <p className="text-sm font-bold text-pink-900 text-center">
-                                    3 plăți de {(total / 3).toLocaleString('ro-RO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} lei fără dobândă
-                                  </p>
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Nested CardAvantaj */}
-                            {method.id === "cardavantaj" && isSelected && (
-                              <div className="p-4 pt-0 space-y-4">
-                                <div>
-                                  <label className="text-[10px] font-black text-[#6B7280] uppercase tracking-widest mb-2 block">Număr de rate (fără dobândă)</label>
-                                  <div className="flex gap-2">
-                                    {[1, 2, 3].map(num => (
-                                      <button
-                                        key={num}
-                                        onClick={(e) => { e.preventDefault(); setInstallments(num); }}
-                                        className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all border-2 ${installments === num ? 'border-[#E31E24] bg-white text-[#E31E24] shadow-md' : 'border-gray-200 bg-white/50 text-[#111111] hover:bg-white'}`}
-                                      >
-                                        {num} {num === 1 ? 'rată' : 'rate'}
-                                      </button>
-                                    ))}
-                                  </div>
-                                </div>
-                                <div className="p-4 bg-white rounded-xl border border-gray-200 flex items-center justify-between shadow-sm">
-                                  <span className="text-sm font-bold text-[#6B7280]">Rată lunară:</span>
-                                  <span className="text-xl font-black text-[#E31E24]">{(total / installments).toLocaleString('ro-RO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} lei</span>
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Nested Leanpay */}
-                            {method.id === "leanpay" && isSelected && (
-                              <div className="p-4 pt-0 space-y-4">
-                                <div>
-                                  <label className="text-[10px] font-black text-[#6B7280] uppercase tracking-widest mb-2 block">Perioadă și număr de rate</label>
-                                  <div className="relative">
-                                    <select 
-                                      value={installments}
-                                      onChange={(e) => setInstallments(Number(e.target.value))}
-                                      className="w-full text-sm p-4 rounded-xl border-2 border-[#E5E5EA] bg-white focus:outline-none focus:border-[#E31E24] font-bold text-[#111111] appearance-none shadow-sm"
-                                    >
-                                      {[6, 12, 18, 24, 36, 48].map(num => (
-                                        <option key={num} value={num}>{num} luni (rate)</option>
-                                      ))}
-                                    </select>
-                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                                      <ChevronLeft className="w-4 h-4 text-gray-400 -rotate-90" />
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="p-4 bg-white rounded-xl border border-gray-200 flex flex-col gap-1 shadow-sm">
-                                  <div className="flex items-center justify-between">
-                                    <span className="text-sm font-bold text-[#6B7280]">Rată lunară:</span>
-                                    <span className="text-xl font-black text-[#E31E24]">{(total / installments * 1.05).toLocaleString('ro-RO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} lei</span>
-                                  </div>
-                                  <p className="text-[10px] text-[#6B7280] text-right">*Include dobândă estimativă 5%</p>
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Nested TBI */}
-                            {method.id === "tbi" && isSelected && (
-                              <div className="p-4 pt-0 space-y-4">
-                                <div>
-                                  <label className="text-[10px] font-black text-[#6B7280] uppercase tracking-widest mb-2 block">Rate TBI Bank</label>
-                                  <div className="relative">
-                                    <select 
-                                      value={installments}
-                                      onChange={(e) => setInstallments(Number(e.target.value))}
-                                      className="w-full text-sm p-4 rounded-xl border-2 border-[#E5E5EA] bg-white focus:outline-none focus:border-[#E31E24] font-bold text-[#111111] appearance-none shadow-sm"
-                                    >
-                                      {[4, 6, 12, 18, 24, 36, 48, 60].map(num => (
-                                        <option key={num} value={num}>{num} rate lunare</option>
-                                      ))}
-                                    </select>
-                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                                      <ChevronLeft className="w-4 h-4 text-gray-400 -rotate-90" />
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="p-4 bg-teal-50 rounded-xl border border-teal-100 flex flex-col gap-1 shadow-inner">
-                                  <div className="flex items-center justify-between">
-                                    <span className="text-sm font-bold text-teal-800">Rată estimată:</span>
-                                    <span className="text-xl font-black text-teal-600">{(total / installments * 1.08).toLocaleString('ro-RO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} lei</span>
-                                  </div>
-                                  <p className="text-[10px] text-teal-600/70 text-right">*Include dobândă estimativă 8%</p>
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Nested Oney */}
-                            {method.id === "oney" && isSelected && (
-                              <div className="p-4 pt-0 space-y-4">
-                                <div>
-                                  <label className="text-[10px] font-black text-[#6B7280] uppercase tracking-widest mb-2 block">Număr de rate (x)</label>
-                                  <div className="relative">
-                                    <select 
-                                      value={installments}
-                                      onChange={(e) => setInstallments(Number(e.target.value))}
-                                      className="w-full text-sm p-4 rounded-xl border-2 border-[#E5E5EA] bg-white focus:outline-none focus:border-[#E31E24] font-bold text-[#111111] appearance-none shadow-sm"
-                                    >
-                                      {[6, 10, 12, 14, 18, 24, 36, 48, 60].map(num => (
-                                        <option key={num} value={num}>{num} rate (x{num})</option>
-                                      ))}
-                                    </select>
-                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                                      <ChevronLeft className="w-4 h-4 text-gray-400 -rotate-90" />
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="p-4 bg-green-50 rounded-xl border border-green-100 flex flex-col gap-1 shadow-inner">
-                                  <div className="flex items-center justify-between">
-                                    <span className="text-sm font-bold text-green-800">Rată estimată:</span>
-                                    <span className="text-xl font-black text-green-600">{(total / installments * 1.04).toLocaleString('ro-RO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} lei</span>
-                                  </div>
-                                  <p className="text-[10px] text-green-600/70 text-right">*Include dobândă estimativă 4%</p>
-                                </div>
-                              </div>
-                            )}
+                        <label
+                          key={method.id}
+                          className={`flex items-center gap-3 p-4 cursor-pointer transition-colors ${isSelected ? 'bg-red-50/30' : 'hover:bg-gray-50'}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setPaymentMethod(method.id);
+                            if (["rate", "apple_pay", "google_pay", "ramburs"].includes(method.id)) {
+                              setPaymentSubView(method.id);
+                            }
+                          }}
+                        >
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'border-[#E31E24]' : 'border-[#E5E5EA]'}`}>
+                            {isSelected && <div className="w-2.5 h-2.5 bg-[#E31E24] rounded-full" />}
                           </div>
-                        </div>
+                          <div className="flex-1">
+                            <span className="font-medium text-sm text-[#111111]">{method.label}</span>
+                            {method.sublabel && <p className="text-xs text-[#6B7280] mt-0.5">{method.sublabel}</p>}
+                          </div>
+                          <div className="flex items-center justify-end shrink-0">
+                            {method.icon}
+                          </div>
+                        </label>
                       );
                     })}
                   </div>
                 </section>
-              ))}
-            </div>
+
+                {/* Card salvat (shown when card_bancar is selected) */}
+                {paymentMethod === "card_bancar" && (
+                  <section className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <h2 className="text-sm font-semibold text-[#111111]">Alege card salvat</h2>
+                    <div className="bg-white rounded-xl shadow-sm border border-[#E5E5EA] overflow-hidden divide-y divide-[#E5E5EA]">
+                      {savedCards.map(card => (
+                        <label
+                          key={card.id}
+                          className={`flex items-center gap-3 p-4 cursor-pointer transition-colors ${selectedSavedCard === card.id ? 'bg-red-50/30' : 'hover:bg-gray-50'}`}
+                          onClick={() => setSelectedSavedCard(card.id)}
+                        >
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${selectedSavedCard === card.id ? 'border-[#E31E24]' : 'border-[#E5E5EA]'}`}>
+                            {selectedSavedCard === card.id && <div className="w-2.5 h-2.5 bg-[#E31E24] rounded-full" />}
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-medium text-sm text-[#111111] flex items-center gap-2">
+                              {card.number}
+                              {card.isMain && <span className="bg-[#FEF2F2] text-[#E31E24] px-1.5 py-0.5 rounded text-[9px] uppercase tracking-wider font-bold">Principal</span>}
+                            </p>
+                            <p className="text-xs text-[#6B7280] mt-0.5">{card.type} • Exp {card.expiry}</p>
+                          </div>
+                        </label>
+                      ))}
+                      <button
+                        className="flex items-center gap-3 p-4 w-full text-left hover:bg-gray-50 transition-colors"
+                        onClick={() => setPaymentSubView("card_form")}
+                      >
+                        <div className="w-5 h-5 rounded-full border-2 border-[#E5E5EA] flex items-center justify-center shrink-0">
+                          <Plus className="w-3 h-3 text-[#6B7280]" />
+                        </div>
+                        <span className="font-medium text-sm text-[#6B7280]">Adaugă un card nou...</span>
+                      </button>
+                    </div>
+                  </section>
+                )}
+              </>
+            )}
+
+            {/* ── Plată în rate sub-view ───────────────────────────── */}
+            {paymentSubView === "rate" && (
+              <div className="space-y-4">
+                <div className="flex items-start gap-3 bg-white rounded-xl border border-[#E5E5EA] p-4">
+                  <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center shrink-0">
+                    <Percent className="w-5 h-5 text-[#E31E24]" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-base text-[#111111]">Plată în rate</h3>
+                    <p className="text-xs text-[#6B7280] mt-0.5">Alege numărul de rate care ți se potrivesc.</p>
+                  </div>
+                </div>
+
+                {/* Aprobare instant */}
+                <div className="bg-[#F0FDF4] border border-green-200 rounded-xl p-4 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white border border-green-200 rounded-xl flex items-center justify-center shrink-0">
+                    <ShieldCheck className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm text-[#111111]">Aprobare instant</p>
+                    <p className="text-xs text-[#6B7280]">Rată lunară de la {Math.round(total * 1.587 / 60).toLocaleString('ro-RO')} Lei</p>
+                  </div>
+                </div>
+
+                {/* Financial institution */}
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold text-[#6B7280]">Instituție financiară</p>
+                  <div className="bg-white rounded-xl border border-[#E5E5EA] p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50">
+                    <span className="font-medium text-sm text-[#111111]">EVOMAG Credit – TBI Bank</span>
+                    <ChevronDown className="w-4 h-4 text-[#6B7280] shrink-0" />
+                  </div>
+                </div>
+
+                {/* Rate options */}
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold text-[#6B7280]">Alege numărul de rate</p>
+                  <div className="bg-white rounded-xl border border-[#E5E5EA] overflow-hidden divide-y divide-[#E5E5EA]">
+                    {INSTALLMENT_PLANS.map((plan) => {
+                      const planTotal = Math.round(total * plan.totalFactor);
+                      const monthly = Math.round(planTotal / plan.months);
+                      const isSelectedPlan = installments === plan.months;
+                      return (
+                        <label
+                          key={plan.months}
+                          className={`flex items-center gap-3 px-4 py-3.5 cursor-pointer transition-colors ${isSelectedPlan ? 'bg-red-50/30' : 'hover:bg-gray-50'}`}
+                          onClick={() => setInstallments(plan.months)}
+                        >
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${isSelectedPlan ? 'border-[#E31E24]' : 'border-[#E5E5EA]'}`}>
+                            {isSelectedPlan && <div className="w-2.5 h-2.5 bg-[#E31E24] rounded-full" />}
+                          </div>
+                          <div className="flex-1">
+                            <span className="font-medium text-sm text-[#111111]">{plan.months} rate</span>
+                            <p className="text-xs text-[#6B7280] mt-0.5">Total de plată: {planTotal.toLocaleString('ro-RO')} Lei</p>
+                          </div>
+                          <span className={`text-sm font-bold whitespace-nowrap ${isSelectedPlan ? 'text-[#E31E24]' : 'text-[#111111]'}`}>
+                            {monthly.toLocaleString('ro-RO')} Lei / lună
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Info note */}
+                <div className="flex items-center gap-2 bg-[#F5F5F7] border border-[#E5E5EA] rounded-xl p-3 text-xs text-[#6B7280]">
+                  <Info className="w-4 h-4 shrink-0" />
+                  <span>Dobânda este inclusă în rata afișată.</span>
+                </div>
+
+                {/* Total + CTA */}
+                <div className="space-y-1 pt-1">
+                  <p className="text-xs text-[#6B7280]">Total de plată</p>
+                  <p className="text-[10px] text-[#6B7280]">TVA inclus</p>
+                  <p className="text-2xl font-black text-[#E31E24]">
+                    {Math.round(total * (INSTALLMENT_PLANS.find(p => p.months === installments)?.totalFactor ?? 1)).toLocaleString('ro-RO')} Lei
+                  </p>
+                  <Button
+                    onClick={() => onSuccess(saveOrder(cartItems, total))}
+                    className="w-full h-14 bg-[#E31E24] hover:bg-red-700 text-white rounded-full text-base font-bold shadow-lg border-0 mt-2"
+                  >
+                    Continuă plata
+                  </Button>
+                </div>
+
+                <button
+                  onClick={() => setPaymentSubView(null)}
+                  className="flex items-center gap-1 text-sm text-[#6B7280] hover:text-[#111111] transition-colors mx-auto pt-1"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span>Înapoi la metodele de plată</span>
+                </button>
+              </div>
+            )}
+
+            {/* ── Card bancar form sub-view ────────────────────────── */}
+            {paymentSubView === "card_form" && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 bg-white rounded-xl border border-[#E5E5EA] p-4">
+                  <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
+                    <CreditCard className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-base text-[#111111]">Card bancar</h3>
+                    <p className="text-xs text-[#6B7280] mt-0.5">Plătește sigur cu cardul tău.</p>
+                  </div>
+                </div>
+
+                {/* Card form */}
+                <div className="bg-white rounded-xl border border-[#E5E5EA] p-4 space-y-4">
+                  <div>
+                    <label className="text-xs font-bold text-[#6B7280] mb-1.5 block">Numărul cardului</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={cardFormData.number}
+                        onChange={(e) => {
+                          const digits = e.target.value.replace(/\D/g, "").slice(0, 16);
+                          const formatted = digits.replace(/(.{4})/g, "$1 ").trim();
+                          setCardFormData({ ...cardFormData, number: formatted });
+                        }}
+                        placeholder="1234 5678 9012 3456"
+                        maxLength={19}
+                        className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all pr-16"
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-700 font-extrabold text-xs tracking-widest select-none">VISA</span>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-[#6B7280] mb-1.5 block">Numele de pe card</label>
+                    <input
+                      type="text"
+                      value={cardFormData.name}
+                      onChange={(e) => setCardFormData({ ...cardFormData, name: e.target.value })}
+                      placeholder="Andrei Popescu"
+                      className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs font-bold text-[#6B7280] mb-1.5 block">Data expirării</label>
+                      <input
+                        type="text"
+                        value={cardFormData.expiry}
+                        onChange={(e) => setCardFormData({ ...cardFormData, expiry: e.target.value })}
+                        placeholder="LL / AA"
+                        maxLength={7}
+                        className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="flex items-center gap-1.5 text-xs font-bold text-[#6B7280] mb-1.5">
+                        CVV
+                        <span className="w-4 h-4 border border-[#6B7280] rounded-full flex items-center justify-center text-[10px] font-bold cursor-help select-none">?</span>
+                      </label>
+                      <input
+                        type="password"
+                        value={cardFormData.cvv}
+                        onChange={(e) => setCardFormData({ ...cardFormData, cvv: e.target.value })}
+                        placeholder="•••"
+                        maxLength={4}
+                        className="w-full text-sm p-3 rounded-lg border border-[#E5E5EA] bg-white focus:outline-none focus:ring-1 focus:ring-[#E31E24] transition-all"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Save card */}
+                <label
+                  className="flex items-center gap-3 bg-white rounded-xl border border-[#E5E5EA] p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+                  onClick={() => setSaveForFuture(!saveForFuture)}
+                >
+                  <div className="w-8 h-8 bg-[#F5F5F7] rounded-lg flex items-center justify-center shrink-0">
+                    <Lock className="w-4 h-4 text-[#6B7280]" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-sm text-[#111111]">Salvează cardul pentru plăți viitoare</p>
+                    <p className="text-xs text-[#6B7280] mt-0.5">Îl poți folosi pentru comenzile viitoare.</p>
+                  </div>
+                  <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors shrink-0 ${saveForFuture ? 'border-[#E31E24] bg-[#E31E24]' : 'border-gray-300 bg-white'}`}>
+                    {saveForFuture && <Check className="w-3 h-3 text-white" />}
+                  </div>
+                </label>
+
+                {/* Sumar plată */}
+                <section className="space-y-3">
+                  <h3 className="font-semibold text-sm text-[#111111]">Sumar plată</h3>
+                  <div className="space-y-2.5">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-[#6B7280]">Produse</span>
+                      <span className="font-medium text-[#111111]">{total.toLocaleString('ro-RO')} Lei</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-[#6B7280]">Cost livrare</span>
+                      <span className="font-medium text-green-600">Gratuit</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-[#6B7280]">Reducere</span>
+                      <span className="font-medium text-[#E31E24]">-0 Lei</span>
+                    </div>
+                    <div className="border-t border-[#E5E5EA] pt-2.5 flex justify-between items-center">
+                      <span className="font-semibold text-sm text-[#111111]">Total (TVA inclus)</span>
+                      <span className="font-bold text-sm text-[#111111]">{total.toLocaleString('ro-RO')} Lei</span>
+                    </div>
+                  </div>
+                </section>
+
+                <Button
+                  onClick={() => onSuccess(saveOrder(cartItems, total))}
+                  className="w-full h-14 bg-[#E31E24] hover:bg-red-700 text-white rounded-full text-base font-bold shadow-lg border-0 flex items-center gap-2 justify-center"
+                >
+                  <Lock className="w-4 h-4" /> Plătește {total.toLocaleString('ro-RO')} Lei
+                </Button>
+
+                {/* Security note */}
+                <div className="flex items-start gap-2 justify-center pb-2">
+                  <ShieldCheck className="w-4 h-4 text-green-600 mt-0.5 shrink-0" />
+                  <div>
+                    <p className="text-sm font-semibold text-[#111111]">Plată 100% sigură</p>
+                    <p className="text-xs text-[#6B7280]">Datele cardului tău sunt protejate.</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ── Apple Pay sub-view ───────────────────────────────── */}
+            {paymentSubView === "apple_pay" && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 bg-white rounded-xl border border-[#E5E5EA] p-4">
+                  <div className="bg-gray-100 text-black font-bold px-3 py-1.5 rounded-lg text-sm flex items-center gap-1.5 shrink-0">
+                    <svg viewBox="0 0 814 1000" className="w-4 h-4 fill-black"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105.7-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-207.5 135.4-317.3 269-317.3 70.1 0 128.4 46.4 172.5 46.4 42.8 0 109.6-49 191.4-49 30.8 0 108.2 2.6 168.6 71.9zm-174.6-89.5c-7.7 36.4-22.9 70.1-43.5 98.1-20.7 27.9-52.2 52.2-88.6 52.2s-68-2.6-88-53.5c20.7-29.1 53.5-79.3 91.2-108.9 37.7-29.5 75.5-46.4 113.2-46.4 0 0 15.9 58 15.7 58.5z"/><path d="M549.6 77.5c-30.1 35.9-78.2 63.8-126.4 59.7-6-48.8 17.9-100.7 45.6-132.7 30.1-36.6 82.6-63.8 125.4-65.7 5.3 50.1-14.6 99.8-44.6 138.7"/></svg>
+                    <span>Pay</span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-base text-[#111111]">Apple Pay</h3>
+                    <p className="text-xs text-[#6B7280] mt-0.5">Plătește rapid și sigur cu Apple Pay.</p>
+                  </div>
+                </div>
+
+                {/* Sumar plată */}
+                <section className="space-y-3">
+                  <h3 className="font-semibold text-sm text-[#111111]">Sumar plată</h3>
+                  <div className="space-y-2.5">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-[#6B7280]">Produse</span>
+                      <span className="font-medium text-[#111111]">{total.toLocaleString('ro-RO')} Lei</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-[#6B7280]">Cost livrare</span>
+                      <span className="font-medium text-green-600">Gratuit</span>
+                    </div>
+                    <div className="border-t border-[#E5E5EA] pt-2.5 flex justify-between items-center">
+                      <span className="font-semibold text-sm text-[#111111]">Total (TVA inclus)</span>
+                      <span className="font-bold text-sm text-[#111111]">{total.toLocaleString('ro-RO')} Lei</span>
+                    </div>
+                  </div>
+                </section>
+
+                <Button
+                  onClick={() => onSuccess(saveOrder(cartItems, total))}
+                  className="w-full h-14 bg-black hover:bg-gray-900 text-white rounded-full text-base font-bold border-0 flex items-center gap-2 justify-center"
+                >
+                  Plătește cu <svg viewBox="0 0 814 1000" className="w-4 h-4 fill-white inline-block"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105.7-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-207.5 135.4-317.3 269-317.3 70.1 0 128.4 46.4 172.5 46.4 42.8 0 109.6-49 191.4-49 30.8 0 108.2 2.6 168.6 71.9zm-174.6-89.5c-7.7 36.4-22.9 70.1-43.5 98.1-20.7 27.9-52.2 52.2-88.6 52.2s-68-2.6-88-53.5c20.7-29.1 53.5-79.3 91.2-108.9 37.7-29.5 75.5-46.4 113.2-46.4 0 0 15.9 58 15.7 58.5z"/><path d="M549.6 77.5c-30.1 35.9-78.2 63.8-126.4 59.7-6-48.8 17.9-100.7 45.6-132.7 30.1-36.6 82.6-63.8 125.4-65.7 5.3 50.1-14.6 99.8-44.6 138.7"/></svg> Pay
+                </Button>
+
+                <p className="text-center text-xs text-[#6B7280] flex items-center gap-1 justify-center">
+                  <Lock className="w-3 h-3" /> Vei fi redirecționat către Apple Pay
+                </p>
+
+                <button
+                  onClick={() => setPaymentSubView(null)}
+                  className="flex items-center gap-1 text-sm text-[#6B7280] hover:text-[#111111] transition-colors mx-auto"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span>Înapoi la metodele de plată</span>
+                </button>
+              </div>
+            )}
+
+            {/* ── Google Pay sub-view ──────────────────────────────── */}
+            {paymentSubView === "google_pay" && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 bg-white rounded-xl border border-[#E5E5EA] p-4">
+                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
+                    <svg width="24" height="24" viewBox="0 0 48 48"><path fill="#4285F4" d="M43.6 20.5H42V20H24v8h11.3C33.6 32.6 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.4-.4-3.5z" /><path fill="#34A853" d="M6.3 14.7l6.6 4.8C14.5 16 19 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.5 4 24 4c-7.7 0-14.4 4.3-17.7 10.7z" /><path fill="#FBBC05" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.3 35.5 26.8 36 24 36c-5.2 0-9.6-3.4-11.3-8L6.2 33C9.5 39.6 16.2 44 24 44z" /><path fill="#EA4335" d="M43.6 20.5H42V20H24v8h11.3c-.9 2.5-2.5 4.7-4.7 6.2l.1-.1 6.2 5.2C36.6 41.1 44 36 44 24c0-1.2-.1-2.4-.4-3.5z" /></svg>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-base text-[#111111]">Google Pay</h3>
+                    <p className="text-xs text-[#6B7280] mt-0.5">Plătește rapid și sigur cu Google Pay.</p>
+                  </div>
+                </div>
+
+                {/* Sumar plată */}
+                <section className="space-y-3">
+                  <h3 className="font-semibold text-sm text-[#111111]">Sumar plată</h3>
+                  <div className="space-y-2.5">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-[#6B7280]">Produse</span>
+                      <span className="font-medium text-[#111111]">{total.toLocaleString('ro-RO')} Lei</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-[#6B7280]">Cost livrare</span>
+                      <span className="font-medium text-green-600">Gratuit</span>
+                    </div>
+                    <div className="border-t border-[#E5E5EA] pt-2.5 flex justify-between items-center">
+                      <span className="font-semibold text-sm text-[#111111]">Total (TVA inclus)</span>
+                      <span className="font-bold text-sm text-[#111111]">{total.toLocaleString('ro-RO')} Lei</span>
+                    </div>
+                  </div>
+                </section>
+
+                <Button
+                  onClick={() => onSuccess(saveOrder(cartItems, total))}
+                  className="w-full h-14 bg-white border-2 border-gray-300 hover:bg-gray-50 text-gray-900 rounded-full text-base font-bold shadow-sm flex items-center gap-2 justify-center"
+                >
+                  Plătește cu&nbsp;<svg width="18" height="18" viewBox="0 0 48 48" className="inline-block"><path fill="#4285F4" d="M43.6 20.5H42V20H24v8h11.3C33.6 32.6 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.4-.4-3.5z" /><path fill="#34A853" d="M6.3 14.7l6.6 4.8C14.5 16 19 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.5 4 24 4c-7.7 0-14.4 4.3-17.7 10.7z" /><path fill="#FBBC05" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.3 35.5 26.8 36 24 36c-5.2 0-9.6-3.4-11.3-8L6.2 33C9.5 39.6 16.2 44 24 44z" /><path fill="#EA4335" d="M43.6 20.5H42V20H24v8h11.3c-.9 2.5-2.5 4.7-4.7 6.2l.1-.1 6.2 5.2C36.6 41.1 44 36 44 24c0-1.2-.1-2.4-.4-3.5z" /></svg>&nbsp;Pay
+                </Button>
+
+                <p className="text-center text-xs text-[#6B7280] flex items-center gap-1 justify-center">
+                  <Lock className="w-3 h-3" /> Vei fi redirecționat către Google Pay
+                </p>
+
+                <button
+                  onClick={() => setPaymentSubView(null)}
+                  className="flex items-center gap-1 text-sm text-[#6B7280] hover:text-[#111111] transition-colors mx-auto"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span>Înapoi la metodele de plată</span>
+                </button>
+              </div>
+            )}
+
+            {/* ── Plata la livrare sub-view ────────────────────────── */}
+            {paymentSubView === "ramburs" && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 bg-white rounded-xl border border-[#E5E5EA] p-4">
+                  <div className="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center shrink-0">
+                    <Wallet className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-base text-[#111111]">Plata la livrare (ramburs)</h3>
+                    <p className="text-xs text-[#6B7280] mt-0.5">Plătești curierului la livrare.</p>
+                  </div>
+                  <span className="text-4xl">📦</span>
+                </div>
+
+                {/* Sumar plată */}
+                <section className="space-y-3">
+                  <h3 className="font-semibold text-sm text-[#111111]">Sumar plată</h3>
+                  <div className="space-y-2.5">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-[#6B7280]">Produse</span>
+                      <span className="font-medium text-[#111111]">{total.toLocaleString('ro-RO')} Lei</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-[#6B7280]">Cost livrare</span>
+                      <span className="font-medium text-green-600">Gratuit</span>
+                    </div>
+                    <div className="border-t border-[#E5E5EA] pt-2.5 flex justify-between items-center">
+                      <span className="font-semibold text-sm text-[#111111]">Total (TVA inclus)</span>
+                      <span className="font-bold text-sm text-[#111111]">{total.toLocaleString('ro-RO')} Lei</span>
+                    </div>
+                  </div>
+                </section>
+
+                <Button
+                  onClick={() => onSuccess(saveOrder(cartItems, total))}
+                  className="w-full h-14 bg-[#E31E24] hover:bg-red-700 text-white rounded-full text-base font-bold shadow-lg border-0 flex items-center gap-2 justify-center"
+                >
+                  <Check className="w-5 h-5" /> Confirmă comanda
+                </Button>
+
+                <div className="flex items-center gap-2 bg-[#F0FDF4] border border-green-200 rounded-xl p-3 text-xs text-[#6B7280]">
+                  <Info className="w-4 h-4 text-green-600 shrink-0" />
+                  <span>Vei plăti cu numerar sau card la livrare, direct curierului.</span>
+                </div>
+
+                <button
+                  onClick={() => setPaymentSubView(null)}
+                  className="flex items-center gap-1 text-sm text-[#6B7280] hover:text-[#111111] transition-colors mx-auto"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span>Înapoi la metodele de plată</span>
+                </button>
+              </div>
+            )}
+
           </div>
         )}
 
       </div>
 
-      <div className="bg-white border-t p-4 pb-safe space-y-4 shadow-[0_-4px_15px_-3px_rgba(0,0,0,0.05)] mt-auto z-10 sticky bottom-0">
-        
-        {step === 3 && (
-          <div className="bg-[#F5F5F7] rounded-2xl p-4 space-y-3 mb-2 shadow-inner border border-gray-100">
-            <label className="flex items-start gap-3 cursor-pointer group">
-              <div className="mt-0.5 shrink-0">
-                <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${agreedTerms ? 'border-[#E31E24] bg-[#E31E24]' : 'border-gray-300 bg-white group-hover:border-[#E31E24]'}`}>
-                  {agreedTerms && <Check className="w-3 h-3 text-white" />}
-                </div>
-              </div>
-              <input type="checkbox" className="hidden" checked={agreedTerms} onChange={(e) => setAgreedTerms(e.target.checked)} />
-              <p className="text-[10px] font-medium text-[#6B7280] leading-tight flex-1">
-                Sunt de acord cu <a href="#" className="text-[#E31E24] font-bold hover:underline underline-offset-2" onClick={e => e.stopPropagation()}>Termenii și condițiile</a> și <a href="#" className="text-[#E31E24] font-bold hover:underline underline-offset-2" onClick={e => e.stopPropagation()}>Politica de confidențialitate</a>.
-              </p>
-            </label>
+      {paymentSubView === null && (
+        <div className="bg-white border-t p-4 pb-safe space-y-4 shadow-[0_-4px_15px_-3px_rgba(0,0,0,0.05)] mt-auto z-10 sticky bottom-0">
 
-            <label className="flex items-start gap-3 cursor-pointer group">
-              <div className="mt-0.5 shrink-0">
-                <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${newsletter ? 'border-[#E31E24] bg-[#E31E24]' : 'border-gray-300 bg-white group-hover:border-[#E31E24]'}`}>
-                  {newsletter && <Check className="w-3 h-3 text-white" />}
-                </div>
+          {step === 1 && (
+            <>
+              <div className="flex items-center justify-between py-1">
+                <span className="text-sm font-medium text-[#6B7280]">Total: <span className="font-bold text-[#111111]">{total.toLocaleString('ro-RO')} Lei</span></span>
               </div>
-              <input type="checkbox" className="hidden" checked={newsletter} onChange={(e) => setNewsletter(e.target.checked)} />
-              <p className="text-[10px] font-medium text-[#6B7280] leading-tight flex-1">
-                Vreau să mă abonez la newsletter pentru a primi oferte exclusive.
-              </p>
-            </label>
-          </div>
-        )}
+              <Button 
+                onClick={() => setStep(2)} 
+                className="w-full h-14 bg-[#E31E24] hover:bg-red-700 text-white rounded-full text-base font-bold shadow-lg border-0 transition-transform active:scale-[0.98]"
+              >
+                Continuă
+              </Button>
+            </>
+          )}
 
-        {step === 1 && (
-          <Button 
-            onClick={() => setStep(2)} 
-            className="w-full h-14 bg-[#E31E24] hover:bg-red-700 text-white rounded-full text-base font-bold shadow-lg border-0 transition-transform active:scale-[0.98]"
-          >
-            Continuă
-          </Button>
-        )}
-
-        {step === 2 && (
-          <Button 
-            onClick={() => setStep(3)} 
-            className="w-full h-14 bg-[#E31E24] hover:bg-red-700 text-white rounded-full text-base font-bold shadow-lg border-0 transition-transform active:scale-[0.98]"
-          >
-            Trimite comanda
-          </Button>
-        )}
-
-        {step === 3 && (
-          <div className="pt-3 border-t border-gray-200/50 flex flex-col gap-4 mt-2">
-            <div className="flex items-end justify-between px-1">
-              <div className="flex flex-col">
-                <span className="text-[10px] font-black text-[#6B7280] uppercase tracking-widest">Total de plată</span>
-                <span className="text-[10px] font-medium text-gray-400">TVA inclus</span>
+          {step === 2 && (
+            <>
+              <div className="flex items-center justify-between py-1">
+                <span className="text-sm font-medium text-[#6B7280]">Total: <span className="font-bold text-[#111111]">{total.toLocaleString('ro-RO')} Lei</span></span>
               </div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-black text-[#111111] tracking-tighter">{total.toLocaleString('ro-RO')}</span>
-                <span className="text-sm font-bold text-[#111111]">Lei</span>
+              <Button 
+                onClick={() => { setStep(3); setPaymentSubView(null); }}
+                className="w-full h-14 bg-[#E31E24] hover:bg-red-700 text-white rounded-full text-base font-bold shadow-lg border-0 transition-transform active:scale-[0.98]"
+              >
+                Continuă
+              </Button>
+            </>
+          )}
+
+          {step === 3 && (
+            <>
+              <div className="flex items-center justify-between py-1">
+                <span className="text-sm font-medium text-[#6B7280]">Total: <span className="font-bold text-[#111111]">{total.toLocaleString('ro-RO')} Lei</span></span>
               </div>
-            </div>
-            <Button
-              onClick={() => onSuccess(saveOrder(cartItems, total))}
-              disabled={!agreedTerms}
-              className={`w-full h-14 rounded-2xl text-[15px] font-black shadow-xl flex items-center gap-2 justify-center border-0 transition-all duration-300 active:scale-95 ${agreedTerms ? 'bg-[#E31E24] hover:bg-[#C71015] text-white hover:shadow-2xl hover:shadow-red-500/20' : 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'}`}
-            >
-              {paymentMethod === 'apple_pay' ? (
-                 <><Smartphone className="h-5 w-5" /> Plătește cu Apple Pay</>
-              ) : paymentMethod === 'google_pay' ? (
-                 <><Smartphone className="h-5 w-5" /> Plătește cu Google Pay</>
-              ) : (
-                 <><ShieldCheck className="h-5 w-5" /> Confirmă și plătește</>
-              )}
-            </Button>
-          </div>
-        )}
-      </div>
+              <Button
+                onClick={() => onSuccess(saveOrder(cartItems, total))}
+                className="w-full h-14 bg-[#E31E24] hover:bg-[#C71015] text-white rounded-full text-base font-bold shadow-xl flex items-center gap-2 justify-center border-0 transition-all duration-300 active:scale-95"
+              >
+                <Lock className="h-5 w-5" /> Plătește {total.toLocaleString('ro-RO')} Lei
+              </Button>
+            </>
+          )}
+        </div>
+      )}
 
       {isLockerModalOpen && (
         <LockerPickerModal

@@ -14,6 +14,7 @@ interface ProductCardProps {
   stockPercent?: number;
   onAddToCart?: () => void;
   onWishlist?: () => void;
+  onProductClick?: (id: string) => void;
 }
 
 export function ProductCard({
@@ -26,6 +27,7 @@ export function ProductCard({
   aiReason,
   stockPercent,
   onAddToCart,
+  onProductClick,
 }: ProductCardProps) {
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
@@ -36,7 +38,7 @@ export function ProductCard({
     : null;
 
   return (
-    <div className="relative bg-white rounded-2xl border border-red-100 hover:border-[#E31E24] shadow-sm hover:shadow-md cursor-pointer group transition-all duration-300 h-full flex flex-col">
+    <div onClick={() => onProductClick?.(id)} className="relative bg-white rounded-2xl border border-red-100 hover:border-[#E31E24] shadow-sm hover:shadow-md cursor-pointer group transition-all duration-300 h-full flex flex-col">
 
       {stockPercent !== undefined && (
         <div className="absolute bottom-0 left-0 h-1.5 bg-red-100 w-full rounded-b-2xl overflow-hidden z-20">

@@ -16,7 +16,7 @@
     "border": "border-blue-200"
   },
   {
-    "id": "tv",
+    "id": "tv-audio",
     "name": "TV & Multimedia",
     "iconName": "Tv",
     "color": "text-purple-600",

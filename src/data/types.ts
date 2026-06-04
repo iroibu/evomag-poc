@@ -14,7 +14,7 @@ export interface Product {
   isNew?: boolean;
   heroBannerId?: string;
   priceDropped?: boolean;
-  /** welcome-screen category id (e.g. "gaming", "phones", "laptops", "tv", "pc", "smarthome") */
+  /** welcome-screen category id (e.g. "gaming", "phones", "laptops", "tv-audio", "pc", "smart-home") */
   category?: string;
   /** brand name matching welcome-screen brand options */
   brand?: string;
