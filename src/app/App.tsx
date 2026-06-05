@@ -236,7 +236,7 @@ export default function App() {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 min-h-0 overflow-y-auto">
+      <main className="flex-1 min-h-0 overflow-y-auto" style={{ paddingBottom: "calc(64px + env(safe-area-inset-bottom))" }}>
         {renderScreen()}
       </main>
 

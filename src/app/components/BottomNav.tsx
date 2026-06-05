@@ -17,8 +17,19 @@ const tabs = [
 
 export function BottomNav({ activeTab, onTabChange, cartItemCount = 0 }: BottomNavProps) {
   return (
-    <nav className="shrink-0 bg-background border-t z-50" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
-      <div className="flex items-center justify-around h-20 max-w-md mx-auto px-2">
+    <nav
+      className="bg-background border-t z-50"
+      style={{
+        position: "fixed",
+        bottom: 0,
+        left: "50%",
+        transform: "translateX(-50%)",
+        width: "100%",
+        maxWidth: "28rem",
+        paddingBottom: "env(safe-area-inset-bottom)",
+      }}
+    >
+      <div className="flex items-center justify-around h-16 px-2">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
