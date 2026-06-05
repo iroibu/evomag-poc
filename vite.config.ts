@@ -25,16 +25,13 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      injectRegister: null,
-      includeAssets: ['favicon.ico', 'icon.svg', 'apple-touch-icon-180x180.png'],
+      includeAssets: ['favicon.ico', 'logo.svg', 'apple-touch-icon-180x180.png'],
       manifest: {
-        name: 'EvoMag Application',
-        short_name: 'EvoMag',
-        description: 'EvoMag Ecommerce Application',
-        theme_color: '#1a1a2e',
-        background_color: '#1a1a2e',
-        display: 'standalone',
-        orientation: 'portrait',
+        name: 'evoMAG Application',
+        short_name: 'evoMAG',
+        description: 'evoMAG Ecommerce Application',
+        theme_color: '#ffffff',
+        background_color: '#ffffff',
         scope: '/evomag-poc/',
         start_url: '/evomag-poc/',
         icons: [
