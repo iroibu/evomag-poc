@@ -12,7 +12,7 @@ function EvomagLogo() {
   return (
     <img
       src={`${import.meta.env.BASE_URL}logo.svg`}
-      alt="evoMAG"
+      alt="evomag"
       className="h-10 w-auto"
     />
   );

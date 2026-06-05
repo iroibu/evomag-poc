@@ -17,7 +17,7 @@ export interface AssistantReply {
 }
 
 export async function getAssistantReply(userMessage: string): Promise<AssistantReply> {
-  const prompt = `Ești asistentul de shopping EvoMi al magazinului online EvoMag.
+  const prompt = `Ești asistentul de shopping EvoMi al magazinului online evomag.
 
 REGULI STRICTE:
 - Răspunzi DOAR la întrebări legate de cumpărături, produse, recomandări sau comparații de produse.

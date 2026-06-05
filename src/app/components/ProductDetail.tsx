@@ -554,7 +554,7 @@ export function ProductDetail({ product, onBack, onAddToCart, onProductClick }: 
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-[#111111]">Ridicare personală (depozit)</p>
-                  <p className="text-xs text-gray-500">Gratuit din showroom evoMAG</p>
+                  <p className="text-xs text-gray-500">Gratuit din showroom evomag</p>
                 </div>
               </div>
             </TabsContent>

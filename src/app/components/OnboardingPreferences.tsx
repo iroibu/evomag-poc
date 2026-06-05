@@ -139,7 +139,7 @@ export function OnboardingPreferences({ onComplete }: OnboardingPreferencesProps
       {/* Header */}
       <div className="flex items-center justify-between px-6 pt-12 pb-4">
         {step === 1 ? (
-          <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="evoMAG" className="h-7 w-auto" />
+          <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="evomag" className="h-7 w-auto" />
         ) : step === 2 ? (
           <button onClick={() => setStep(1)} className="p-1 -ml-1">
             <ArrowLeft className="w-6 h-6 text-foreground" />

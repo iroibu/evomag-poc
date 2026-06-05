@@ -24,7 +24,6 @@ import { ProductDetail } from "./components/ProductDetail";
 import { Badge } from "./components/ui/badge";
 import { Button } from "./components/ui/button";
 import { type Order } from "./services/orders";
-import { InstallPWABanner } from "./components/InstallPWABanner";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("home");
@@ -217,7 +216,7 @@ export default function App() {
       {activeTab !== "search" && (
         <header className="shrink-0 flex items-center justify-between px-4 py-3 border-b bg-background gap-3">
           <div className="flex-shrink-0">
-            <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="evoMAG" className="h-7 w-auto" />
+            <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="evomag" className="h-7 w-auto" />
           </div>
           <div className="flex-1 relative" onClick={() => setActiveTab("search")}>
             <div className="w-full bg-muted rounded-full pl-9 pr-3 py-2 text-xs border-0 text-muted-foreground flex items-center cursor-pointer h-9">
@@ -242,7 +241,6 @@ export default function App() {
       </main>
 
       {/* Bottom Navigation */}
-      {/* <InstallPWABanner /> */}
       <BottomNav activeTab={activeTab} onTabChange={(tab) => { setSelectedProduct(null); setCategoryView(null); if (tab === "assistant") setPendingAIPrompt(undefined); if (tab === "profile") { setProfileInitialView("main"); setViewingOrder(null); } setActiveTab(tab); }} cartItemCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)} />
     </div>
   );

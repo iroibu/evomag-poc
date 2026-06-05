@@ -21,7 +21,7 @@ function EvomagTextLogo() {
   return (
     <img
       src={`${import.meta.env.BASE_URL}logo.svg`}
-      alt="evoMAG"
+      alt="evomag"
       className="h-8 w-auto"
     />
   );
@@ -49,7 +49,7 @@ function StepWelcome({
           <div className="pl-2">
             <h1 className="text-[28px] font-black text-[#1A1A2E] leading-tight mb-2">
               Bine ai venit la{" "}
-              <span className="text-[#E31E24]">evoMAG</span>
+              <span className="text-[#E31E24]">evomag</span>
             </h1>
             <p className="text-[13px] text-gray-500 leading-relaxed">
               Conectează-te pentru o experiență personalizată și acces la toate beneficiile.
