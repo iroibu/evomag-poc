@@ -34,8 +34,8 @@ export default defineConfig({
         background_color: '#1a1a2e',
         display: 'standalone',
         orientation: 'portrait',
-        scope: '/',
-        start_url: '/',
+        scope: '/evomag-poc/',
+        start_url: '/evomag-poc/',
         icons: [
           {
             src: 'pwa-64x64.png',
