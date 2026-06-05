@@ -19,9 +19,10 @@
   }
 
   .safe-area-inset-top {
-    /* padding removed — was cutting header on Android */
+    padding-top: env(safe-area-inset-top);
   }
 }
+
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
