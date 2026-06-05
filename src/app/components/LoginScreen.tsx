@@ -43,7 +43,7 @@ function StepWelcome({
   return (
     <div className="flex flex-col h-full overflow-y-auto justify-between">
       {/* Top: logo + mascot + heading */}
-      <div className="pt-8 pl-4">
+      <div className="safe-area-inset-top pt-8 pl-4">
         <EvomagTextLogo />
         <div className="flex items-center justify-between pt-4">
           <div className="pl-2">
@@ -173,7 +173,7 @@ function StepEmail({
   return (
     <div className="flex flex-col h-full">
       {/* Back */}
-      <div className="px-4 pt-8 pb-2">
+      <div className="px-4 pt-8 pb-2 safe-area-inset-top">
         <button onClick={onBack} className="p-1 -ml-1" aria-label="Înapoi">
           <ArrowLeft className="w-5 h-5 text-gray-700" />
         </button>
@@ -266,7 +266,7 @@ function StepPassword({
   return (
     <div className="flex flex-col h-full">
       {/* Back */}
-      <div className="px-4 pt-8 pb-2">
+      <div className="px-4 pt-8 pb-2 safe-area-inset-top">
         <button onClick={onBack} className="p-1 -ml-1" aria-label="Înapoi">
           <ArrowLeft className="w-5 h-5 text-gray-700" />
         </button>
@@ -414,14 +414,15 @@ export function LoginScreen({ onLoginSuccess, onCreateAccount }: LoginScreenProp
   return (
     <div
       style={{
-        height: "100dvh",
+        position: "fixed",
+        inset: 0,
         display: "flex",
         flexDirection: "column",
         background: "#ffffff",
         maxWidth: "448px",
-        margin: "0 auto",
+        left: "50%",
+        transform: "translateX(-50%)",
         overflow: "hidden",
-        position: "relative",
       }}
     >
       {step === "welcome" && (

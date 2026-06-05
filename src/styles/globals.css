@@ -29,7 +29,10 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Prevent pull-to-refresh on mobile */
+/* Prevent iOS Safari zoom on input focus (requires font-size >= 16px) */
+input, textarea, select {
+  font-size: 16px !important;
+}
 body {
   overscroll-behavior-y: contain;
 }

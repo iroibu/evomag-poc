@@ -160,7 +160,7 @@ export default function App() {
 
   if (!hasSetPreferences) {
     return (
-      <div className="h-dvh flex flex-col bg-background max-w-md mx-auto overflow-hidden">
+      <div className="fixed inset-0 flex flex-col bg-background overflow-hidden" style={{ maxWidth: '28rem', left: '50%', transform: 'translateX(-50%)' }}>
         <OnboardingPreferences
           onComplete={(prefs: OnboardingPrefs) => {
             savePreferences(prefs);
@@ -173,7 +173,7 @@ export default function App() {
 
   if (showCheckout) {
     return (
-      <div className="h-dvh flex flex-col bg-background max-w-md mx-auto overflow-hidden">
+      <div className="fixed inset-0 flex flex-col bg-background overflow-hidden" style={{ maxWidth: '28rem', left: '50%', transform: 'translateX(-50%)' }}>
         <CheckoutScreen 
           total={cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}
           cartItems={cartItems}
@@ -191,7 +191,7 @@ export default function App() {
 
   if (confirmedOrder) {
     return (
-      <div className="h-dvh flex flex-col bg-background max-w-md mx-auto overflow-hidden">
+      <div className="fixed inset-0 flex flex-col bg-background overflow-hidden" style={{ maxWidth: '28rem', left: '50%', transform: 'translateX(-50%)' }}>
         <OrderConfirmationScreen
           order={confirmedOrder}
           onGoHome={() => {
@@ -210,7 +210,7 @@ export default function App() {
   }
 
   return (
-    <div className="h-dvh flex flex-col bg-background max-w-md mx-auto overflow-hidden">
+    <div className="fixed inset-0 flex flex-col bg-background overflow-hidden" style={{ maxWidth: '28rem', left: '50%', transform: 'translateX(-50%)' }}>
       <Toaster />
       {/* Top Header */}
       {activeTab !== "search" && (
