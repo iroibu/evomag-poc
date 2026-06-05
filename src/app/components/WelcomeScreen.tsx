@@ -24,7 +24,7 @@ interface WelcomeScreenProps {
 
 export function WelcomeScreen({ onEnter }: WelcomeScreenProps) {
   return (
-    <div className="h-screen flex flex-col bg-[#F2F2F7] max-w-md mx-auto overflow-hidden relative z-50">
+    <div className="flex flex-col bg-[#F2F2F7] overflow-hidden relative z-50" style={{ position: 'fixed', top: 0, bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: '28rem' }}>
       <div className="absolute inset-0 flex flex-col overflow-y-auto">
         {/* Logo */}
         <div className="flex justify-center pt-14 pb-4 flex-shrink-0">

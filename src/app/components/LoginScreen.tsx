@@ -415,13 +415,15 @@ export function LoginScreen({ onLoginSuccess, onCreateAccount }: LoginScreenProp
     <div
       style={{
         position: "fixed",
-        inset: 0,
+        top: 0,
+        bottom: 0,
+        left: "50%",
+        transform: "translateX(-50%)",
+        width: "100%",
+        maxWidth: "448px",
         display: "flex",
         flexDirection: "column",
         background: "#ffffff",
-        maxWidth: "448px",
-        left: "50%",
-        transform: "translateX(-50%)",
         overflow: "hidden",
       }}
     >
