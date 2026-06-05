@@ -59,7 +59,7 @@ export function QuickCheckout({ onBack, onComplete }: QuickCheckoutProps) {
 
   if (step === "processing") {
     return (
-      <div className="flex flex-col items-center justify-center px-4 bg-background" style={{ position: 'fixed', top: 0, bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: '28rem' }}>
+      <div className="h-screen flex flex-col items-center justify-center px-4 bg-background">
         <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-red-600 flex items-center justify-center mb-6">
           <Sparkles className="h-12 w-12 text-white animate-pulse" />
         </div>
@@ -76,8 +76,8 @@ export function QuickCheckout({ onBack, onComplete }: QuickCheckoutProps) {
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="flex flex-col items-center justify-center px-4 bg-background"
-        style={{ position: 'fixed', top: 0, bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: '28rem' }}
+        className="h-screen flex flex-col items-center justify-center px-4 bg-background"
+        style={{}}
       >
         <div className="w-24 h-24 rounded-full bg-green-500 flex items-center justify-center mb-6">
           <Check className="h-12 w-12 text-white" />
@@ -94,7 +94,7 @@ export function QuickCheckout({ onBack, onComplete }: QuickCheckoutProps) {
   }
 
   return (
-    <div className="flex flex-col bg-background" style={{ position: 'fixed', top: 0, bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: '28rem' }}>
+    <div className="h-screen flex flex-col bg-background max-w-md mx-auto overflow-hidden">
       {/* Header */}
       <header className="shrink-0 flex items-center justify-between px-4 py-4 border-b bg-background">
         <button onClick={onBack} className="p-2 -ml-2 rounded-full hover:bg-muted">

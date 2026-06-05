@@ -414,17 +414,14 @@ export function LoginScreen({ onLoginSuccess, onCreateAccount }: LoginScreenProp
   return (
     <div
       style={{
-        position: "fixed",
-        top: 0,
-        bottom: 0,
-        left: "50%",
-        transform: "translateX(-50%)",
-        width: "100%",
-        maxWidth: "448px",
+        height: "100dvh",
         display: "flex",
         flexDirection: "column",
         background: "#ffffff",
+        maxWidth: "448px",
+        margin: "0 auto",
         overflow: "hidden",
+        position: "relative",
       }}
     >
       {step === "welcome" && (
