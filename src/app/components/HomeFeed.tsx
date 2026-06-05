@@ -4,7 +4,7 @@ import { Skeleton } from "./ui/skeleton";
 import {
   ChevronRight, ShoppingCart, Smartphone, Laptop, Tv,
   Sparkles, Home, Gift,
-  GitCompare, ArrowRight, Bell, TrendingDown, LayoutGrid, Gamepad2, Truck, Tag, Heart,
+  GitCompare, ArrowRight, Bell, TrendingDown, LayoutGrid, Gamepad2, Truck, Tag, Heart, Star,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
@@ -14,6 +14,7 @@ import { getAuthUser } from "../services/auth";
 import { toggleWishlist, getWishlist } from "../services/wishlist";
 import type { Product } from "../../data/types";
 import products from "../../data/products.json";
+import reviewsData from "../../data/reviews.json";
 
 const DISPLAY_CATEGORIES = [
   { id: "phones", name: "Telefoane", icon: Smartphone },
@@ -269,7 +270,11 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
             onSeeAll={() => onSeeAllClick?.("Văzute recent", recentlyViewed)}
           />
           <ProductScroll>
-            {recentlyViewed.map((product) => (
+            {recentlyViewed.map((product) => {
+              const rvReviews = reviewsData.filter((r) => r.productId === String(product.id));
+              const rvReviewCount = rvReviews.length;
+              const rvRating = rvReviewCount > 0 ? Math.round((rvReviews.reduce((sum, r) => sum + r.rating, 0) / rvReviewCount) * 10) / 10 : null;
+              return (
               <div
                 key={product.id}
                 className="w-[160px] shrink-0 snap-start cursor-pointer group"
@@ -294,7 +299,14 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
                     />
                   </div>
                   <div className="px-3 pb-3">
-                    <p className="text-[11px] font-semibold text-gray-800 line-clamp-2 leading-snug mb-2 h-8">{product.name}</p>
+                    <p className="text-[11px] font-semibold text-gray-800 line-clamp-2 leading-snug mb-1 h-8">{product.name}</p>
+                    {(rvRating !== null || rvReviewCount > 0) && (
+                      <div className="flex items-center gap-1 mb-1.5">
+                        <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                        {rvRating !== null && <span className="text-[10px] font-medium text-gray-700">{rvRating}</span>}
+                        {rvReviewCount > 0 && <span className="text-[10px] text-gray-400">({rvReviewCount})</span>}
+                      </div>
+                    )}
                     <div className="flex items-center justify-between">
                       <span className="text-[14px] font-black text-[#E31E24]">
                         {product.price.toLocaleString("ro-RO")} Lei
@@ -310,7 +322,8 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
                   </div>
                 </div>
               </div>
-            ))}
+              )
+            })}
           </ProductScroll>
         </section>
       )}
@@ -327,6 +340,9 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
               product.oldPrice && product.price < product.oldPrice
                 ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
                 : null;
+            const recReviews = reviewsData.filter((r) => r.productId === String(product.id));
+            const recReviewCount = recReviews.length;
+            const recRating = recReviewCount > 0 ? Math.round((recReviews.reduce((sum, r) => sum + r.rating, 0) / recReviewCount) * 10) / 10 : null;
             return (
               <div
                 key={product.id}
@@ -357,7 +373,14 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
                     />
                   </div>
                   <div className="px-3 pb-3">
-                    <p className="text-[11px] font-semibold text-gray-800 line-clamp-2 leading-snug mb-1.5 h-8">{product.name}</p>
+                    <p className="text-[11px] font-semibold text-gray-800 line-clamp-2 leading-snug mb-1 h-8">{product.name}</p>
+                    {(recRating !== null || recReviewCount > 0) && (
+                      <div className="flex items-center gap-1 mb-1.5">
+                        <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                        {recRating !== null && <span className="text-[10px] font-medium text-gray-700">{recRating}</span>}
+                        {recReviewCount > 0 && <span className="text-[10px] text-gray-400">({recReviewCount})</span>}
+                      </div>
+                    )}
                     <div className="flex items-end justify-between">
                       <div>
                         {product.oldPrice && (
