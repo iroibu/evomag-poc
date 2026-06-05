@@ -160,7 +160,7 @@ export default function App() {
 
   if (!hasSetPreferences) {
     return (
-      <div className="h-svh flex flex-col bg-background max-w-md mx-auto overflow-hidden" style={{ paddingTop: "calc(env(safe-area-inset-top) + 5px)" }}>
+      <div className="h-svh flex flex-col bg-background max-w-md mx-auto overflow-hidden" style={{ paddingTop: "calc(env(safe-area-inset-top) + 2px)" }}>
         <OnboardingPreferences
           onComplete={(prefs: OnboardingPrefs) => {
             savePreferences(prefs);
@@ -173,7 +173,7 @@ export default function App() {
 
   if (showCheckout) {
     return (
-      <div className="h-svh flex flex-col bg-background max-w-md mx-auto overflow-hidden" style={{ paddingTop: "calc(env(safe-area-inset-top) + 5px)" }}>
+      <div className="h-svh flex flex-col bg-background max-w-md mx-auto overflow-hidden" style={{ paddingTop: "calc(env(safe-area-inset-top) + 2px)" }}>
         <CheckoutScreen 
           total={cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}
           cartItems={cartItems}
@@ -191,7 +191,7 @@ export default function App() {
 
   if (confirmedOrder) {
     return (
-      <div className="h-svh flex flex-col bg-background max-w-md mx-auto overflow-hidden" style={{ paddingTop: "calc(env(safe-area-inset-top) + 5px)" }}>
+      <div className="h-svh flex flex-col bg-background max-w-md mx-auto overflow-hidden" style={{ paddingTop: "calc(env(safe-area-inset-top) + 2px)" }}>
         <OrderConfirmationScreen
           order={confirmedOrder}
           onGoHome={() => {
@@ -210,7 +210,7 @@ export default function App() {
   }
 
   return (
-    <div className="h-svh flex flex-col bg-background max-w-md mx-auto overflow-hidden" style={{ paddingTop: "calc(env(safe-area-inset-top) + 5px)" }}>
+    <div className="h-svh flex flex-col bg-background max-w-md mx-auto overflow-hidden" style={{ paddingTop: "calc(env(safe-area-inset-top) + 2px)" }}>
       <Toaster />
       {/* Top Header */}
       {activeTab !== "search" && (
@@ -245,6 +245,7 @@ export default function App() {
     </div>
   );
 }
+
 
 
 
