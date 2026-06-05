@@ -77,7 +77,7 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
 
   return (
     <div className="flex flex-col h-full bg-[#F5F5F7]">
-      <header className="shrink-0 safe-area-inset-top flex items-center px-4 py-4 bg-white border-b sticky top-0 z-10 shadow-sm">
+      <header className="shrink-0 flex items-center px-4 py-4 bg-white border-b sticky top-0 z-10 shadow-sm">
         <button onClick={handleBack} className="p-2 -ml-2 rounded-full hover:bg-muted mr-2 transition-colors">
           <ChevronLeft className="h-6 w-6" />
         </button>
@@ -957,3 +957,4 @@ export function CheckoutScreen({ onBack, onSuccess, total, cartItems }: Checkout
     </div>
   );
 }
+

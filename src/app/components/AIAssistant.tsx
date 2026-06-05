@@ -246,7 +246,7 @@ export function AIAssistant({ initialPrompt, onAddToCart, onProductClick }: { in
     return (
       <div className="flex flex-col h-full bg-white">
         {/* Header */}
-        <header className="shrink-0 safe-area-inset-top px-4 pt-4 pb-2 flex items-center justify-between">
+        <header className="shrink-0 px-4 pt-4 pb-2 flex items-center justify-between">
           <div className="flex-1" />
           <div className="flex flex-col items-center">
             <span className="text-lg font-bold text-[#E31E24] flex items-center gap-1.5">
@@ -303,7 +303,7 @@ export function AIAssistant({ initialPrompt, onAddToCart, onProductClick }: { in
   return (
     <div className="flex flex-col h-full bg-white">
       {/* Header */}
-      <header className="shrink-0 safe-area-inset-top px-4 pt-4 pb-3 flex items-center gap-3 border-b border-gray-100">
+      <header className="shrink-0 px-4 pt-4 pb-3 flex items-center gap-3 border-b border-gray-100">
         <button
           aria-label="Înapoi"
           onClick={() => setMessages([messages[0]])}
@@ -402,3 +402,4 @@ export function AIAssistant({ initialPrompt, onAddToCart, onProductClick }: { in
     </div>
   );
 }
+

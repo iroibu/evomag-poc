@@ -160,7 +160,7 @@ export default function App() {
 
   if (!hasSetPreferences) {
     return (
-      <div className="h-svh flex flex-col bg-background max-w-md mx-auto overflow-hidden" style={{ paddingTop: "calc(env(safe-area-inset-top) + 2px)" }}>
+      <div className="h-svh flex flex-col bg-background max-w-md mx-auto overflow-hidden" style={{ paddingTop: "calc(env(safe-area-inset-top) + 5px)" }}>
         <OnboardingPreferences
           onComplete={(prefs: OnboardingPrefs) => {
             savePreferences(prefs);
@@ -173,7 +173,7 @@ export default function App() {
 
   if (showCheckout) {
     return (
-      <div className="h-svh flex flex-col bg-background max-w-md mx-auto overflow-hidden" style={{ paddingTop: "calc(env(safe-area-inset-top) + 2px)" }}>
+      <div className="h-svh flex flex-col bg-background max-w-md mx-auto overflow-hidden" style={{ paddingTop: "calc(env(safe-area-inset-top) + 5px)" }}>
         <CheckoutScreen 
           total={cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}
           cartItems={cartItems}
@@ -191,7 +191,7 @@ export default function App() {
 
   if (confirmedOrder) {
     return (
-      <div className="h-svh flex flex-col bg-background max-w-md mx-auto overflow-hidden" style={{ paddingTop: "calc(env(safe-area-inset-top) + 2px)" }}>
+      <div className="h-svh flex flex-col bg-background max-w-md mx-auto overflow-hidden" style={{ paddingTop: "calc(env(safe-area-inset-top) + 5px)" }}>
         <OrderConfirmationScreen
           order={confirmedOrder}
           onGoHome={() => {
@@ -210,11 +210,11 @@ export default function App() {
   }
 
   return (
-    <div className="h-svh flex flex-col bg-background max-w-md mx-auto overflow-hidden" style={{ paddingTop: "calc(env(safe-area-inset-top) + 2px)" }}>
+    <div className="h-svh flex flex-col bg-background max-w-md mx-auto overflow-hidden" style={{ paddingTop: "calc(env(safe-area-inset-top) + 5px)" }}>
       <Toaster />
       {/* Top Header */}
       {activeTab !== "search" && (
-        <header className="shrink-0 safe-area-inset-top flex items-center justify-between px-4 py-3 border-b bg-background gap-3">
+        <header className="shrink-0 flex items-center justify-between px-4 py-3 border-b bg-background gap-3">
           <div className="flex-shrink-0">
             <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="evomag" className="h-7 w-auto" />
           </div>
@@ -245,6 +245,8 @@ export default function App() {
     </div>
   );
 }
+
+
 
 
 

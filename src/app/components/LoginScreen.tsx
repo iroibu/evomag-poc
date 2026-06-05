@@ -173,7 +173,7 @@ function StepEmail({
   return (
     <div className="flex flex-col h-full">
       {/* Back */}
-      <div className="px-4 pt-8 pb-2 safe-area-inset-top">
+      <div className="px-4 pt-8 pb-2">
         <button onClick={onBack} className="p-1 -ml-1" aria-label="Înapoi">
           <ArrowLeft className="w-5 h-5 text-gray-700" />
         </button>
@@ -266,7 +266,7 @@ function StepPassword({
   return (
     <div className="flex flex-col h-full">
       {/* Back */}
-      <div className="px-4 pt-8 pb-2 safe-area-inset-top">
+      <div className="px-4 pt-8 pb-2">
         <button onClick={onBack} className="p-1 -ml-1" aria-label="Înapoi">
           <ArrowLeft className="w-5 h-5 text-gray-700" />
         </button>
@@ -456,3 +456,4 @@ export function LoginScreen({ onLoginSuccess, onCreateAccount }: LoginScreenProp
     </div>
   );
 }
+
