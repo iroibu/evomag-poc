@@ -32,8 +32,7 @@ export default defineConfig({
         description: 'evoMAG Ecommerce Application',
         theme_color: '#ffffff',
         background_color: '#ffffff',
-        scope: '/evomag-poc/',
-        start_url: '/evomag-poc/',
+        start_url: '/',
         icons: [
           {
             src: 'pwa-64x64.png',
