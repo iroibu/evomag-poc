@@ -26,7 +26,6 @@ export function BottomNav({ activeTab, onTabChange, cartItemCount = 0 }: BottomN
         transform: "translateX(-50%)",
         width: "100%",
         maxWidth: "28rem",
-        paddingBottom: "env(safe-area-inset-bottom)",
       }}
     >
       <div className="flex items-center justify-around h-16 px-2">

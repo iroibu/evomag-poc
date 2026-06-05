@@ -19,7 +19,7 @@
   }
 
   .safe-area-inset-top {
-    padding-top: env(safe-area-inset-top);
+    /* padding removed — was cutting header on Android */
   }
 }
 html {
