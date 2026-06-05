@@ -28,13 +28,14 @@ export function InstallPWABanner() {
 
   if (!visible || !prompt) return null;
 
-  const handleInstall = async () => {
+  const handleInstall = () => {
     prompt.prompt();
-    const { outcome } = await prompt.userChoice;
-    if (outcome === "accepted" || outcome === "dismissed") {
-      window.__pwaPrompt = undefined;
-      setVisible(false);
-    }
+    prompt.userChoice.then(function (choiceResult) {
+      if (choiceResult.outcome === "accepted" || choiceResult.outcome === "dismissed") {
+        window.__pwaPrompt = undefined;
+        setVisible(false);
+      }
+    });
   };
 
   const handleDismiss = () => {
