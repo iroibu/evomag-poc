@@ -214,7 +214,7 @@ export default function App() {
       <Toaster />
       {/* Top Header */}
       {activeTab !== "search" && (
-        <header className="shrink-0 flex items-center justify-between px-4 py-3 border-b bg-background gap-3">
+        <header className="shrink-0 safe-area-inset-top flex items-center justify-between px-4 py-3 border-b bg-background gap-3">
           <div className="flex-shrink-0">
             <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="evomag" className="h-7 w-auto" />
           </div>
@@ -236,7 +236,7 @@ export default function App() {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 min-h-0 overflow-y-auto">
         {renderScreen()}
       </main>
 

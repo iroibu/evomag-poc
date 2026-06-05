@@ -109,7 +109,7 @@ export function OrderDetailScreen({ order, onBack, onProductClick }: OrderDetail
 
   return (
     <div className="flex flex-col h-full bg-gray-50">
-      <header className="shrink-0 flex items-center px-4 py-4 bg-white border-b sticky top-0 z-10">
+      <header className="shrink-0 safe-area-inset-top flex items-center px-4 py-4 bg-white border-b sticky top-0 z-10">
         <button onClick={onBack} className="p-2 -ml-2 rounded-full hover:bg-muted mr-2">
           <ChevronLeft className="h-6 w-6" />
         </button>

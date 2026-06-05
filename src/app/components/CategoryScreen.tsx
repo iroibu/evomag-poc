@@ -46,7 +46,7 @@ export function CategoryScreen({ title, products, catId, onBack, onProductClick,
       {/* Decorative background blur */}
       <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-[#E31E24]/10 to-transparent z-0 pointer-events-none"></div>
 
-      <header className="shrink-0 flex items-center justify-between px-4 py-4 bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-20 shadow-sm transition-all">
+      <header className="shrink-0 safe-area-inset-top flex items-center justify-between px-4 py-4 bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-20 shadow-sm transition-all">
         <div className="flex items-center">
           <button onClick={onBack} className="p-2 -ml-2 rounded-full hover:bg-red-50 text-gray-800 transition-colors mr-2">
             <ChevronLeft className="h-6 w-6" />

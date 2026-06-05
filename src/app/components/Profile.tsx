@@ -278,7 +278,7 @@ export function Profile({ onProductClick, onAddToCart, onLogout, onOpenAI, onCat
   };
 
   const renderHeader = (title: string, onBack?: () => void) => (
-    <header className="shrink-0 flex items-center px-4 py-4 bg-white border-b sticky top-0 z-10 shadow-sm">
+    <header className="shrink-0 safe-area-inset-top flex items-center px-4 py-4 bg-white border-b sticky top-0 z-10 shadow-sm">
       <button 
         onClick={onBack || (() => setActiveView("main"))} 
         className="p-2 -ml-2 rounded-full hover:bg-muted mr-2 flex items-center justify-center"
@@ -495,7 +495,7 @@ export function Profile({ onProductClick, onAddToCart, onLogout, onOpenAI, onCat
     return (
       <div className="flex flex-col h-full bg-[#F5F5F7]">
         {/* Header */}
-        <header className="shrink-0 flex items-center px-4 py-4 bg-white border-b sticky top-0 z-10 shadow-sm">
+        <header className="shrink-0 safe-area-inset-top flex items-center px-4 py-4 bg-white border-b sticky top-0 z-10 shadow-sm">
           <button
             onClick={() => setActiveView("main")}
             className="p-2 -ml-2 rounded-full hover:bg-muted mr-2 flex items-center justify-center"
@@ -1003,7 +1003,7 @@ export function Profile({ onProductClick, onAddToCart, onLogout, onOpenAI, onCat
     return (
       <div className="flex flex-col h-full bg-[#F5F5F7]">
         {/* Custom header matching design */}
-        <header className="shrink-0 flex items-center px-4 pt-5 pb-4 bg-white sticky top-0 z-10">
+        <header className="shrink-0 safe-area-inset-top flex items-center px-4 pt-5 pb-4 bg-white sticky top-0 z-10">
           <button
             onClick={() => setActiveView("main")}
             className="p-2 -ml-2 rounded-full hover:bg-muted mr-1 flex items-center justify-center"
@@ -1205,7 +1205,7 @@ export function Profile({ onProductClick, onAddToCart, onLogout, onOpenAI, onCat
     return (
       <div className="flex flex-col h-full bg-[#F5F5F7] font-sans">
         {/* Header */}
-        <header className="shrink-0 flex flex-col px-4 pt-5 pb-4 sticky top-0 z-10 bg-white border-b border-gray-100">
+        <header className="shrink-0 safe-area-inset-top flex flex-col px-4 pt-5 pb-4 sticky top-0 z-10 bg-white border-b border-gray-100">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setActiveView("main")}

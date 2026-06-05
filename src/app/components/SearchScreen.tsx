@@ -76,7 +76,7 @@ export function SearchScreen({
   return (
     <div className="flex flex-col h-full">
       {/* Search Bar */}
-      <div className="shrink-0 bg-background z-10 px-4 pt-4 pb-2 flex gap-2 items-center border-b">
+      <div className="shrink-0 safe-area-inset-top bg-background z-10 px-4 pt-4 pb-2 flex gap-2 items-center border-b">
         <div className="flex-1">
           <AISearchBar
             value={searchBarValue}
