@@ -1,5 +1,6 @@
 import { Heart, Info, ShoppingCart, Star } from "lucide-react";
 import React, { useState } from "react";
+import { toast } from "sonner";
 import reviewsData from "../../data/reviews.json";
 import { isInWishlist, toggleWishlist } from "../services/wishlist";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
@@ -62,6 +63,7 @@ export function ProductCard({
           e.stopPropagation();
           const newState = toggleWishlist({ id, name, price, originalPrice, images });
           setWishlisted(newState);
+          toast.success(newState ? "Adăugat la favorite!" : "Eliminat din favorite!");
         }}
         className={`absolute top-2 right-2 h-6 w-6 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-colors z-20`}
         aria-label={wishlisted ? "Elimină din favorite" : "Adaugă la favorite"}

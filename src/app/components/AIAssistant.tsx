@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { getAssistantReply, type AssistantProduct } from "../services/geminiAssistant";
 import { getAuthUser } from "../services/auth";
 import { isInWishlist, toggleWishlist } from "../services/wishlist";
+import { toast } from "sonner";
 
 interface Message {
   id: string;
@@ -52,6 +53,7 @@ function AIProductCard({
                 e.stopPropagation();
                 const newState = toggleWishlist(product);
                 setWishlisted(newState);
+                toast.success(newState ? "Adăugat la favorite!" : "Eliminat din favorite!");
               }}
               className="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors"
               aria-label={`${wishlisted ? "Elimină din" : "Adaugă în"} wishlist`}
