@@ -20,9 +20,8 @@
 
   .safe-area-inset-top {
     padding-top: env(safe-area-inset-top);
-  }}
-
-/* Smooth scrolling */
+  }
+}
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
