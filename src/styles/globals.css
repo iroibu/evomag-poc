@@ -17,6 +17,10 @@
   .safe-area-inset-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
+
+  .safe-area-inset-top {
+    padding-top: env(safe-area-inset-top);
+  }
 }
 
 /* Smooth scrolling */
@@ -29,4 +33,7 @@ html {
 /* Prevent pull-to-refresh on mobile */
 body {
   overscroll-behavior-y: contain;
+  /* Push content below the iOS status bar on all screens */
+  padding-top: env(safe-area-inset-top);
+  background-color: white;
 }
