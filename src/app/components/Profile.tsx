@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import ReactDOM from "react-dom";
 import products from "../../data/products.json";
 import { Wishlist } from "./Wishlist";
 import { getOrders, type Order } from "../services/orders";
@@ -182,6 +183,7 @@ export function Profile({ onProductClick, onAddToCart, onLogout, onOpenAI, onCat
   const [isAddingCard, setIsAddingCard] = useState(false);
   const [newCardData, setNewCardData] = useState({ number: "", expiry: "", name: "" });
   const [cardMenuOpenId, setCardMenuOpenId] = useState<string | null>(null);
+  const [cardMenuPosition, setCardMenuPosition] = useState<{ top: number; right: number } | null>(null);
 
   // Address adding state
   const [isAddingAddress, setIsAddingAddress] = useState(false);
@@ -686,6 +688,7 @@ export function Profile({ onProductClick, onAddToCart, onLogout, onOpenAI, onCat
     }
 
     return (
+      <>
       <div className="flex flex-col h-full bg-[#F5F5F7]">
         {renderHeader("Cardurile mele")}
         <div className="px-4 pt-3 pb-6 overflow-y-auto space-y-4">
@@ -780,52 +783,20 @@ export function Profile({ onProductClick, onAddToCart, onLogout, onOpenAI, onCat
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        setCardMenuOpenId(cardMenuOpenId === card.id ? null : card.id);
+                        if (cardMenuOpenId === card.id) {
+                          setCardMenuOpenId(null);
+                          setCardMenuPosition(null);
+                        } else {
+                          const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
+                          setCardMenuPosition({ top: rect.bottom + 4, right: window.innerWidth - rect.right });
+                          setCardMenuOpenId(card.id);
+                        }
                       }}
                       className="p-1 rounded-lg text-gray-400 hover:text-gray-600 transition-colors"
                       aria-label="Opțiuni card"
                     >
                       <MoreVertical className="w-5 h-5" />
                     </button>
-
-                    {/* Dropdown menu */}
-                    {cardMenuOpenId === card.id && (
-                      <>
-                        {/* Backdrop to close menu */}
-                        <div
-                          className="fixed inset-0 z-10"
-                          onClick={(e) => { e.stopPropagation(); setCardMenuOpenId(null); }}
-                        />
-                        <div className="absolute top-full right-0 mt-1 w-44 bg-white rounded-xl shadow-lg border border-gray-100 z-20 overflow-hidden">
-                          {!card.isMain && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                const updated = setMainCard(card.id);
-                                setCards(updated);
-                                setCardMenuOpenId(null);
-                              }}
-                              className="w-full flex items-center gap-2 px-3 py-2.5 text-xs text-[#111111] hover:bg-gray-50 transition-colors whitespace-nowrap"
-                            >
-                              <ShieldCheck className="w-3.5 h-3.5 text-green-600 shrink-0" />
-                              Marchează ca principal
-                            </button>
-                          )}
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              const updated = deleteCard(card.id);
-                              setCards(updated);
-                              setCardMenuOpenId(null);
-                            }}
-                            className={`w-full flex items-center gap-2 px-3 py-2.5 text-xs text-[#E31E24] hover:bg-red-50 transition-colors whitespace-nowrap ${!card.isMain ? "border-t border-gray-100" : ""}`}
-                          >
-                            <Trash2 className="w-3.5 h-3.5 shrink-0" />
-                            Șterge card
-                          </button>
-                        </div>
-                      </>
-                    )}
                   </div>
                 </div>
 
@@ -892,6 +863,55 @@ export function Profile({ onProductClick, onAddToCart, onLogout, onOpenAI, onCat
 
         </div>
       </div>
+
+      {/* Card options dropdown — rendered via portal so it overlays other elements */}
+      {cardMenuOpenId !== null && cardMenuPosition !== null && (() => {
+        const card = cards.find(c => c.id === cardMenuOpenId);
+        if (!card) return null;
+        return ReactDOM.createPortal(
+          <>
+            <div
+              className="fixed inset-0 z-[9998]"
+              onClick={() => { setCardMenuOpenId(null); setCardMenuPosition(null); }}
+            />
+            <div
+              className="fixed z-[9999] w-44 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden"
+              style={{ top: cardMenuPosition.top, right: cardMenuPosition.right }}
+            >
+              {!card.isMain && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const updated = setMainCard(card.id);
+                    setCards(updated);
+                    setCardMenuOpenId(null);
+                    setCardMenuPosition(null);
+                  }}
+                  className="w-full flex items-center gap-2 px-3 py-2.5 text-xs text-[#111111] hover:bg-gray-50 transition-colors whitespace-nowrap"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-green-600 shrink-0" />
+                  Marchează ca principal
+                </button>
+              )}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const updated = deleteCard(card.id);
+                  setCards(updated);
+                  setCardMenuOpenId(null);
+                  setCardMenuPosition(null);
+                }}
+                className={`w-full flex items-center gap-2 px-3 py-2.5 text-xs text-[#E31E24] hover:bg-red-50 transition-colors whitespace-nowrap ${!card.isMain ? "border-t border-gray-100" : ""}`}
+              >
+                <Trash2 className="w-3.5 h-3.5 shrink-0" />
+                Șterge card
+              </button>
+            </div>
+          </>,
+          document.body
+        );
+      })()}
+      </>
     );
   }
 
@@ -1090,7 +1110,7 @@ export function Profile({ onProductClick, onAddToCart, onLogout, onOpenAI, onCat
                           <MoreVertical className="w-4 h-4" />
                         </button>
                         {addressMenuOpenId === addr.id && (
-                          <div className="absolute right-0 top-7 z-20 bg-white border border-[#E5E5EA] rounded-xl shadow-lg overflow-hidden w-48">
+                          <div className="absolute right-0 top-7 z-20 bg-white border border-[#E5E5EA] rounded-xl shadow-lg overflow-hidden w-52">
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -1111,9 +1131,9 @@ export function Profile({ onProductClick, onAddToCart, onLogout, onOpenAI, onCat
                                 setAddresses(updated);
                                 setAddressMenuOpenId(null);
                               }}
-                              className="w-full flex items-center gap-2.5 px-4 py-3 text-sm font-medium text-[#111111] hover:bg-[#F5F5F7] transition-colors"
+                              className="w-full flex items-center gap-2.5 px-4 py-3 text-sm font-medium text-[#111111] hover:bg-[#F5F5F7] transition-colors whitespace-nowrap"
                             >
-                              <Star className="w-4 h-4 text-[#6366F1]" />
+                              <Star className="w-4 h-4 text-[#6366F1] shrink-0" />
                               Setează ca principală
                             </button>
                             <div className="h-px bg-[#E5E5EA]" />
