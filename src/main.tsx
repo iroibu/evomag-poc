@@ -8,11 +8,11 @@ import { seedCards } from "./app/services/cards.ts";
 // Capture the PWA install prompt as early as possible, before React mounts.
 // The beforeinstallprompt event fires once Chrome decides the site is installable.
 // If we don't capture it here it is lost before any component mounts.
-/* window.addEventListener("beforeinstallprompt", (e) => {
+window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   window.__pwaPrompt = e as BeforeInstallPromptEvent;
   window.dispatchEvent(new Event("pwaPromptReady"));
-}); */
+});
 
 // Seed default addresses and cards if local storage is empty
 seedAddresses();
