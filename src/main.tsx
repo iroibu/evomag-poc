@@ -1,9 +1,13 @@
 
 import { createRoot } from "react-dom/client";
+import { registerSW } from "virtual:pwa-register";
 import App from "./app/App.tsx";
 import "./styles/index.css";
 import { seedAddresses } from "./app/services/addresses.ts";
 import { seedCards } from "./app/services/cards.ts";
+
+// Register the service worker — required for PWA install prompt to fire
+registerSW({ immediate: true });
 
 // Capture the PWA install prompt as early as possible, before React mounts.
 // The beforeinstallprompt event fires once Chrome decides the site is installable.
