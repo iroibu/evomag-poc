@@ -24,6 +24,7 @@ import { ProductDetail } from "./components/ProductDetail";
 import { Badge } from "./components/ui/badge";
 import { Button } from "./components/ui/button";
 import { type Order } from "./services/orders";
+import { InstallPWABanner } from "./components/InstallPWABanner";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("home");
@@ -241,6 +242,7 @@ export default function App() {
       </main>
 
       {/* Bottom Navigation */}
+      <InstallPWABanner />
       <BottomNav activeTab={activeTab} onTabChange={(tab) => { setSelectedProduct(null); setCategoryView(null); if (tab === "assistant") setPendingAIPrompt(undefined); if (tab === "profile") { setProfileInitialView("main"); setViewingOrder(null); } setActiveTab(tab); }} cartItemCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)} />
     </div>
   );
