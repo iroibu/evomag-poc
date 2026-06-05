@@ -1,36 +1,38 @@
 import { useEffect, useState } from "react";
 import { Download, X } from "lucide-react";
 
-interface BeforeInstallPromptEvent extends Event {
-  prompt(): Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
-}
-
 const DISMISSED_KEY = "evomag_pwa_install_dismissed";
 
 export function InstallPWABanner() {
-  const [promptEvent, setPromptEvent] = useState<BeforeInstallPromptEvent | null>(null);
+  const [prompt, setPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (localStorage.getItem(DISMISSED_KEY) === "true") return;
-
-    const handler = (e: Event) => {
-      e.preventDefault();
-      setPromptEvent(e as BeforeInstallPromptEvent);
+    // Check if the event was already captured before this component mounted
+    if (window.__pwaPrompt) {
+      setPrompt(window.__pwaPrompt);
       setVisible(true);
+      return;
+    }
+    // Otherwise wait for it
+    const handler = () => {
+      if (window.__pwaPrompt) {
+        setPrompt(window.__pwaPrompt);
+        setVisible(true);
+      }
     };
-
-    window.addEventListener("beforeinstallprompt", handler);
-    return () => window.removeEventListener("beforeinstallprompt", handler);
+    window.addEventListener("pwaPromptReady", handler);
+    return () => window.removeEventListener("pwaPromptReady", handler);
   }, []);
 
-  if (!visible || !promptEvent) return null;
+  if (!visible || !prompt) return null;
 
   const handleInstall = async () => {
-    promptEvent.prompt();
-    const { outcome } = await promptEvent.userChoice;
+    prompt.prompt();
+    const { outcome } = await prompt.userChoice;
     if (outcome === "accepted" || outcome === "dismissed") {
+      window.__pwaPrompt = undefined;
       setVisible(false);
     }
   };
@@ -59,3 +61,4 @@ export function InstallPWABanner() {
     </div>
   );
 }
+
