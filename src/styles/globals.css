@@ -36,3 +36,8 @@ input, textarea, select {
 body {
   overscroll-behavior-y: contain;
 }
+
+/* Push Sonner toasts below the iPhone status bar / Dynamic Island */
+[data-sonner-toaster][data-position="top-center"] {
+  --offset: calc(env(safe-area-inset-top, 0px) + 8px) !important;
+}
