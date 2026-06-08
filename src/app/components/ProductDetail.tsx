@@ -475,7 +475,6 @@ export function ProductDetail({ product, onBack, onAddToCart, onProductClick }: 
                       })}
                     </div>
                     <span className="text-sm font-semibold text-[#111111]">{computedRating ?? "—"}</span>
-                    <span className="text-sm text-gray-400">{reviewCount} recenzii</span>
                   </div>
                   <Button variant="outline" size="sm" className="h-8 rounded-full text-xs border-[#E31E24] text-[#E31E24] hover:bg-red-50">
                     <PenLine className="h-3.5 w-3.5 mr-1" />

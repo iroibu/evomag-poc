@@ -53,7 +53,7 @@ function AIProductCard({
                 e.stopPropagation();
                 const newState = toggleWishlist(product);
                 setWishlisted(newState);
-                toast.success(newState ? "Adăugat la favorite!" : "Eliminat din favorite!");
+                toast.success(newState ? "Adăugat la favorite!" : "Eliminat din favorite!", { position: "top-center" });
               }}
               className="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors"
               aria-label={`${wishlisted ? "Elimină din" : "Adaugă în"} wishlist`}

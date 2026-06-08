@@ -63,7 +63,7 @@ export function ProductCard({
           e.stopPropagation();
           const newState = toggleWishlist({ id, name, price, originalPrice, images });
           setWishlisted(newState);
-          toast.success(newState ? "Adăugat la favorite!" : "Eliminat din favorite!");
+          toast.success(newState ? "Adăugat la favorite!" : "Eliminat din favorite!", { position: "top-center" });
         }}
         className={`absolute top-2 right-2 h-6 w-6 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-colors z-20`}
         aria-label={wishlisted ? "Elimină din favorite" : "Adaugă la favorite"}

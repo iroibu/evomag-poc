@@ -42,9 +42,9 @@ export default function App() {
   const [showCheckout, setShowCheckout] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState<Order | null>(null);
   const [viewingOrder, setViewingOrder] = useState<Order | null>(null);
-  const [profileInitialView, setProfileInitialView] = useState<"main" | "orders">("main");
+  const [profileInitialView, setProfileInitialView] = useState<"main" | "orders" | "my-products">("main");
   const [showNotifications, setShowNotifications] = useState(false);
-  const [categoryView, setCategoryView] = useState<{ title: string, products: any[], catId?: string } | null>(null);
+  const [categoryView, setCategoryView] = useState<{ title: string, products: any[], catId?: string, returnProfileView?: "main" | "orders" | "my-products" } | null>(null);
   const [pendingAIPrompt, setPendingAIPrompt] = useState<string | undefined>(undefined);
   const [aiSessionKey, setAISessionKey] = useState(0);
 
@@ -94,7 +94,10 @@ export default function App() {
                title={categoryView.title}
                products={categoryView.products}
                catId={categoryView.catId}
-               onBack={() => setCategoryView(null)}
+               onBack={() => {
+                 if (categoryView.returnProfileView) setProfileInitialView(categoryView.returnProfileView);
+                 setCategoryView(null);
+               }}
                onProductClick={handleProductClick}
                onAddToCart={handleAddToCart}
              />;
@@ -127,7 +130,7 @@ export default function App() {
       case "wishlist":
         return <Wishlist onProductClick={handleProductClick} onAddToCart={handleAddToCart} />;
       case "profile":
-        return <Profile key={profileInitialView} onProductClick={handleProductClick} onAddToCart={handleAddToCart} onLogout={() => setIsAuthenticated(false)} onOpenAI={() => { setPendingAIPrompt(undefined); setActiveTab("assistant"); }} onCategoryClick={(title, prods, catId) => setCategoryView({ title, products: prods, catId })} initialView={profileInitialView} viewingOrder={viewingOrder} />;
+        return <Profile key={profileInitialView} onProductClick={handleProductClick} onAddToCart={handleAddToCart} onLogout={() => setIsAuthenticated(false)} onOpenAI={() => { setPendingAIPrompt(undefined); setActiveTab("assistant"); }} onCategoryClick={(title, prods, catId, returnView) => setCategoryView({ title, products: prods, catId, returnProfileView: returnView })} initialView={profileInitialView} viewingOrder={viewingOrder} />;
       default:
         return <HomeFeed 
                  onProductClick={handleProductClick} 
@@ -211,7 +214,7 @@ export default function App() {
 
   return (
     <div className="h-svh flex flex-col bg-background max-w-md mx-auto overflow-hidden" style={{ paddingTop: "calc(env(safe-area-inset-top) + 5px)" }}>
-      <Toaster />
+      <Toaster style={{ "--offset": "calc(env(safe-area-inset-top, 0px) + 8px)" } as never} />
       {/* Top Header */}
       {activeTab !== "search" && (
         <header className="shrink-0 flex items-center justify-between px-4 py-3 border-b bg-background gap-3">

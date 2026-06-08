@@ -52,7 +52,7 @@ interface ProfileProps {
   onAddToCart?: (product: any) => void;
   onLogout?: () => void;
   onOpenAI?: () => void;
-  onCategoryClick?: (title: string, products: any[], catId?: string) => void;
+  onCategoryClick?: (title: string, products: any[], catId?: string, returnView?: "my-products") => void;
   initialView?: ActiveView;
   viewingOrder?: Order;
 }
@@ -1371,7 +1371,7 @@ export function Profile({ onProductClick, onAddToCart, onLogout, onOpenAI, onCat
                         const map = upgradeProductMap[item.id];
                         if (map) {
                           const upgradeProducts = (products as any[]).filter(p => map.ids.includes(p.id));
-                          onCategoryClick?.(map.title, upgradeProducts, map.catId);
+                          onCategoryClick?.(map.title, upgradeProducts, map.catId, "my-products");
                         }
                       }}
                     >
@@ -1386,7 +1386,7 @@ export function Profile({ onProductClick, onAddToCart, onLogout, onOpenAI, onCat
                         const map = upgradeProductMap[item.id];
                         if (map) {
                           const upgradeProducts = (products as any[]).filter(p => map.ids.includes(p.id));
-                          onCategoryClick?.(map.title, upgradeProducts, map.catId);
+                          onCategoryClick?.(map.title, upgradeProducts, map.catId, "my-products");
                         }
                       }}
                     >

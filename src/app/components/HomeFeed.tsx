@@ -4,7 +4,7 @@ import { Skeleton } from "./ui/skeleton";
 import {
   ChevronRight, ShoppingCart, Smartphone, Laptop, Tv,
   Sparkles, Home, Gift,
-  GitCompare, ArrowRight, Bell, TrendingDown, LayoutGrid, Gamepad2, Truck, Tag, Heart, Star,
+  GitCompare, ArrowRight, Bell, LayoutGrid, Gamepad2, Truck, Tag, Heart, Star,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
@@ -76,6 +76,7 @@ const getProductsForCategory = (category: string) =>
 export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick, onAIClick, onAIQuickAction }: HomeFeedProps) {
   const [recentlyViewed, setRecentlyViewed] = useState<Product[]>(() => getRecentlyViewed());
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [wishlistProducts, setWishlistProducts] = useState<Product[]>(() => getWishlist());
   const [wishlistedIds, setWishlistedIds] = useState<Set<string>>(
     () => new Set(getWishlist().map((p) => p.id))
   );
@@ -83,12 +84,10 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
   const handleToggleWishlist = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();
     const nowInWishlist = toggleWishlist(product);
-    setWishlistedIds((prev) => {
-      const next = new Set(prev);
-      nowInWishlist ? next.add(product.id) : next.delete(product.id);
-      return next;
-    });
-    toast.success(nowInWishlist ? "Adăugat la favorite!" : "Eliminat din favorite!");
+    const updatedWishlist = getWishlist();
+    setWishlistProducts(updatedWishlist);
+    setWishlistedIds(new Set(updatedWishlist.map((p) => p.id)));
+    toast.success(nowInWishlist ? "Adăugat la favorite!" : "Eliminat din favorite!", { position: "top-center" });
   };
 
   useEffect(() => {
@@ -99,7 +98,8 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
     const prefs = loadPreferences();
     const allProducts = products as Array<typeof products[0] & { category?: string; brand?: string }>;
     if (!prefs || (prefs.selectedCategories.length === 0 && prefs.selectedBrands.length === 0)) {
-      return allProducts;
+      const fallbackIds = ["t4", "t5", "t7", "t8", "t1", "t19", "t12", "t13", "t15", "t16", "t21", "t22", "t25", "a1", "a2"];
+      return fallbackIds.map(id => allProducts.find(p => p.id === id)).filter(Boolean) as typeof allProducts;
     }
     const { selectedCategories, selectedBrands } = prefs;
     return allProducts.filter((p) => {
@@ -109,14 +109,7 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
     });
   }, []);
 
-  const trackedProducts = useMemo(() =>
-    products.slice(0, 3).map((p) => ({
-      ...p,
-      priceDrop: Math.floor((p.id.charCodeAt(1) % 15) + 3),
-    })),
-  []);
-
-  const discountedProducts = useMemo(() =>
+  const discountedProducts= useMemo(() =>
     (products as any[]).filter((p) => p.oldPrice && p.price < p.oldPrice),
   []);
 
@@ -461,10 +454,11 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
       </section>
 
       {/* ── 7. Tracked Products ───────────────────────────────────────── */}
+      {wishlistProducts.length > 0 && (
       <section>
-        <SectionHeader title="Produse urmărite" onSeeAll={() => onSeeAllClick?.("Produse urmărite", trackedProducts)} />
+        <SectionHeader title="Produse urmărite" onSeeAll={() => onSeeAllClick?.("Produse urmărite", wishlistProducts)} />
         <ProductScroll>
-          {trackedProducts.map((product) => (
+          {wishlistProducts.map((product) => (
             <div
               key={product.id}
               className="w-[200px] shrink-0 snap-start cursor-pointer"
@@ -484,10 +478,6 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <p className="text-[11px] font-semibold text-gray-800 line-clamp-2 leading-snug mb-1">{product.name}</p>
-                    <div className="flex items-center gap-1 mb-1">
-                      <TrendingDown className="w-3 h-3 text-green-600" />
-                      <span className="text-[10px] font-bold text-green-600">A scăzut cu {product.priceDrop}%</span>
-                    </div>
                     <div className="flex flex-col">
                       <span className="text-[12px] font-black text-[#E31E24] leading-none">
                         {product.price.toLocaleString("ro-RO")} Lei
@@ -513,6 +503,7 @@ export function HomeFeed({ isLoading, onProductClick, onAddToCart, onSeeAllClick
           ))}
         </ProductScroll>
       </section>
+      )}
 
       {/* ── 8. Se cumpără acum (Trending) ────────────────────────────── */}
       <section>
