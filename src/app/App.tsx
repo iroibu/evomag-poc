@@ -214,7 +214,7 @@ export default function App() {
 
   return (
     <div className="h-svh flex flex-col bg-background max-w-md mx-auto overflow-hidden" style={{ paddingTop: "calc(env(safe-area-inset-top) + 5px)" }}>
-      <Toaster />
+      <Toaster position="top-center" />
       {/* Top Header */}
       {activeTab !== "search" && (
         <header className="shrink-0 flex items-center justify-between px-4 py-3 border-b bg-background gap-3">
