@@ -12,6 +12,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
 import { ProductScroll } from "./ProductScroll";
 import { motion } from "motion/react";
 import { isInWishlist, toggleWishlist } from "../services/wishlist";
+import { toast } from "sonner";
 import { getRecentlyViewed } from "../services/recentlyViewed";
 import specificationsData from "../../data/specifications.json";
 import reviewsData from "../../data/reviews.json";
@@ -206,6 +207,7 @@ export function ProductDetail({ product, onBack, onAddToCart, onProductClick }: 
                 reviews: product.reviews ?? product.reviewCount,
               });
               setIsWishlisted(added);
+              toast.success(added ? "Adăugat la favorite!" : "Eliminat din favorite!");
             }}
             className="p-2 rounded-full hover:bg-muted"
           >
